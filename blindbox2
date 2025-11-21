@@ -363,13 +363,13 @@
     // ---------- IMAGE URLs PER TILE ----------
     // Replace each placeholder with your real artwork URL.
     const dayImages = {
-      1: "/mnt/data/8bb12e9f-ebf0-4b28-b80f-271972bcf192.png", // example using your uploaded sheet
-      2: "https://via.placeholder.com/200x200.png?text=2",
-      3: "https://via.placeholder.com/200x200.png?text=3",
-      4: "https://via.placeholder.com/200x200.png?text=4",
-      5: "https://via.placeholder.com/200x200.png?text=5",
-      6: "https://via.placeholder.com/200x200.png?text=6",
-      7: "https://via.placeholder.com/200x200.png?text=7",
+      1: "https://ricomx.ft-crm.com/media-api/serve/8e80d42c-a80e-45c5-bfa4-a5e536e98c66_1.png", // example using your uploaded sheet
+      2: "https://ricomx.ft-crm.com/media-api/serve/1b6616ff-bec4-4ace-9a38-f265f5742fb1_4.png",
+      3: "https://ricomx.ft-crm.com/media-api/serve/3fdfb609-030c-45c9-bb7c-8a481fb56816_3.png",
+      4: "https://ricomx.ft-crm.com/media-api/serve/389b1b85-289b-4c82-82d6-5c782a188f5d_5.png",
+      5: "https://ricomx.ft-crm.com/media-api/serve/adc37439-2f3e-4768-870b-ab2cd8d52893_6.png",
+      6: "https://ricomx.ft-crm.com/media-api/serve/b80dd002-f32b-472e-9925-23c60718fde5_7.png",
+      7: "https://ricomx.ft-crm.com/media-api/serve/97eb4ee3-bd06-4d97-8d87-94fa61e081ee_2.png",
       8: "https://via.placeholder.com/200x200.png?text=8",
       9: "https://via.placeholder.com/200x200.png?text=9",
       10: "https://via.placeholder.com/200x200.png?text=10",
