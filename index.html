@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>December Reward Calendar & Ranking</title>
+  <title>Christmas Month Event – Rewards & Ranking</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700&display=swap" rel="stylesheet" />
   <style>
@@ -77,6 +77,26 @@
     }
 
     .inner { position: relative; z-index: 1; }
+
+    /* SNOW EFFECT */
+    .snowflake {
+      position: fixed;
+      top: -10px;
+      color: #e5f0ff;
+      font-size: 8px;
+      opacity: 0.65;
+      pointer-events: none;
+      z-index: 5;
+      animation-name: snowFall;
+      animation-timing-function: linear;
+      animation-iteration-count: infinite;
+    }
+
+    @keyframes snowFall {
+      0% { transform: translateY(-10px); opacity: 0; }
+      10% { opacity: 0.9; }
+      100% { transform: translateY(110vh); opacity: 0; }
+    }
 
     /* HEADER */
 
@@ -183,7 +203,7 @@
       font-size: 10px;
     }
 
-    /* TAB PANELS */
+    /* TABS */
 
     .tab-panel { display: none; }
     .tab-panel.active { display: block; }
@@ -195,6 +215,128 @@
       padding: 10px 12px 12px;
       border: 1px solid rgba(255, 255, 255, 0.08);
       box-shadow: 0 14px 26px rgba(0, 0, 0, 0.9);
+    }
+
+    /* HOME PANEL */
+
+    .home-panel {
+      margin-bottom: 14px;
+    }
+
+    .home-title {
+      font-size: 20px;
+      margin-bottom: 4px;
+    }
+
+    .home-sub {
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 10px;
+    }
+
+    .home-banners {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: 10px;
+    }
+
+    @media (max-width: 800px) {
+      .home-banners {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    .home-banner {
+      position: relative;
+      border-radius: 16px;
+      padding: 10px 10px 12px;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at 0 0, rgba(255,255,255,0.16), transparent 60%),
+        linear-gradient(135deg, #0f172a, #020617);
+      border: 1px solid rgba(148, 163, 184, 0.7);
+      box-shadow: 0 10px 24px rgba(0,0,0,0.8);
+    }
+
+    .home-banner::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(
+        90deg,
+        rgba(248, 250, 252, 0.04) 0,
+        rgba(248, 250, 252, 0.04) 2px,
+        transparent 2px,
+        transparent 4px
+      );
+      mix-blend-mode: screen;
+      opacity: 0.5;
+      pointer-events: none;
+    }
+
+    .home-banner-tag {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.11em;
+      color: #e5e7eb;
+      margin-bottom: 4px;
+      opacity: 0.9;
+    }
+
+    .home-banner-title {
+      font-size: 16px;
+      margin-bottom: 3px;
+    }
+
+    .home-banner-desc {
+      font-size: 11px;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+
+    .home-banner-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      font-size: 10px;
+      color: var(--muted);
+    }
+
+    .home-cta-row {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .home-cta {
+      border: 0;
+      border-radius: 999px;
+      padding: 6px 12px;
+      font-size: 11px;
+      font-weight: 700;
+      font-family: inherit;
+      cursor: pointer;
+      background: linear-gradient(135deg, #4ef0ff, #818cf8);
+      color: #020617;
+      box-shadow: 0 9px 18px rgba(59,130,246,0.75);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .home-cta.secondary {
+      background: linear-gradient(135deg, #fbbf24, #fb7185);
+      box-shadow: 0 9px 18px rgba(248, 113, 113, 0.75);
+      color: #1f1307;
+    }
+
+    .home-cta span.icon-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: rgba(15,23,42,0.9);
     }
 
     /* MONTH PROGRESS */
@@ -928,8 +1070,12 @@
       transition: color 0.12s ease, transform 0.12s ease;
     }
 
-    .nav-btn span.icon {
-      font-size: 18px;
+    .nav-icon {
+      width: 18px;
+      height: 18px;
+      stroke: currentColor;
+      stroke-width: 1.8;
+      fill: none;
       transition: transform 0.12s ease;
     }
 
@@ -937,7 +1083,7 @@
       color: #f9fafb;
       transform: translateY(-1px);
     }
-    .nav-btn.active span.icon {
+    .nav-btn.active .nav-icon {
       color: var(--accent);
       transform: scale(1.15);
     }
@@ -1000,7 +1146,7 @@
         <div class="title-block">
           <div class="badge">
             <span>🎄</span>
-            <span>December Check-in</span>
+            <span>Christmas Event</span>
           </div>
           <div class="title-main">
             Holiday <span class="highlight">Reward Calendar</span>
@@ -1017,8 +1163,56 @@
         </div>
       </header>
 
+      <!-- TAB: HOME -->
+      <section id="tab-home" class="tab-panel active">
+        <section class="panel home-panel">
+          <div class="home-title">Christmas Month Event</div>
+          <div class="home-sub">
+            Two missions. One festive month. Check in daily to unlock gifts and push your turnover to the top of the leaderboard.
+          </div>
+
+          <div class="home-banners">
+            <!-- Daily check-in banner -->
+            <article class="home-banner">
+              <div class="home-banner-tag">Mission 01</div>
+              <div class="home-banner-title">Daily Check-In Rewards</div>
+              <div class="home-banner-desc">
+                Open the calendar every day in December to claim coins, spins, and special Week 1–5 chests.
+              </div>
+              <div class="home-banner-footer">
+                <div>Stay streaked to unlock bigger weekly milestones.</div>
+                <div class="home-cta-row">
+                  <button class="home-cta" data-goto-tab="rewards">
+                    <span class="icon-dot"></span>
+                    <span>Go to Daily Check-In</span>
+                  </button>
+                </div>
+              </div>
+            </article>
+
+            <!-- Turnover challenge banner -->
+            <article class="home-banner">
+              <div class="home-banner-tag">Mission 02</div>
+              <div class="home-banner-title">Turnover Challenge</div>
+              <div class="home-banner-desc">
+                Spin, raid, and play to boost your daily turnover. Hit the podium to earn extra festive bonuses.
+              </div>
+              <div class="home-banner-footer">
+                <div>Top 20 players appear on the live event board.</div>
+                <div class="home-cta-row">
+                  <button class="home-cta secondary" data-goto-tab="ranking">
+                    <span class="icon-dot"></span>
+                    <span>View Turnover Ranking</span>
+                  </button>
+                </div>
+              </div>
+            </article>
+          </div>
+        </section>
+      </section>
+
       <!-- TAB: REWARDS -->
-      <section id="tab-rewards" class="tab-panel active">
+      <section id="tab-rewards" class="tab-panel">
         <section class="panel">
           <!-- Month progress -->
           <div class="month-progress">
@@ -1109,17 +1303,30 @@
   <nav class="bottom-nav">
     <div class="bottom-nav-inner">
       <div class="bottom-nav-bar">
-        <button class="nav-btn active" data-tab-target="rewards">
-          <span class="icon">📅</span>
+        <!-- HOME -->
+        <button class="nav-btn active" data-tab-target="home">
+          <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M4 10.5L12 4l8 6.5V20a1 1 0 0 1-1 1h-4.5a.5.5 0 0 1-.5-.5V15a2 2 0 0 0-2-2h-1a2 2 0 0 0-2 2v5.5a.5.5 0 0 1-.5.5H5a1 1 0 0 1-1-1v-9.5z" />
+          </svg>
+          <span>Home</span>
+        </button>
+
+        <!-- REWARDS -->
+        <button class="nav-btn" data-tab-target="rewards">
+          <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true">
+            <rect x="3.5" y="5" width="17" height="15.5" rx="2" />
+            <path d="M8 3.5v3M16 3.5v3M3.5 9h17" />
+          </svg>
           <span>Rewards</span>
         </button>
+
+        <!-- RANKING -->
         <button class="nav-btn" data-tab-target="ranking">
-          <span class="icon">🏆</span>
+          <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M8 21v-6.5M12 21V5M16 21v-9" />
+            <path d="M7 9h10l-1.2-5H8.2z" />
+          </svg>
           <span>Ranking</span>
-        </button>
-        <button class="nav-btn" data-tab-target="info">
-          <span class="icon">📜</span>
-          <span>T&amp;C</span>
         </button>
       </div>
     </div>
@@ -1140,6 +1347,29 @@
   </div>
 
   <script>
+    // ---------------------------
+    // SNOW EFFECT
+    // ---------------------------
+    function createSnowflakes(count = 40) {
+      for (let i = 0; i < count; i++) {
+        const el = document.createElement("div");
+        el.className = "snowflake";
+        el.textContent = "✻";
+        const left = Math.random() * 100;
+        const duration = 8 + Math.random() * 8; // 8–16s
+        const delay = Math.random() * -duration; // start at random point
+        const size = 6 + Math.random() * 6;
+
+        el.style.left = left + "vw";
+        el.style.fontSize = size + "px";
+        el.style.animationDuration = duration + "s";
+        el.style.animationDelay = delay + "s";
+
+        document.body.appendChild(el);
+      }
+    }
+    createSnowflakes();
+
     // ---------------------------
     // DATE / DECEMBER CONTEXT
     // ---------------------------
@@ -1183,37 +1413,39 @@
     const monthSummary = document.getElementById("monthSummary");
     const weekMarkersContainer = document.getElementById("weekMarkers");
 
-    const monthProgress = todayInDecember / totalDaysDecember;
-    monthFill.style.transform = `scaleX(${monthProgress})`;
-    monthSummary.textContent = `Day ${todayInDecember} / ${totalDaysDecember}`;
+    if (monthFill) {
+      const monthProgress = todayInDecember / totalDaysDecember;
+      monthFill.style.transform = `scaleX(${monthProgress})`;
+      monthSummary.textContent = `Day ${todayInDecember} / ${totalDaysDecember}`;
 
-    const weeks = [
-      { label: "W1", start: 1, end: 7 },
-      { label: "W2", start: 8, end: 14 },
-      { label: "W3", start: 15, end: 21 },
-      { label: "W4", start: 22, end: 28 },
-      { label: "W5", start: 29, end: 31 }
-    ];
+      const weeks = [
+        { label: "W1", start: 1, end: 7 },
+        { label: "W2", start: 8, end: 14 },
+        { label: "W3", start: 15, end: 21 },
+        { label: "W4", start: 22, end: 28 },
+        { label: "W5", start: 29, end: 31 }
+      ];
 
-    weeks.forEach((week, index) => {
-      const mid = (week.start + week.end) / 2;
-      const pos = (mid / totalDaysDecember) * 100;
-      const status =
-        todayInDecember >= week.end
-          ? "complete"
-          : todayInDecember >= week.start
-          ? "active"
-          : "upcoming";
+      weeks.forEach((week, index) => {
+        const mid = (week.start + week.end) / 2;
+        const pos = (mid / totalDaysDecember) * 100;
+        const status =
+          todayInDecember >= week.end
+            ? "complete"
+            : todayInDecember >= week.start
+            ? "active"
+            : "upcoming";
 
-      const marker = document.createElement("div");
-      marker.className = "week-marker " + status;
-      marker.style.left = pos + "%";
-      marker.innerHTML = `
-        <div class="week-dot">${index + 1}</div>
-        <div>${week.label}</div>
-      `;
-      weekMarkersContainer.appendChild(marker);
-    });
+        const marker = document.createElement("div");
+        marker.className = "week-marker " + status;
+        marker.style.left = pos + "%";
+        marker.innerHTML = `
+          <div class="week-dot">${index + 1}</div>
+          <div>${week.label}</div>
+        `;
+        weekMarkersContainer.appendChild(marker);
+      });
+    }
 
     // ---------------------------
     // WEEK 1 REWARDS (DEC 1–7)
@@ -1223,7 +1455,6 @@
     const weekdayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
     const decYear = currentYear;
 
-    // Demo voucher codes for every December day
     const voucherCodes = {};
     for (let d = 1; d <= 31; d++) {
       voucherCodes[d] = `DEC${String(d).padStart(2, "0")}-VOUCHER`;
@@ -1340,6 +1571,7 @@
     let selectedDay = Math.min(Math.max(todayInDecember, 1), 7);
 
     function renderWeekStrip() {
+      if (!weekStrip) return;
       weekStrip.innerHTML = "";
 
       weekRewards.forEach((reward) => {
@@ -1373,7 +1605,6 @@
           </div>
         `;
 
-        // Day click: select + (optionally) copy today's code
         pill.addEventListener("click", () => {
           selectedDay = reward.day;
           renderWeekStrip();
@@ -1383,7 +1614,6 @@
           }
         });
 
-        // "i" icon click -> open modal
         const infoWrap = pill.querySelector(".day-info-wrap");
         if (infoWrap) {
           infoWrap.addEventListener("click", (e) => {
@@ -1397,6 +1627,7 @@
     }
 
     function renderSelectedCard() {
+      if (!selectedCard) return;
       const reward =
         weekRewards.find((r) => r.day === selectedDay) || weekRewards[0];
       const isToday = reward.day === todayInDecember;
@@ -1437,7 +1668,6 @@
       }
     }
 
-    // Initial render for rewards
     renderWeekStrip();
     renderSelectedCard();
 
@@ -1500,7 +1730,7 @@
       ta.select();
       try {
         document.execCommand("copy");
-        showToast("Unable to auto copy, please paste manually.");
+        showToast("Voucher code copied!");
       } catch (e) {
         showToast("Unable to copy, please copy manually.");
       }
@@ -1557,45 +1787,48 @@
     }
 
     const now = new Date();
-    updatedAt.textContent =
-      "Updated " +
-      now.toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit" });
+    if (updatedAt) {
+      updatedAt.textContent =
+        "Updated " +
+        now.toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit" });
+    }
 
-    // Podium
-    rankingData.slice(0, 3).forEach((player, index) => {
-      const rank = index + 1;
-      const card = document.createElement("div");
-      card.className = "podium-item rank-" + rank;
-      card.innerHTML = `
-        <div class="podium-rank">#${rank}</div>
-        <div class="podium-avatar">${initials(player.username)}</div>
-        <div class="podium-name">${player.username}</div>
-        <div class="podium-turnover">${shortNum(player.turnover)} TO</div>
-      `;
-      podiumGrid.appendChild(card);
-    });
+    if (podiumGrid) {
+      rankingData.slice(0, 3).forEach((player, index) => {
+        const rank = index + 1;
+        const card = document.createElement("div");
+        card.className = "podium-item rank-" + rank;
+        card.innerHTML = `
+          <div class="podium-rank">#${rank}</div>
+          <div class="podium-avatar">${initials(player.username)}</div>
+          <div class="podium-name">${player.username}</div>
+          <div class="podium-turnover">${shortNum(player.turnover)} TO</div>
+        `;
+        podiumGrid.appendChild(card);
+      });
+    }
 
-    // List
-    rankingData.forEach((player, index) => {
-      const rank = index + 1;
-      const row = document.createElement("div");
-      row.className = "ranking-row";
-      if (rank <= 3) row.classList.add("highlight");
-      row.innerHTML = `
-        <div class="rank-badge">#${rank}</div>
-        <div class="rank-main">
-          <div class="rank-avatar">${initials(player.username)}</div>
-          <div class="rank-name">${player.username}</div>
-        </div>
-        <div class="rank-turnover">
-          ${shortNum(player.turnover)}
-          <span class="label">Turnover</span>
-        </div>
-      `;
-      rankingList.appendChild(row);
-    });
+    if (rankingList) {
+      rankingData.forEach((player, index) => {
+        const rank = index + 1;
+        const row = document.createElement("div");
+        row.className = "ranking-row";
+        if (rank <= 3) row.classList.add("highlight");
+        row.innerHTML = `
+          <div class="rank-badge">#${rank}</div>
+          <div class="rank-main">
+            <div class="rank-avatar">${initials(player.username)}</div>
+            <div class="rank-name">${player.username}</div>
+          </div>
+          <div class="rank-turnover">
+            ${shortNum(player.turnover)}
+            <span class="label">Turnover</span>
+          </div>
+        `;
+        rankingList.appendChild(row);
+      });
+    }
 
-    // Search
     const searchInput = document.getElementById("searchInput");
     const searchBtn = document.getElementById("searchBtn");
     const searchResult = document.getElementById("searchResult");
@@ -1620,15 +1853,12 @@
     }
 
     function handleSearch() {
+      if (!searchInput || !searchResult) return;
       const q = searchInput.value;
       if (!q.trim()) {
         searchResult.textContent = "";
         return;
       }
-
-      Array.from(rankingList.children).forEach((row) =>
-        row.classList.remove("highlight-user")
-      );
 
       const result = findRank(q);
       if (!result) {
@@ -1654,7 +1884,7 @@
       }
     }
 
-    if (searchBtn) {
+    if (searchBtn && searchInput) {
       searchBtn.addEventListener("click", handleSearch);
       searchInput.addEventListener("keydown", (e) => {
         if (e.key === "Enter") handleSearch();
@@ -1662,32 +1892,41 @@
     }
 
     // ---------------------------
-    // BOTTOM NAV TABS
+    // BOTTOM NAV + HOME CTAs
     // ---------------------------
     const navButtons = document.querySelectorAll(".nav-btn");
     const tabPanels = {
+      home: document.getElementById("tab-home"),
       rewards: document.getElementById("tab-rewards"),
       ranking: document.getElementById("tab-ranking")
-      // "info" is placeholder for T&C / community page if you add it later
     };
+
+    function setActiveTab(target) {
+      Object.entries(tabPanels).forEach(([key, panel]) => {
+        if (!panel) return;
+        panel.classList.toggle("active", key === target);
+      });
+      navButtons.forEach((btn) => {
+        const isActive = btn.dataset.tabTarget === target;
+        btn.classList.toggle("active", isActive);
+      });
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
 
     navButtons.forEach((btn) => {
       btn.addEventListener("click", () => {
         const target = btn.dataset.tabTarget;
+        if (!target) return;
+        setActiveTab(target);
+      });
+    });
 
-        if (target === "info") {
-          showToast("T&C / Info section coming soon.");
-          return;
-        }
-
-        navButtons.forEach((b) => b.classList.remove("active"));
-        btn.classList.add("active");
-
-        Object.entries(tabPanels).forEach(([key, panel]) => {
-          panel.classList.toggle("active", key === target);
-        });
-
-        window.scrollTo({ top: 0, behavior: "smooth" });
+    // Home banner CTAs
+    document.querySelectorAll("[data-goto-tab]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const target = btn.dataset.gotoTab;
+        if (!target) return;
+        setActiveTab(target);
       });
     });
   </script>
