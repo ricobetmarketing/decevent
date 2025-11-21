@@ -2,692 +2,689 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>December Daily Rewards & Turnover Ranking</title>
+  <title>December Reward Calendar & Ranking</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-
-  <!-- Google Font -->
   <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700&display=swap" rel="stylesheet" />
-
   <style>
     :root {
-      --bg: #050714;
-      --bg-alt: #11152b;
+      --bg: #050715;
       --accent: #ffb347;
-      --accent-2: #ff5fd8;
-      --accent-3: #35e8ff;
-      --card: #181d3b;
-      --text-main: #f9fbff;
-      --text-muted: #9da4d9;
-      --danger: #ff4b6e;
-      --success: #4dffb5;
-      --lock: #4b4f7c;
-      --border-soft: rgba(255, 255, 255, 0.08);
-      --shadow-strong: 0 20px 50px rgba(0, 0, 0, 0.75);
-      --radius-xl: 22px;
-      --radius-lg: 16px;
-      --radius-full: 999px;
+      --accent2: #fb7185;
+      --accent3: #4ef0ff;
+      --accent4: #34d399;
+      --card: #111827;
+      --card2: #1f2937;
+      --text: #f9fafb;
+      --muted: #9ca3af;
+      --border: #374151;
+      --gold: #fbbf24;
+      --radius-lg: 20px;
+      --radius-md: 14px;
+      --shadow: 0 18px 45px rgba(0, 0, 0, 0.75);
+      --nav-height: 72px;
     }
 
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     body {
       margin: 0;
-      font-family: "Baloo 2", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
-        sans-serif;
-      background:
-        radial-gradient(circle at 0% 0%, rgba(255, 147, 237, 0.18), transparent 50%),
-        radial-gradient(circle at 100% 0%, rgba(135, 206, 255, 0.22), transparent 55%),
-        radial-gradient(circle at 50% 100%, rgba(255, 204, 128, 0.18), transparent 55%),
-        var(--bg);
-      color: var(--text-main);
       min-height: 100vh;
+      font-family: "Baloo 2", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at 0 0, rgba(255, 111, 210, 0.32), transparent 60%),
+        radial-gradient(circle at 100% 100%, rgba(56, 189, 248, 0.32), transparent 60%),
+        linear-gradient(180deg, #020617 0%, #020617 45%, #0b1120 70%, #020617 100%);
+      color: var(--text);
       display: flex;
       justify-content: center;
-      padding: 20px 12px 40px;
+      padding: 24px 12px calc(32px + var(--nav-height));
+      overflow-x: hidden;
     }
 
-    .page-shell {
+    .page {
       width: 100%;
-      max-width: 1100px;
-      background: linear-gradient(145deg, rgba(36, 44, 90, 0.96), rgba(6, 10, 42, 0.98));
-      border-radius: 26px;
-      border: 1px solid rgba(255, 255, 255, 0.07);
-      box-shadow: var(--shadow-strong);
-      padding: 18px 16px 24px;
+      max-width: 1200px;
+      background:
+        radial-gradient(circle at 20% -10%, rgba(255, 255, 255, 0.18), transparent 65%),
+        radial-gradient(circle at 90% 110%, rgba(96, 165, 250, 0.3), transparent 60%),
+        linear-gradient(180deg, #020617 0%, #020617 55%, #020617 100%);
+      border-radius: 24px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      box-shadow: var(--shadow);
+      padding: 18px 18px 20px;
       position: relative;
       overflow: hidden;
     }
 
-    /* Glow accents */
-    .page-shell::before,
-    .page-shell::after {
+    .page::before,
+    .page::after {
       content: "";
       position: absolute;
       border-radius: 999px;
-      filter: blur(35px);
-      opacity: 0.45;
+      filter: blur(32px);
+      opacity: 0.75;
       pointer-events: none;
     }
-
-    .page-shell::before {
-      width: 220px;
-      height: 220px;
-      background: radial-gradient(circle, rgba(255, 94, 209, 0.65), transparent 60%);
-      top: -90px;
-      right: -60px;
+    .page::before {
+      width: 220px; height: 220px;
+      top: -80px; left: -80px;
+      background: radial-gradient(circle, rgba(251, 191, 36, 0.9), transparent 60%);
+    }
+    .page::after {
+      width: 260px; height: 260px;
+      bottom: -140px; right: -100px;
+      background: radial-gradient(circle, rgba(56, 189, 248, 0.95), transparent 60%);
     }
 
-    .page-shell::after {
-      width: 260px;
-      height: 260px;
-      background: radial-gradient(circle, rgba(74, 222, 255, 0.65), transparent 65%);
-      bottom: -110px;
-      left: -80px;
-    }
+    .inner { position: relative; z-index: 1; }
 
-    header {
-      position: relative;
-      z-index: 1;
-      display: flex;
-      flex-wrap: wrap;
+    /* HEADER */
+
+    .header {
+      display: grid;
+      grid-template-columns: minmax(0, 2.2fr) minmax(0, 1.2fr);
+      gap: 12px;
       align-items: center;
-      gap: 10px 16px;
-      justify-content: space-between;
-      padding: 4px 4px 10px;
+      margin-bottom: 14px;
+    }
+
+    @media (max-width: 800px) {
+      .header {
+        grid-template-columns: minmax(0, 1fr);
+      }
     }
 
     .title-block {
+      padding: 10px 14px;
+      border-radius: 18px;
+      background:
+        radial-gradient(circle at 0 0, rgba(255, 255, 255, 0.16), transparent 55%),
+        linear-gradient(135deg, #020617, #111827);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      position: relative;
+      overflow: hidden;
+    }
+    .title-block::after {
+      content: "★";
+      position: absolute;
+      right: 10px;
+      top: 10px;
+      font-size: 18px;
+      color: rgba(251, 191, 36, 0.4);
+      animation: sparkle 2.5s infinite ease-in-out;
+    }
+
+    @keyframes sparkle {
+      0%, 100% { transform: scale(1) rotate(0deg); opacity: 0.4; }
+      50% { transform: scale(1.3) rotate(20deg); opacity: 1; }
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 3px 12px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #fbbf24, #fb7185);
+      color: #1e1307;
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      font-weight: 700;
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.8);
+    }
+    .badge span:first-child { font-size: 16px; }
+
+    .title-main {
+      margin-top: 4px;
+      font-size: 26px;
+      line-height: 1.05;
+      text-shadow: 0 4px 0 #000, 0 10px 18px rgba(0, 0, 0, 0.9);
+    }
+    .title-main span.highlight {
+      background: linear-gradient(110deg, #fee2e2, #fef3c7, #bfdbfe);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .subtitle {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+
+    .next-reward {
+      justify-self: end;
+      padding: 8px 10px;
+      border-radius: 18px;
+      background:
+        radial-gradient(circle at 0 0, rgba(255, 255, 255, 0.15), transparent 55%),
+        linear-gradient(135deg, #020617, #111827);
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      font-size: 12px;
+      color: var(--muted);
       display: flex;
       flex-direction: column;
       gap: 4px;
     }
 
-    .title-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 2px 10px;
-      border-radius: 999px;
-      font-size: 11px;
+    .next-reward span.label {
       text-transform: uppercase;
       letter-spacing: 0.08em;
-      background: linear-gradient(90deg, #ff9b5f, #ff4f9d);
-      color: #130715;
-      font-weight: 700;
-      box-shadow: 0 6px 18px rgba(255, 148, 196, 0.6);
-      border: 1px solid rgba(255, 255, 255, 0.4);
+      font-size: 10px;
     }
-
-    .title-badge span.emoji {
+    .next-reward span.time {
       font-size: 14px;
+      font-weight: 700;
+      color: var(--accent3);
+    }
+    .next-reward span.meta {
+      font-size: 10px;
     }
 
-    h1 {
-      font-size: 22px;
-      line-height: 1.05;
-      margin: 0;
+    /* TAB PANELS */
+
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    .panel {
+      background: radial-gradient(circle at 50% -40%, rgba(255, 255, 255, 0.14), transparent 60%),
+                  linear-gradient(180deg, #020617, #020617 60%, #020617 100%);
+      border-radius: 20px;
+      padding: 10px 12px 12px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: 0 14px 26px rgba(0, 0, 0, 0.9);
+    }
+
+    /* MONTH PROGRESS */
+
+    .month-progress {
+      margin-bottom: 14px;
+    }
+
+    .month-header {
       display: flex;
+      justify-content: space-between;
       align-items: center;
-      gap: 8px;
-    }
-
-    h1 span.highlight {
-      background: linear-gradient(120deg, #ffe27a, #ff9eb3, #8ee7ff);
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-      text-shadow: 0 0 18px rgba(0, 0, 0, 0.55);
-    }
-
-    .subtitle {
       font-size: 12px;
-      color: var(--text-muted);
+      margin-bottom: 4px;
+      color: var(--muted);
     }
 
-    .cta-strip {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      gap: 8px;
-      justify-content: flex-end;
+    .month-header strong {
+      color: var(--text);
+      font-size: 13px;
     }
 
-    .cta-main {
-      border-radius: var(--radius-full);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      padding: 6px 12px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      background: radial-gradient(circle at 0 0, rgba(255, 255, 255, 0.14), transparent 65%),
-        linear-gradient(120deg, rgba(6, 10, 42, 0.9), rgba(36, 44, 90, 0.9));
-      font-size: 12px;
-      color: var(--text-muted);
-      box-shadow: 0 10px 30px rgba(8, 7, 28, 0.9);
-    }
-
-    .cta-main .pill {
-      padding: 4px 9px;
+    .month-bar-wrap {
+      position: relative;
+      height: 34px;
       border-radius: 999px;
+      background: radial-gradient(circle at 0 0, rgba(15,23,42,0.9), transparent 70%),
+                  #020617;
+      border: 1px solid rgba(148, 163, 184, 0.7);
+      overflow: hidden;
+      padding: 9px 10px;
+    }
+
+    .month-bar {
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      overflow: hidden;
+    }
+
+    .month-fill {
+      position: absolute;
+      inset: 0;
+      transform-origin: left;
+      background: linear-gradient(90deg, #34d399, #a3e635, #facc15);
+      filter: drop-shadow(0 0 12px rgba(250, 204, 21, 0.7));
+    }
+
+    .week-markers {
+      position: relative;
+      z-index: 1;
+      height: 100%;
+    }
+
+    .week-marker {
+      position: absolute;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0;
+      font-size: 9px;
+      color: var(--muted);
+    }
+
+    .week-dot {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: #020617;
+      border: 1px solid rgba(148, 163, 184, 0.8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+    }
+
+    .week-marker.complete .week-dot {
+      background: #16a34a;
+      border-color: #bbf7d0;
+      color: #022c22;
+      position: relative;
+    }
+    .week-marker.complete .week-dot::after {
+      content: "✔";
+      font-size: 11px;
+    }
+
+    .week-marker.active .week-dot {
+      background: #fbbf24;
+      color: #1e1307;
+      border-color: #fef3c7;
+      animation: pulseGlow 1.5s infinite ease-in-out;
+    }
+
+    @keyframes pulseGlow {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(250, 204, 21, 0.7); }
+      50% { box-shadow: 0 0 0 6px rgba(250, 204, 21, 0); }
+    }
+
+    .month-footer {
+      margin-top: 4px;
+      font-size: 11px;
+      color: var(--muted);
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .month-footer strong {
+      color: var(--accent4);
+    }
+
+    /* WEEK 1 PANEL */
+
+    .panel-header {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      align-items: flex-start;
+      margin-bottom: 10px;
+    }
+    .panel-title {
+      font-size: 16px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .panel-title span.icon { font-size: 20px; }
+    .panel-sub {
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+    .panel-badge {
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, #fbbf24, #fb7185);
+      color: #1e1307;
       font-size: 11px;
       font-weight: 700;
-      background: linear-gradient(135deg, #ffe27a, #ff9b57);
-      color: #351400;
-      box-shadow: 0 6px 18px rgba(255, 193, 101, 0.7);
+      border: 1px solid rgba(254, 243, 199, 0.9);
       white-space: nowrap;
     }
 
-    .cta-main strong {
-      color: #ffffff;
+    .week-strip {
+      display: grid;
+      grid-template-columns: repeat(7, minmax(0, 1fr));
+      gap: 10px;
+      margin-bottom: 12px;
     }
 
-    .cta-main small {
-      display: block;
-      font-size: 10px;
+    @media (max-width: 880px) {
+      .week-strip {
+        grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
+      }
+    }
+
+    .day-pill {
+      border-radius: 14px;
+      background: linear-gradient(180deg, #111827, #020617);
+      border: 1px solid var(--border);
+      padding: 6px 7px 9px;
+      text-align: center;
+      font-size: 11px;
+      position: relative;
+      cursor: pointer;
+      transition: transform 0.12s ease, box-shadow 0.12s ease, border-color 0.12s ease, opacity 0.12s ease;
+      overflow: hidden;
+    }
+    .day-pill::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 50% -20%, rgba(255,255,255,0.22), transparent 60%);
+      opacity: 0.6;
+      pointer-events: none;
+    }
+
+    .day-pill:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.65);
+    }
+
+    .day-pill .day-label { font-weight: 700; position: relative; z-index: 1; }
+    .day-pill .date-label { font-size: 9px; color: var(--muted); position: relative; z-index: 1; }
+    .day-pill .icon { font-size: 20px; margin-top: 4px; position: relative; z-index: 1; }
+    .day-pill .amount { font-size: 11px; margin-top: 2px; color: var(--gold); position: relative; z-index: 1; }
+    .day-pill .state { margin-top: 2px; font-size: 10px; color: var(--muted); position: relative; z-index: 1; }
+
+    .day-pill.locked {
+      opacity: 0.55;
+      border-style: dashed;
+    }
+    .day-pill.today {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.9), 0 12px 22px rgba(251, 191, 36, 0.9);
+      animation: floatCard 2.6s infinite ease-in-out;
+    }
+    @keyframes floatCard {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-3px); }
+    }
+
+    .day-pill.today .state { color: var(--accent); }
+    .day-pill.past {
+      filter: grayscale(0.1);
       opacity: 0.85;
     }
+    .day-pill.past .state {
+      color: var(--accent4);
+    }
+    .day-pill.active {
+      border-color: var(--accent3);
+      box-shadow: 0 0 0 1px rgba(15, 23, 42, 0.9), 0 10px 24px rgba(56, 189, 248, 0.9);
+    }
 
-    /* Tabs */
+    /* INFO ICON & TOOLTIP */
 
-    .tabs {
-      margin-top: 10px;
+    .day-info-wrap {
+      position: absolute;
+      top: 5px;
+      right: 5px;
+      font-size: 10px;
+      z-index: 3;
+    }
+
+    .info-icon {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: rgba(15, 23, 42, 0.95);
+      border: 1px solid rgba(148, 163, 184, 0.9);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #e5e7eb;
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.7);
+      transition: transform 0.12s ease, box-shadow 0.12s ease;
+    }
+    .info-icon:hover {
+      transform: scale(1.05);
+      box-shadow: 0 6px 14px rgba(0,0,0,0.9);
+    }
+
+    .info-tooltip {
+      position: absolute;
+      right: 0;
+      top: 22px;
+      min-width: 190px;
+      max-width: 230px;
+      padding: 6px 8px;
+      border-radius: 10px;
+      background: rgba(15, 23, 42, 0.98);
+      border: 1px solid rgba(148, 163, 184, 0.8);
+      font-size: 10px;
+      color: #e5e7eb;
+      box-shadow: 0 8px 18px rgba(0, 0, 0, 0.8);
+      z-index: 6;
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(4px);
+      transition: opacity 0.12s ease, transform 0.12s ease;
+    }
+
+    .info-tooltip strong {
+      display: block;
+      margin-bottom: 2px;
+      color: #38bdf8;
+    }
+
+    .info-tooltip ul {
+      padding-left: 14px;
+      margin: 2px 0 0;
+    }
+
+    .info-tooltip li {
+      margin: 1px 0;
+    }
+
+    .day-info-wrap:hover .info-tooltip {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateY(0);
+    }
+    .day-info-wrap.open .info-tooltip {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateY(0);
+    }
+
+    /* SELECTED DAY CARD */
+
+    .selected-card {
+      border-radius: var(--radius-lg);
+      background:
+        radial-gradient(circle at 0 0, rgba(255, 255, 255, 0.18), transparent 60%),
+        linear-gradient(135deg, #0f172a, #020617);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      padding: 10px 10px 10px;
+      display: grid;
+      grid-template-columns: auto minmax(0, 1.3fr) minmax(0, 1.3fr);
+      gap: 10px;
+      align-items: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .selected-card::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 80% 0, rgba(96,165,250,0.3), transparent 60%);
+      opacity: 0.6;
+      pointer-events: none;
+    }
+
+    @media (max-width: 720px) {
+      .selected-card {
+        grid-template-columns: minmax(0, 1fr);
+        text-align: left;
+      }
+    }
+
+    .selected-icon {
+      font-size: 40px;
+      padding: 10px;
+      border-radius: 16px;
+      background: linear-gradient(135deg, #fbbf24, #fb7185);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #1f1307;
+      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.8);
       position: relative;
       z-index: 1;
     }
 
-    .tab-buttons {
-      display: flex;
-      gap: 10px;
-      background: rgba(6, 8, 30, 0.85);
-      padding: 4px;
-      border-radius: var(--radius-full);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      backdrop-filter: blur(20px);
+    .selected-main {
+      position: relative;
+      z-index: 1;
     }
 
-    .tab-button {
-      flex: 1 1 0;
-      border-radius: 999px;
-      padding: 8px 6px;
-      border: 0;
-      cursor: pointer;
-      background: transparent;
-      color: var(--text-muted);
-      font-family: inherit;
-      font-size: 13px;
-      font-weight: 600;
-      display: flex;
+    .selected-main h3 {
+      margin: 0;
+      font-size: 18px;
+    }
+    .selected-main .amount {
+      font-size: 16px;
+      color: var(--gold);
+      margin-top: 2px;
+    }
+    .selected-main .tagline {
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    .selected-meta {
+      font-size: 11px;
+      color: var(--muted);
+      display: grid;
+      gap: 4px;
+      position: relative;
+      z-index: 1;
+    }
+    .selected-meta span strong {
+      color: var(--accent3);
+      font-weight: 700;
+    }
+
+    .btn {
+      display: inline-flex;
       align-items: center;
       justify-content: center;
       gap: 6px;
-      position: relative;
-      overflow: hidden;
-      transition: color 0.18s ease, transform 0.12s ease;
+      padding: 6px 12px;
+      border-radius: 999px;
+      border: 0;
+      font-family: inherit;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+      background: linear-gradient(135deg, #4ef0ff, #818cf8);
+      color: #020617;
+      box-shadow: 0 10px 18px rgba(59, 130, 246, 0.7);
+      margin-top: 4px;
     }
 
-    .tab-button span.icon {
-      font-size: 15px;
+    .btn span.icon {
+      font-size: 14px;
     }
 
-    .tab-button.active {
-      color: #130615;
-      transform: translateY(-0.5px);
+    .btn[disabled] {
+      opacity: 0.4;
+      cursor: default;
+      box-shadow: none;
     }
 
-    .tab-button.active::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      border-radius: inherit;
-      background: radial-gradient(circle at 0 0, rgba(255, 255, 255, 0.35), transparent 60%),
-        linear-gradient(135deg, #ffde7a, #ff8a9a, #7be5ff);
-      box-shadow: 0 12px 28px rgba(8, 0, 46, 0.95);
-      z-index: -1;
-    }
+    /* RANKING PANEL */
 
-    .tab-button:not(.active):hover {
-      color: #ffffff;
-    }
-
-    .tab-body {
-      margin-top: 16px;
-      border-radius: var(--radius-xl);
-      background: radial-gradient(circle at 50% -20%, rgba(255, 255, 255, 0.09), transparent 55%),
-        rgba(9, 10, 40, 0.95);
-      border: 1px solid var(--border-soft);
-      padding: 14px 10px 12px;
-      box-shadow: 0 16px 40px rgba(3, 4, 24, 0.9);
-    }
-
-    .tab-panel {
-      display: none;
-    }
-
-    .tab-panel.active {
-      display: block;
-    }
-
-    /* Daily Rewards Tab */
-
-    .panel-header {
+    .ranking-header {
       display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      gap: 8px 12px;
-      margin-bottom: 10px;
-      padding: 0 2px;
+      justify-content: space-between;
+      gap: 8px;
+      align-items: flex-start;
+      margin-bottom: 8px;
     }
-
-    .panel-header-left {
+    .ranking-title {
+      font-size: 16px;
       display: flex;
       flex-direction: column;
       gap: 2px;
     }
-
-    .panel-title {
-      font-size: 15px;
+    .ranking-title span.topline {
       display: flex;
       align-items: center;
       gap: 6px;
     }
-
-    .panel-title span.fire {
-      font-size: 18px;
-    }
-
-    .panel-subtitle {
+    .ranking-title span.topline .icon { font-size: 20px; }
+    .ranking-title .sub {
       font-size: 11px;
-      color: var(--text-muted);
+      color: var(--muted);
     }
-
-    .tracker-chip {
-      margin-left: auto;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 4px 9px;
+    .ranking-updated {
+      font-size: 10px;
+      color: var(--muted);
+      padding: 3px 8px;
       border-radius: 999px;
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      background: linear-gradient(130deg, rgba(15, 22, 60, 0.95), rgba(33, 51, 104, 0.95));
-      font-size: 11px;
-      color: var(--text-muted);
+      background: #020617;
+      border: 1px solid rgba(148, 163, 184, 0.7);
       white-space: nowrap;
     }
 
-    .tracker-chip strong {
-      color: var(--success);
-      font-size: 12px;
-    }
-
-    .tracker-fill {
-      display: inline-flex;
-      align-items: center;
-      gap: 3px;
-      padding: 1px 6px;
-      border-radius: 999px;
-      background: rgba(2, 6, 23, 0.9);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      font-size: 10px;
-    }
-
-    .tracker-fill-bar {
-      width: 52px;
-      height: 5px;
-      border-radius: 999px;
-      background: rgba(37, 99, 235, 0.4);
-      overflow: hidden;
-      position: relative;
-    }
-
-    .tracker-fill-bar span {
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(90deg, #6ee7b7, #22c55e, #a3e635);
-      transform-origin: left;
-    }
-
-    /* Weekly highlight strip */
-
-    .week-strip {
-      margin: 6px 0 12px;
-      padding: 10px 10px 11px;
-      border-radius: var(--radius-lg);
-      background:
-        radial-gradient(circle at 0% 0%, rgba(255, 255, 255, 0.16), transparent 55%),
-        linear-gradient(135deg, #132046, #1e1346);
-      border: 1px solid rgba(255, 255, 255, 0.14);
-      display: grid;
-      grid-template-columns: repeat(7, minmax(0, 1fr));
-      gap: 6px;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .week-strip::after {
-      content: "This week rewards";
-      position: absolute;
-      top: 6px;
-      left: 12px;
-      font-size: 10px;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      color: rgba(255, 255, 255, 0.5);
-    }
-
-    .reward-day {
-      margin-top: 14px; /* space for label */
-      padding: 6px 4px 4px;
-      border-radius: 14px;
-      background: radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.08), transparent 60%),
-        rgba(7, 12, 47, 0.95);
-      border: 1px solid rgba(255, 255, 255, 0.14);
-      box-shadow: 0 8px 20px rgba(5, 6, 25, 0.9);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 3px;
-      position: relative;
-    }
-
-    .reward-day.locked {
-      border-style: dashed;
-      border-color: rgba(148, 163, 184, 0.5);
-      box-shadow: none;
-      opacity: 0.7;
-      background: rgba(15, 23, 42, 0.9);
-    }
-
-    .reward-day.today {
-      outline: 2px solid rgba(251, 191, 36, 0.85);
-      box-shadow: 0 0 0 1px rgba(15, 23, 42, 0.9), 0 12px 26px rgba(250, 204, 21, 0.55);
-    }
-
-    .reward-day::before {
-      content: attr(data-label);
-      position: absolute;
-      top: -14px;
-      left: 50%;
-      transform: translateX(-50%);
-      font-size: 11px;
-      color: var(--text-muted);
-    }
-
-    .reward-icon {
-      font-size: 20px;
-    }
-
-    .reward-name {
-      font-size: 11px;
-      text-align: center;
-      line-height: 1.1;
-    }
-
-    .reward-amount {
-      font-size: 11px;
-      font-weight: 700;
-      color: var(--accent-3);
-    }
-
-    .reward-day.today .reward-amount {
-      color: var(--accent);
-    }
-
-    .reward-day.locked .reward-amount {
-      color: var(--lock);
-    }
-
-    .lock-tag {
-      font-size: 10px;
-      color: var(--lock);
-    }
-
-    .week-strip-legend {
-      margin: 4px 4px 2px;
-      display: flex;
-      justify-content: flex-end;
-      gap: 10px;
-      font-size: 10px;
-      color: var(--text-muted);
-    }
-
-    .legend-dot {
-      width: 9px;
-      height: 9px;
-      border-radius: 999px;
-      margin-right: 4px;
-    }
-
-    .legend-item {
-      display: inline-flex;
-      align-items: center;
-      gap: 2px;
-    }
-
-    /* Month grid */
-
-    .month-grid-wrapper {
-      margin-top: 10px;
-      background: radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.08), transparent 55%),
-        rgba(5, 8, 32, 0.98);
-      border-radius: 18px;
-      border: 1px solid var(--border-soft);
-      padding: 10px 8px 10px;
-      overflow: hidden;
-    }
-
-    .month-grid-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 8px;
-      margin-bottom: 6px;
-      padding: 0 4px;
-    }
-
-    .month-title {
-      font-size: 13px;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .month-title span {
-      font-size: 18px;
-    }
-
-    .month-nav {
-      display: flex;
-      gap: 6px;
-    }
-
-    .month-nav button {
-      border-radius: 999px;
-      border: 1px solid rgba(148, 163, 184, 0.5);
-      background: rgba(15, 23, 42, 0.9);
-      color: var(--text-muted);
-      padding: 2px 8px;
-      font-size: 11px;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 3px;
-    }
-
-    .month-nav button span {
-      font-size: 13px;
-    }
-
-    .month-grid {
-      display: grid;
-      grid-template-columns: repeat(7, minmax(0, 1fr));
-      gap: 6px;
-    }
-
-    .dow {
-      font-size: 9px;
-      text-transform: uppercase;
-      letter-spacing: 0.12em;
-      text-align: center;
-      color: var(--text-muted);
-    }
-
-    .calendar-day {
-      height: 42px;
-      border-radius: 14px;
-      background: radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.07), transparent 55%),
-        rgba(15, 23, 42, 0.95);
-      border: 1px solid rgba(148, 163, 184, 0.35);
-      font-size: 11px;
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-      justify-content: space-between;
-      padding: 4px 5px 5px;
-      position: relative;
-      overflow: hidden;
-      cursor: default;
-    }
-
-    .calendar-day span.date {
-      font-weight: 600;
-    }
-
-    .calendar-day span.status {
-      font-size: 9px;
-      color: var(--text-muted);
-    }
-
-    .calendar-day.locked {
-      border-style: dashed;
-      border-color: rgba(148, 163, 184, 0.5);
-      background: rgba(15, 23, 42, 0.7);
-      opacity: 0.75;
-    }
-
-    .calendar-day.locked span.status {
-      color: var(--lock);
-    }
-
-    .calendar-day.claimed {
-      border-color: rgba(74, 222, 128, 0.7);
-      box-shadow: 0 8px 18px rgba(34, 197, 94, 0.4);
-    }
-
-    .calendar-day.claimed span.status {
-      color: var(--success);
-    }
-
-    .calendar-day.today {
-      border-color: rgba(250, 204, 21, 0.9);
-      box-shadow: 0 10px 22px rgba(245, 158, 11, 0.55);
-    }
-
-    .calendar-day.today::after {
-      content: "Today";
-      position: absolute;
-      bottom: 4px;
-      right: 6px;
-      font-size: 8px;
-      padding: 2px 6px;
-      border-radius: 999px;
-      background: linear-gradient(135deg, #facc15, #fb923c);
-      color: #1f130a;
-      font-weight: 700;
-    }
-
-    .calendar-day span.icon {
-      position: absolute;
-      bottom: 3px;
-      left: 4px;
-      font-size: 13px;
-      opacity: 0.8;
-    }
-
-    .calendar-footnote {
-      margin-top: 7px;
-      font-size: 10px;
-      color: var(--text-muted);
-      text-align: right;
-    }
-
-    /* Ranking Tab */
-
     .ranking-layout {
       display: grid;
-      grid-template-columns: minmax(0, 1.1fr) minmax(0, 1.2fr);
-      gap: 14px;
+      grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+      gap: 8px;
+      align-items: start;
     }
-
-    @media (max-width: 840px) {
+    @media (max-width: 900px) {
       .ranking-layout {
         grid-template-columns: minmax(0, 1fr);
       }
     }
 
-    .podium-card {
-      background: linear-gradient(145deg, rgba(15, 23, 42, 0.9), rgba(30, 64, 175, 0.92));
-      border-radius: var(--radius-lg);
-      border: 1px solid rgba(191, 219, 254, 0.4);
-      padding: 10px 10px 12px;
-      box-shadow: 0 14px 30px rgba(15, 23, 42, 0.96);
-      position: relative;
-      overflow: hidden;
+    .podium-panel {
+      border-radius: var(--radius-md);
+      background: radial-gradient(circle at 50% 0, rgba(255, 255, 255, 0.22), transparent 60%),
+                  linear-gradient(135deg, #020617, #020617);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      padding: 8px 8px 10px;
     }
-
     .podium-header {
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 6px;
       display: flex;
-      align-items: center;
       justify-content: space-between;
-      gap: 8px;
-      margin-bottom: 10px;
-    }
-
-    .podium-header-title {
-      font-size: 14px;
-      display: flex;
-      align-items: center;
       gap: 6px;
     }
-
-    .podium-header-title span.trophy {
-      font-size: 18px;
-    }
-
-    .podium-header small {
-      font-size: 10px;
-      color: var(--text-muted);
-    }
+    .podium-header strong { color: var(--text); }
 
     .podium-grid {
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 8px;
-      margin-bottom: 6px;
     }
 
     .podium-item {
-      border-radius: 18px;
+      border-radius: 16px;
+      background: linear-gradient(180deg, #111827, #020617);
+      border: 1px solid rgba(148, 163, 184, 0.7);
       padding: 8px 6px 10px;
-      background:
-        radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.18), transparent 60%),
-        linear-gradient(155deg, rgba(24, 37, 91, 0.96), rgba(17, 24, 39, 0.98));
-      border: 1px solid rgba(255, 255, 255, 0.18);
       text-align: center;
       position: relative;
-      box-shadow: 0 12px 26px rgba(15, 23, 42, 0.95);
     }
-
     .podium-item.rank-1 {
-      transform: translateY(-6px);
-      background:
-        radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.25), transparent 60%),
-        linear-gradient(150deg, #fde68a, #f97316);
-      color: #241200;
+      background: linear-gradient(180deg, #fbbf24, #fb7185);
+      color: #1e1307;
+      transform: translateY(-4px);
+      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.9);
     }
 
-    .podium-rank-badge {
+    .podium-rank {
       position: absolute;
       top: 4px;
       left: 50%;
@@ -695,615 +692,762 @@
       border-radius: 999px;
       padding: 2px 8px;
       font-size: 10px;
-      font-weight: 700;
-      background: rgba(15, 23, 42, 0.85);
-      color: #f9fafb;
-      border: 1px solid rgba(148, 163, 184, 0.6);
+      background: rgba(0, 0, 0, 0.7);
+      color: #fef9c3;
+      border: 1px solid rgba(255, 255, 255, 0.8);
     }
 
-    .podium-item.rank-1 .podium-rank-badge {
-      background: rgba(15, 23, 42, 0.96);
-      color: #facc15;
-      border-color: rgba(250, 204, 21, 0.9);
-    }
-
-    .avatar-circle {
-      margin-top: 14px;
-      width: 42px;
-      height: 42px;
-      border-radius: 999px;
-      margin-inline: auto;
+    .podium-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      margin: 14px auto 4px;
       display: flex;
       align-items: center;
       justify-content: center;
-      background: radial-gradient(circle, rgba(255, 255, 255, 0.25), transparent 60%);
-      border: 2px solid rgba(255, 255, 255, 0.7);
-      font-size: 20px;
-    }
-
-    .podium-item.rank-1 .avatar-circle {
-      border-color: rgba(248, 250, 252, 0.95);
-      box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.8), 0 10px 20px rgba(180, 83, 9, 0.75);
+      border: 2px solid rgba(255, 255, 255, 0.9);
+      background: radial-gradient(circle, rgba(255, 255, 255, 0.3), transparent 60%);
+      font-size: 16px;
     }
 
     .podium-name {
       font-size: 12px;
       font-weight: 700;
-      margin-top: 4px;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
     }
-
     .podium-turnover {
       font-size: 11px;
       margin-top: 2px;
-      opacity: 0.9;
     }
 
-    .podium-turnover span {
-      font-weight: 700;
-    }
-
-    .podium-footer {
-      margin-top: 4px;
-      display: flex;
-      justify-content: center;
-      font-size: 10px;
-      color: var(--text-muted);
-      gap: 4px;
-    }
-
-    .podium-footer span {
-      display: inline-flex;
-      align-items: center;
-      gap: 2px;
-    }
-
-    .search-card {
-      background: radial-gradient(circle at 50% 0%, rgba(148, 163, 253, 0.18), transparent 55%),
-        rgba(15, 23, 42, 0.96);
-      border-radius: var(--radius-lg);
-      padding: 8px 10px 10px;
-      border: 1px solid rgba(129, 140, 248, 0.6);
-      box-shadow: 0 12px 30px rgba(8, 7, 29, 0.9);
-    }
-
-    .search-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 8px;
-      margin-bottom: 8px;
-    }
-
-    .search-header-title {
-      font-size: 13px;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .search-header-title span {
-      font-size: 16px;
-    }
-
-    .search-header small {
-      font-size: 10px;
-      color: var(--text-muted);
+    .table-panel {
+      border-radius: var(--radius-md);
+      background: var(--card);
+      border: 1px solid var(--border);
+      padding: 8px 8px 10px;
     }
 
     .search-row {
       display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 4px;
     }
-
     .search-row input {
-      flex: 1 1 0;
+      flex: 1;
       border-radius: 999px;
-      border: 1px solid rgba(191, 219, 254, 0.75);
-      background: rgba(15, 23, 42, 0.95);
-      padding: 6px 10px;
-      color: var(--text-main);
+      border: 1px solid rgba(191, 219, 254, 0.9);
+      background: #020617;
+      color: var(--text);
       font-family: inherit;
-      font-size: 12px;
+      font-size: 11px;
+      padding: 6px 10px;
       outline: none;
     }
-
-    .search-row input::placeholder {
-      color: rgba(148, 163, 184, 0.8);
-    }
+    .search-row input::placeholder { color: var(--muted); }
 
     .search-row button {
       border-radius: 999px;
       border: 0;
       padding: 6px 10px;
-      background: linear-gradient(135deg, #4ade80, #22c55e);
-      color: #022c22;
-      font-size: 12px;
+      font-size: 11px;
       font-weight: 700;
+      background: linear-gradient(135deg, #34d399, #4ade80);
+      color: #022c22;
       cursor: pointer;
-      box-shadow: 0 10px 20px rgba(34, 197, 94, 0.6);
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
+      box-shadow: 0 10px 18px rgba(34, 197, 94, 0.75);
       white-space: nowrap;
     }
 
-    .search-row button span {
-      font-size: 14px;
-    }
-
     .search-result {
-      margin-top: 6px;
-      font-size: 11px;
-      color: var(--text-muted);
+      font-size: 10px;
+      color: var(--muted);
       min-height: 14px;
     }
+    .search-result strong { color: var(--accent3); }
 
-    .search-result strong {
-      color: var(--accent-3);
-    }
-
-    /* Ranking table */
-
-    .ranking-card {
-      background: radial-gradient(circle at 10% 0%, rgba(248, 250, 252, 0.16), transparent 55%),
-        rgba(15, 23, 42, 0.96);
-      border-radius: var(--radius-lg);
-      border: 1px solid rgba(148, 163, 184, 0.55);
-      padding: 8px 8px 10px;
-      box-shadow: 0 14px 32px rgba(9, 9, 24, 0.96);
-      overflow: hidden;
-    }
-
-    .ranking-header {
+    .list-header {
       display: flex;
-      align-items: center;
       justify-content: space-between;
-      gap: 8px;
-      margin-bottom: 6px;
-    }
-
-    .ranking-header-title {
-      font-size: 13px;
-      display: flex;
       align-items: center;
-      gap: 6px;
+      font-size: 11px;
+      color: var(--muted);
+      margin: 4px 0;
     }
 
-    .ranking-header-title span {
-      font-size: 16px;
-    }
-
-    .ranking-header small {
-      font-size: 10px;
-      color: var(--text-muted);
-    }
-
-    .ranking-table-wrapper {
-      max-height: 260px;
+    .ranking-list {
+      max-height: 230px;
       overflow-y: auto;
-      margin-top: 4px;
-      padding-right: 4px;
+      border-radius: 14px;
     }
 
     .ranking-row {
       display: grid;
-      grid-template-columns: 32px minmax(0, 1fr) minmax(0, 80px);
-      align-items: center;
+      grid-template-columns: 30px minmax(0, 1fr) minmax(0, 70px);
       gap: 6px;
-      padding: 6px 6px;
-      border-radius: 12px;
-      font-size: 11px;
-      position: relative;
+      align-items: center;
+      padding: 5px 6px;
+      font-size: 10px;
+      background: #020617;
     }
-
-    .ranking-row:nth-child(odd) {
-      background: rgba(15, 23, 42, 0.65);
-    }
-
-    .ranking-row:nth-child(even) {
-      background: rgba(15, 23, 42, 0.45);
-    }
+    .ranking-row:nth-child(even) { background: #040716; }
 
     .ranking-row.highlight {
-      border: 1px solid rgba(56, 189, 248, 0.9);
-      box-shadow: 0 0 0 1px rgba(15, 23, 42, 0.9), 0 10px 24px rgba(56, 189, 248, 0.6);
+      border: 1px solid var(--accent3);
+      box-shadow: 0 0 0 1px rgba(15, 23, 42, 0.9), 0 10px 24px rgba(56, 189, 248, 0.9);
+      position: relative;
+      z-index: 1;
     }
 
-    .ranking-rank-badge {
+    .rank-badge {
       width: 24px;
       height: 24px;
-      border-radius: 999px;
+      border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      border: 1px solid rgba(148, 163, 184, 0.75);
-      background: rgba(15, 23, 42, 0.9);
-      font-size: 11px;
+      border: 1px solid rgba(148, 163, 184, 0.8);
+      background: radial-gradient(circle, rgba(255, 255, 255, 0.18), transparent 60%);
     }
 
-    .ranking-name-block {
+    .rank-main {
       display: flex;
       align-items: center;
       gap: 6px;
       overflow: hidden;
     }
-
-    .ranking-avatar {
+    .rank-avatar {
       width: 22px;
       height: 22px;
-      border-radius: 999px;
-      border: 1px solid rgba(148, 163, 184, 0.65);
+      border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 12px;
-      background: radial-gradient(circle, rgba(248, 250, 252, 0.9), transparent 65%);
+      border: 1px solid rgba(148, 163, 184, 0.9);
+      background: radial-gradient(circle, rgba(255, 255, 255, 0.23), transparent 60%);
+      font-size: 11px;
     }
-
-    .ranking-name {
-      font-weight: 600;
+    .rank-name {
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-    }
-
-    .ranking-turnover {
       font-weight: 600;
-      text-align: right;
     }
-
-    .ranking-turnover span.label {
+    .rank-turnover {
+      text-align: right;
+      font-weight: 600;
+    }
+    .rank-turnover span.label {
       display: block;
-      font-size: 9px;
-      color: var(--text-muted);
+      font-size: 8px;
+      color: var(--muted);
       font-weight: 400;
     }
 
-    .ranking-footnote {
-      margin-top: 6px;
-      font-size: 10px;
-      color: var(--text-muted);
-      text-align: right;
-    }
+    /* BOTTOM NAV */
 
-    /* Footer */
-
-    .page-footer {
-      margin-top: 12px;
-      padding: 6px 4px 0;
-      font-size: 10px;
-      color: var(--text-muted);
+    .bottom-nav {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: var(--nav-height);
       display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      justify-content: space-between;
+      justify-content: center;
+      z-index: 20;
+      pointer-events: none;
+    }
+    .bottom-nav-inner {
+      pointer-events: auto;
+      width: 100%;
+      max-width: 1200px;
+      padding: 8px 12px 0;
+    }
+
+    .bottom-nav-bar {
+      background: rgba(3, 7, 18, 0.98);
+      border-radius: 18px 18px 0 0;
+      display: flex;
+      justify-content: space-around;
       align-items: center;
+      padding: 6px 8px 8px;
+      border: 1px solid rgba(31, 41, 55, 0.9);
+      box-shadow: 0 -6px 22px rgba(0, 0, 0, 0.9);
     }
 
-    .page-footer span.highlight {
-      color: var(--accent-3);
+    .nav-btn {
+      flex: 1;
+      border: 0;
+      background: transparent;
+      color: #9ca3af;
+      font-family: inherit;
+      font-size: 11px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+      cursor: pointer;
+      transition: color 0.12s ease, transform 0.12s ease;
     }
 
-    .page-footer strong {
+    .nav-btn span.icon {
+      font-size: 18px;
+      transition: transform 0.12s ease;
+    }
+
+    .nav-btn.active {
+      color: #f9fafb;
+      transform: translateY(-1px);
+    }
+    .nav-btn.active span.icon {
       color: var(--accent);
+      transform: scale(1.15);
     }
 
-    /* Scroll styling */
+    /* TOAST */
+
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: calc(var(--nav-height) + 16px);
+      transform: translateX(-50%) translateY(10px);
+      background: radial-gradient(circle at 0 0, rgba(255,255,255,0.15), transparent 55%),
+                  linear-gradient(135deg, #22c55e, #16a34a);
+      color: #022c22;
+      padding: 8px 14px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 700;
+      box-shadow: 0 10px 22px rgba(0,0,0,0.7);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.15s ease, transform 0.15s ease;
+      z-index: 30;
+    }
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    /* SCROLLBARS */
 
     ::-webkit-scrollbar {
       width: 6px;
       height: 6px;
     }
-
     ::-webkit-scrollbar-track {
-      background: rgba(15, 23, 42, 0.9);
+      background: #020617;
     }
-
     ::-webkit-scrollbar-thumb {
-      background: rgba(75, 85, 99, 0.9);
+      background: #4b5563;
       border-radius: 999px;
     }
-
     ::-webkit-scrollbar-thumb:hover {
-      background: rgba(148, 163, 184, 1);
+      background: #9ca3af;
     }
 
-    /* Responsiveness */
-
     @media (max-width: 640px) {
-      .page-shell {
-        padding: 14px 10px 18px;
+      .page {
+        padding: 16px 12px 18px;
         border-radius: 20px;
-      }
-
-      header {
-        align-items: flex-start;
-      }
-
-      h1 {
-        font-size: 19px;
-      }
-
-      .tab-body {
-        padding: 12px 8px 10px;
-      }
-
-      .week-strip {
-        padding-inline: 6px;
-      }
-
-      .ranking-layout {
-        gap: 10px;
-      }
-
-      .ranking-table-wrapper {
-        max-height: 220px;
       }
     }
   </style>
 </head>
 <body>
-  <div class="page-shell">
-    <header>
-      <div class="title-block">
-        <div class="title-badge">
-          <span class="emoji">🎄</span>
-          <span>December Daily Check-In</span>
-        </div>
-        <h1>
-          Claim your
-          <span class="highlight">31-Day Holiday Rewards</span>
-        </h1>
-        <div class="subtitle">
-          Log in every day on GitHub this December, unlock rewards, and race to the top of the
-          turnover leaderboard.
-        </div>
-      </div>
-
-      <div class="cta-strip">
-        <div class="cta-main">
-          <div class="pill">Live event · Dec 1 – Dec 31</div>
-          <div>
-            <strong>Don’t break your streak!</strong>
-            <small>Missed a day? Your calendar locks automatically.</small>
+  <div class="page">
+    <div class="inner">
+      <!-- HEADER -->
+      <header class="header">
+        <div class="title-block">
+          <div class="badge">
+            <span>🎄</span>
+            <span>December Check-in</span>
+          </div>
+          <div class="title-main">
+            Holiday <span class="highlight">Reward Calendar</span>
+          </div>
+          <div class="subtitle">
+            Log in every day this December, grab your daily drop, and climb the turnover leaderboard.
           </div>
         </div>
-      </div>
-    </header>
 
-    <main class="tabs">
-      <div class="tab-buttons">
-        <button class="tab-button active" data-tab="rewards">
-          <span class="icon">📅</span>
-          <span>Daily Check-In Rewards</span>
-        </button>
-        <button class="tab-button" data-tab="ranking">
-          <span class="icon">🏆</span>
-          <span>Daily Turnover Ranking</span>
-        </button>
-      </div>
+        <div class="next-reward">
+          <span class="label">Next reward in</span>
+          <span class="time" id="nextRewardTime">--:--:--</span>
+          <span class="meta">New reward unlocks at 00:00 (server time).</span>
+        </div>
+      </header>
 
-      <!-- TAB 1: DAILY REWARDS -->
-      <section id="tab-rewards" class="tab-body tab-panel active">
-        <div class="panel-header">
-          <div class="panel-header-left">
-            <div class="panel-title">
-              <span class="fire">🔥</span>
-              <span>Stay active & unlock the full December chest</span>
+      <!-- TAB: REWARDS -->
+      <section id="tab-rewards" class="tab-panel active">
+        <section class="panel">
+          <!-- Month progress -->
+          <div class="month-progress">
+            <div class="month-header">
+              <strong>December Progress</strong>
+              <span id="monthSummary">Day 0 / 31</span>
             </div>
-            <div class="panel-subtitle">
-              Check in every day to keep your streak. First 7 days show your upcoming rewards, the rest
-              are locked until you progress.
-            </div>
-          </div>
-          <div class="tracker-chip" id="streakChip">
-            <span>Streak</span>
-            <div class="tracker-fill">
-              <div class="tracker-fill-bar">
-                <span id="streakBar"></span>
+            <div class="month-bar-wrap">
+              <div class="month-bar">
+                <div class="month-fill" id="monthFill"></div>
               </div>
-              <strong id="streakText">0 / 31</strong>
+              <div class="week-markers" id="weekMarkers"></div>
+            </div>
+            <div class="month-footer">
+              <span>Weeks <strong>1–5</strong> cover all December rewards.</span>
+              <span>Complete a full week to light up a <strong>✅ week badge</strong>.</span>
             </div>
           </div>
-        </div>
 
-        <!-- WEEK STRIP -->
-        <div class="week-strip" id="weekStrip">
-          <!-- JS will inject the 7 current week days here -->
-        </div>
-        <div class="week-strip-legend">
-          <div class="legend-item">
-            <span class="legend-dot" style="background: var(--accent);"></span>
-            <span>Today</span>
-          </div>
-          <div class="legend-item">
-            <span class="legend-dot" style="background: var(--accent-3);"></span>
-            <span>Unlocked</span>
-          </div>
-          <div class="legend-item">
-            <span class="legend-dot" style="background: var(--lock);"></span>
-            <span>Locked</span>
-          </div>
-        </div>
-
-        <!-- MONTH GRID -->
-        <div class="month-grid-wrapper">
-          <div class="month-grid-header">
-            <div class="month-title">
-              <span>📆</span>
-              <div>
-                December Calendar
-                <div style="font-size:10px;color:var(--text-muted);">
-                  31 days · Rewards will unlock day by day
-                </div>
+          <!-- Week 1 rewards -->
+          <div class="panel-header">
+            <div>
+              <div class="panel-title">
+                <span class="icon">🎁</span>
+                <span>Week 1 Rewards (Dec 1 – 7)</span>
+              </div>
+              <div class="panel-sub">
+                Past days stay grey but visible, today’s drop is active, upcoming days remain locked.
               </div>
             </div>
-            <div class="month-nav">
-              <button type="button" id="jumpTodayBtn">
-                <span>🎯</span> Today
-              </button>
-              <button type="button" id="scrollToEndBtn">
-                <span>🎁</span> Final chest
-              </button>
-            </div>
+            <div class="panel-badge">Tap a day for details & code</div>
           </div>
 
-          <div class="month-grid" id="monthGrid">
-            <!-- JS will render day names + 31 days -->
-          </div>
+          <div class="week-strip" id="weekStrip"></div>
 
-          <div class="calendar-footnote">
-            Rewards and statuses update live based on your latest GitHub check-in.
-          </div>
-        </div>
+          <div class="selected-card" id="selectedCard"></div>
+        </section>
       </section>
 
-      <!-- TAB 2: RANKING -->
-      <section id="tab-ranking" class="tab-body tab-panel">
-        <div class="panel-header">
-          <div class="panel-header-left">
-            <div class="panel-title">
-              <span class="fire">🏁</span>
-              <span>Daily Turnover Ranking</span>
+      <!-- TAB: RANKING -->
+      <section id="tab-ranking" class="tab-panel">
+        <section class="panel">
+          <header class="ranking-header">
+            <div class="ranking-title">
+              <span class="topline">
+                <span class="icon">🏁</span>
+                <span>Daily Turnover Ranking</span>
+              </span>
+              <span class="sub">
+                Top 3 get the podium spotlight. Top 20 are shown here (live data via Google Sheet).
+              </span>
             </div>
-            <div class="panel-subtitle">
-              Top 3 players get the front-row spotlight. Full list updates automatically from our
-              Google Sheet every day.
-            </div>
-          </div>
-          <div class="tracker-chip">
-            <span>Updated</span>
-            <strong id="rankUpdated">–</strong>
-          </div>
-        </div>
+            <div class="ranking-updated" id="updatedAt">Updated –</div>
+          </header>
 
-        <div class="ranking-layout">
-          <!-- Left side: podium + search -->
-          <div class="left-column">
-            <div class="podium-card">
+          <div class="ranking-layout">
+            <!-- Podium -->
+            <div class="podium-panel">
               <div class="podium-header">
-                <div class="podium-header-title">
-                  <span class="trophy">🏆</span>
-                  <span>Top 3 of the day</span>
-                </div>
-                <small>Based on today’s turnover</small>
+                <strong>Today’s Champions</strong>
+                <span>Extra bonus for #1–3</span>
               </div>
-              <div class="podium-grid" id="podiumGrid">
-                <!-- JS: top 3 players -->
-              </div>
-              <div class="podium-footer">
-                <span>✨ Rewards boost for <strong>Top 3</strong> every day</span>
-              </div>
+              <div class="podium-grid" id="podiumGrid"></div>
             </div>
 
-            <div class="search-card">
-              <div class="search-header">
-                <div class="search-header-title">
-                  <span>🔎</span>
-                  <span>Find your username</span>
-                </div>
-                <small>
-                  Not in top 20? We’ll still show your latest rank when data syncs.
-                </small>
-              </div>
-
+            <!-- Search & list -->
+            <div class="table-panel">
               <div class="search-row">
-                <input
-                  type="text"
-                  id="searchInput"
-                  placeholder="Type your GitHub username…"
-                />
-                <button type="button" id="searchBtn">
-                  <span>🚀</span>
-                  Check Rank
-                </button>
+                <input id="searchInput" placeholder="Search your GitHub / in-game username…" />
+                <button id="searchBtn">Find</button>
               </div>
               <div class="search-result" id="searchResult"></div>
+
+              <div class="list-header">
+                <span>Top 20 Turnover</span>
+                <span>Full list in Google Sheet</span>
+              </div>
+
+              <div class="ranking-list" id="rankingList"></div>
             </div>
           </div>
-
-          <!-- Right side: top 20 table -->
-          <div class="right-column">
-            <div class="ranking-card">
-              <div class="ranking-header">
-                <div class="ranking-header-title">
-                  <span>📊</span>
-                  <span>Top 20 Turnover</span>
-                </div>
-                <small>Refreshed daily from Google Sheet</small>
-              </div>
-
-              <div class="ranking-table-wrapper" id="rankingTable">
-                <!-- JS: ranking rows go here -->
-              </div>
-
-              <div class="ranking-footnote">
-                Full detailed ranking (21+) will still be available in the linked Google Sheet.
-              </div>
-            </div>
-          </div>
-        </div>
+        </section>
       </section>
-    </main>
-
-    <footer class="page-footer">
-      <div>
-        <span class="highlight">Tip:</span> Bookmark this page on GitHub Pages and check in from
-        your phone or desktop every day.
-      </div>
-      <div>
-        Total December days:
-        <strong>31</strong> · Last updated:
-        <span id="footerUpdated">–</span>
-      </div>
-    </footer>
+    </div>
   </div>
 
+  <!-- Bottom app nav -->
+  <nav class="bottom-nav">
+    <div class="bottom-nav-inner">
+      <div class="bottom-nav-bar">
+        <button class="nav-btn active" data-tab-target="rewards">
+          <span class="icon">📅</span>
+          <span>Rewards</span>
+        </button>
+        <button class="nav-btn" data-tab-target="ranking">
+          <span class="icon">🏆</span>
+          <span>Ranking</span>
+        </button>
+        <button class="nav-btn" data-tab-target="info">
+          <span class="icon">📜</span>
+          <span>T&amp;C</span>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <div id="toast" class="toast">Voucher code copied!</div>
+
   <script>
-    // -----------------------
-    // Utilities & data setup
-    // -----------------------
-
+    // ---------------------------
+    // DATE / DECEMBER CONTEXT
+    // ---------------------------
     const today = new Date();
-    const eventYear = today.getFullYear();
-    const eventMonthIndex = 11; // December (0-based)
-    const daysInMonth = 31;
+    const currentYear = today.getFullYear();
+    const DECEMBER_MONTH = 11; // 0-based index: 11 = December
+    const isDecemberNow = today.getMonth() === DECEMBER_MONTH;
 
-    // For demo: treat today's date as "current progress".
-    // If not December, we still simulate but clamp to end of month.
-    const isActualDecember = today.getMonth() === eventMonthIndex;
-    const eventToday = isActualDecember ? today.getDate() : Math.min(today.getDate(), 31);
-    const claimedDaysCount = Math.max(1, eventToday); // you can adapt this to real streak data
+    // For live version, keep this; for testing, change demoDay:
+    const demoDay = 3; // e.g. pretend it's Dec 3
+    const decDayToday = isDecemberNow ? today.getDate() : demoDay;
+    const todayInDecember = Math.min(Math.max(decDayToday, 1), 31);
 
-    // Example reward definitions for each day
-    const rewardIcons = ["💰", "💎", "⚡", "🎁", "⭐", "🧪", "🎟️", "📦"];
-    const rewardLabels = [
-      "Coins",
-      "Gems",
-      "Energy",
-      "Loot Box",
-      "Star Shards",
-      "Boost Potion",
-      "Spin Ticket",
-      "Mystery Pack"
+    // ---------------------------
+    // COUNTDOWN TO NEXT DAY
+    // ---------------------------
+    const nextRewardTimeEl = document.getElementById("nextRewardTime");
+
+    function updateCountdown() {
+      const now = new Date();
+      const next = new Date();
+      next.setHours(24, 0, 0, 0); // midnight
+      const diff = next - now;
+      if (diff <= 0) {
+        nextRewardTimeEl.textContent = "00:00:00";
+        return;
+      }
+      const h = String(Math.floor(diff / (1000 * 60 * 60))).padStart(2, "0");
+      const m = String(Math.floor((diff / (1000 * 60)) % 60)).padStart(2, "0");
+      const s = String(Math.floor((diff / 1000) % 60)).padStart(2, "0");
+      nextRewardTimeEl.textContent = `${h}:${m}:${s}`;
+    }
+    updateCountdown();
+    setInterval(updateCountdown, 1000);
+
+    // ---------------------------
+    // DECEMBER MONTH PROGRESS
+    // ---------------------------
+    const totalDaysDecember = 31;
+    const monthFill = document.getElementById("monthFill");
+    const monthSummary = document.getElementById("monthSummary");
+    const weekMarkersContainer = document.getElementById("weekMarkers");
+
+    const monthProgress = todayInDecember / totalDaysDecember;
+    monthFill.style.transform = `scaleX(${monthProgress})`;
+    monthSummary.textContent = `Day ${todayInDecember} / ${totalDaysDecember}`;
+
+    const weeks = [
+      { label: "W1", start: 1, end: 7 },
+      { label: "W2", start: 8, end: 14 },
+      { label: "W3", start: 15, end: 21 },
+      { label: "W4", start: 22, end: 28 },
+      { label: "W5", start: 29, end: 31 }
     ];
 
-    const rewardsByDay = Array.from({ length: daysInMonth }, (_, i) => {
-      const day = i + 1;
-      return {
-        day,
-        icon: rewardIcons[i % rewardIcons.length],
-        label: rewardLabels[i % rewardLabels.length],
-        // simple increasing numbers for demo
-        amount: `${(day * 10).toLocaleString()}`
-      };
+    weeks.forEach((week, index) => {
+      const mid = (week.start + week.end) / 2;
+      const pos = (mid / totalDaysDecember) * 100;
+      const status =
+        todayInDecember >= week.end
+          ? "complete"
+          : todayInDecember >= week.start
+          ? "active"
+          : "upcoming";
+
+      const marker = document.createElement("div");
+      marker.className = "week-marker " + status;
+      marker.style.left = pos + "%";
+      marker.innerHTML = `
+        <div class="week-dot">${index + 1}</div>
+        <div>${week.label}</div>
+      `;
+      weekMarkersContainer.appendChild(marker);
     });
 
-    // Example ranking data
+    // ---------------------------
+    // WEEK 1 REWARDS (DEC 1–7)
+    // ---------------------------
+    const weekStrip = document.getElementById("weekStrip");
+    const selectedCard = document.getElementById("selectedCard");
+    const weekdayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+    const decYear = currentYear;
+
+    // Demo voucher codes for every December day
+    const voucherCodes = {};
+    for (let d = 1; d <= 31; d++) {
+      voucherCodes[d] = `DEC${String(d).padStart(2, "0")}-VOUCHER`;
+    }
+
+    const weekRewards = [
+      {
+        day: 1,
+        icon: "💰",
+        name: "Starter Coins",
+        amount: "350M",
+        tagline: "Kick off your holiday streak.",
+        infoHtml: `
+          <strong>Daily Drop – Coin Pack</strong>
+          <ul>
+            <li>Up to <b>350M</b> bonus coins</li>
+            <li>VIP 01–03: 50M coins</li>
+            <li>VIP 04–05: 150M coins</li>
+            <li>VIP 06+: 350M coins</li>
+          </ul>`
+      },
+      {
+        day: 2,
+        icon: "⚡",
+        name: "Energy Burst",
+        amount: "80x",
+        tagline: "Extra raids for the day.",
+        infoHtml: `
+          <strong>Daily Drop – Free Spins</strong>
+          <ul>
+            <li>Up to <b>100 Free Spins</b></li>
+            <li>VIP 01–03: 20 Free Spins</li>
+            <li>VIP 04–05: 50 Free Spins</li>
+            <li>VIP 06+: 100 Free Spins</li>
+          </ul>`
+      },
+      {
+        day: 3,
+        icon: "🎁",
+        name: "Loot Crate",
+        amount: "Epic",
+        tagline: "Random high-value goodies.",
+        infoHtml: `
+          <strong>Daily Drop – Epic Loot Crate</strong>
+          <ul>
+            <li>Up to <b>3x Epic items</b></li>
+            <li>VIP 01–03: 1x Epic item</li>
+            <li>VIP 04–05: 2x Epic items</li>
+            <li>VIP 06+: 3x Epic items + bonus coins</li>
+          </ul>`
+      },
+      {
+        day: 4,
+        icon: "🧪",
+        name: "Boost Potion",
+        amount: "2x",
+        tagline: "Double turnover for 1 run.",
+        infoHtml: `
+          <strong>Daily Drop – Turnover Boost</strong>
+          <ul>
+            <li>Up to <b>2x turnover</b> for 2 hours</li>
+            <li>VIP 01–03: 2x for 30 minutes</li>
+            <li>VIP 04–05: 2x for 1 hour</li>
+            <li>VIP 06+: 2x for 2 hours</li>
+          </ul>`
+      },
+      {
+        day: 5,
+        icon: "💎",
+        name: "Gem Drop",
+        amount: "120",
+        tagline: "Save up for premium perks.",
+        infoHtml: `
+          <strong>Daily Drop – Gem Pack</strong>
+          <ul>
+            <li>Up to <b>120 Gems</b></li>
+            <li>VIP 01–03: 30 Gems</li>
+            <li>VIP 04–05: 60 Gems</li>
+            <li>VIP 06+: 120 Gems</li>
+          </ul>`
+      },
+      {
+        day: 6,
+        icon: "🎟️",
+        name: "Bonus Tickets",
+        amount: "3x",
+        tagline: "Extra spins or entries.",
+        infoHtml: `
+          <strong>Daily Drop – Bonus Tickets</strong>
+          <ul>
+            <li>Up to <b>3x bonus tickets</b></li>
+            <li>VIP 01–03: 1 ticket</li>
+            <li>VIP 04–05: 2 tickets</li>
+            <li>VIP 06+: 3 tickets</li>
+          </ul>`
+      },
+      {
+        day: 7,
+        icon: "👑",
+        name: "Week 1 Grand Chest",
+        amount: "1.7B + extras",
+        tagline: "Coins, energy, XP & mystery bonus if you checked in all 7 days.",
+        infoHtml: `
+          <strong>Week 1 Grand Chest</strong>
+          <ul>
+            <li>Unlocked after <b>7/7 check-ins</b></li>
+            <li>VIP 01–03: 800M coins + 20 Free Spins</li>
+            <li>VIP 04–05: 1.2B coins + 50 Free Spins</li>
+            <li>VIP 06+: 1.7B coins + 100 Free Spins + mystery drop</li>
+          </ul>`
+      }
+    ];
+
+    let selectedDay = Math.min(Math.max(todayInDecember, 1), 7);
+
+    function renderWeekStrip() {
+      weekStrip.innerHTML = "";
+
+      weekRewards.forEach((reward) => {
+        const calendarDate = new Date(decYear, DECEMBER_MONTH, reward.day);
+        const dow = weekdayNames[calendarDate.getDay()];
+        const isToday = reward.day === todayInDecember;
+        const isPast = reward.day < todayInDecember;
+        const isFuture = reward.day > todayInDecember;
+        const isLocked = isFuture;
+
+        const pill = document.createElement("button");
+        pill.type = "button";
+        pill.className = "day-pill";
+        if (isToday) pill.classList.add("today");
+        if (isPast) pill.classList.add("past");
+        if (isLocked) pill.classList.add("locked");
+        if (reward.day === selectedDay) pill.classList.add("active");
+
+        let stateText = "Locked 🔒";
+        if (isPast) stateText = "Claimed ✅";
+        if (isToday) stateText = "Today’s Reward 🎯";
+
+        pill.innerHTML = `
+          <div class="day-label">Day ${reward.day}</div>
+          <div class="date-label">${dow}, Dec ${reward.day}</div>
+          <div class="icon">${reward.icon}</div>
+          <div class="amount">${reward.amount}</div>
+          <div class="state">${stateText}</div>
+          <div class="day-info-wrap">
+            <div class="info-icon">i</div>
+            <div class="info-tooltip">
+              ${reward.infoHtml}
+            </div>
+          </div>
+        `;
+
+        // Day click: select + (optionally) copy today's code
+        pill.addEventListener("click", () => {
+          selectedDay = reward.day;
+          renderWeekStrip();
+          renderSelectedCard();
+          if (isToday && !isLocked) {
+            handleCopyVoucher(reward.day);
+          }
+        });
+
+        // Tooltip toggle on mobile
+        const infoWrap = pill.querySelector(".day-info-wrap");
+        if (infoWrap) {
+          infoWrap.addEventListener("click", (e) => {
+            e.stopPropagation();
+            document
+              .querySelectorAll(".day-info-wrap.open")
+              .forEach((el) => el !== infoWrap && el.classList.remove("open"));
+            infoWrap.classList.toggle("open");
+          });
+        }
+
+        weekStrip.appendChild(pill);
+      });
+    }
+
+    function renderSelectedCard() {
+      const reward =
+        weekRewards.find((r) => r.day === selectedDay) || weekRewards[0];
+      const isToday = reward.day === todayInDecember;
+      const isPast = reward.day < todayInDecember;
+      const isFuture = reward.day > todayInDecember;
+      const isLocked = isFuture;
+      const code = voucherCodes[reward.day];
+
+      let statusText = "Locked (not available yet)";
+      if (isPast) statusText = "Already claimed earlier this week.";
+      if (isToday) statusText = "Live now – claim & use your voucher today!";
+
+      selectedCard.innerHTML = `
+        <div class="selected-icon">${reward.icon}</div>
+        <div class="selected-main">
+          <h3>${isToday ? "Today’s Reward" : "Day " + reward.day + " Reward"}</h3>
+          <div class="amount">${reward.name} – ${reward.amount}</div>
+          <div class="tagline">${reward.tagline}</div>
+        </div>
+        <div class="selected-meta">
+          <span>Status: <strong>${statusText}</strong></span>
+          <span>Voucher code: <strong>${code}</strong></span>
+          <span>How it works: copy the code & redeem it inside your game / promo flow.</span>
+          <button id="copyCodeBtn" class="btn" ${isToday && !isLocked ? "" : "disabled"}>
+            <span class="icon">📋</span> <span>Copy today’s code</span>
+          </button>
+          <span style="font-size:10px; color:${isToday ? "#bbf7d0" : "#9ca3af"};">
+            ${isToday
+              ? "This is your current running reward. Copy & use it before the day ends."
+              : "Only today’s reward can be copied. Past codes are expired and future ones are locked."}
+          </span>
+        </div>
+      `;
+
+      const copyBtn = document.getElementById("copyCodeBtn");
+      if (copyBtn && isToday && !isLocked) {
+        copyBtn.addEventListener("click", () => handleCopyVoucher(reward.day));
+      }
+    }
+
+    // Close any open tooltips when clicking elsewhere
+    document.addEventListener("click", (e) => {
+      if (!e.target.closest(".day-info-wrap")) {
+        document
+          .querySelectorAll(".day-info-wrap.open")
+          .forEach((el) => el.classList.remove("open"));
+      }
+    });
+
+    // Initial render for rewards
+    renderWeekStrip();
+    renderSelectedCard();
+
+    // ---------------------------
+    // CLIPBOARD + TOAST
+    // ---------------------------
+    const toastEl = document.getElementById("toast");
+
+    function showToast(message) {
+      toastEl.textContent = message;
+      toastEl.classList.add("show");
+      setTimeout(() => toastEl.classList.remove("show"), 1800);
+    }
+
+    function handleCopyVoucher(day) {
+      const code = voucherCodes[day];
+      if (!code) return;
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard
+          .writeText(code)
+          .then(() => showToast("Voucher code copied!"))
+          .catch(() => fallbackCopy(code));
+      } else {
+        fallbackCopy(code);
+      }
+    }
+
+    function fallbackCopy(text) {
+      const ta = document.createElement("textarea");
+      ta.value = text;
+      document.body.appendChild(ta);
+      ta.select();
+      try {
+        document.execCommand("copy");
+        showToast("Voucher code copied!");
+      } catch (e) {
+        showToast("Unable to copy, please copy manually.");
+      }
+      document.body.removeChild(ta);
+    }
+
+    // ---------------------------
+    // RANKING / PODIUM
+    // ---------------------------
     const rankingData = [
       { username: "SnowLegend", turnover: 98500 },
       { username: "WinterWhale", turnover: 95600 },
@@ -1327,250 +1471,69 @@
       { username: "FuzzyPenguin", turnover: 66400 }
     ];
 
-    // This would represent a backend-synced record for a specific user
-    // even if they are not in the top 20 (for demo purposes)
     const extraRanks = [
       { username: "You", turnover: 43210, rank: 54 },
       { username: "ExampleUser", turnover: 51000, rank: 26 }
     ];
 
-    // -----------------------
-    // TABS
-    // -----------------------
-
-    const tabButtons = document.querySelectorAll(".tab-button");
-    const tabPanels = {
-      rewards: document.getElementById("tab-rewards"),
-      ranking: document.getElementById("tab-ranking")
-    };
-
-    tabButtons.forEach((btn) => {
-      btn.addEventListener("click", () => {
-        const tab = btn.dataset.tab;
-        tabButtons.forEach((b) => b.classList.toggle("active", b === btn));
-        Object.entries(tabPanels).forEach(([key, panel]) => {
-          panel.classList.toggle("active", key === tab);
-        });
-      });
-    });
-
-    // -----------------------
-    // STREAK DISPLAY
-    // -----------------------
-
-    const streakBar = document.getElementById("streakBar");
-    const streakText = document.getElementById("streakText");
-    const streakPercentage = (claimedDaysCount / daysInMonth) * 100;
-
-    streakBar.style.transform = `scaleX(${streakPercentage / 100})`;
-    streakText.textContent = `${claimedDaysCount} / ${daysInMonth}`;
-
-    // -----------------------
-    // WEEK STRIP (7 days)
-    // -----------------------
-
-    const weekStrip = document.getElementById("weekStrip");
-
-    function getWeekRange(day) {
-      // Day-of-week of Dec 1 (0=Sunday)
-      const firstDay = new Date(eventYear, eventMonthIndex, 1).getDay();
-      // index of this day in grid starting at firstDay
-      const index = firstDay + (day - 1);
-      const weekIndex = Math.floor(index / 7);
-      const startIndex = weekIndex * 7 - firstDay + 1;
-      let startDay = Math.max(1, startIndex);
-      let endDay = Math.min(daysInMonth, startDay + 6);
-      if (endDay - startDay < 6) {
-        // shift backwards if needed
-        startDay = Math.max(1, endDay - 6);
-      }
-      return { start: startDay, end: endDay };
-    }
-
-    const weekRange = getWeekRange(eventToday);
-    const weekDays = [];
-    for (let d = weekRange.start; d <= weekRange.end; d++) {
-      weekDays.push(rewardsByDay[d - 1]);
-    }
-
-    weekDays.forEach((reward) => {
-      const isLocked = reward.day > claimedDaysCount;
-      const isToday = reward.day === eventToday;
-      const div = document.createElement("div");
-      div.className = "reward-day";
-      if (isLocked) div.classList.add("locked");
-      if (!isLocked && reward.day <= claimedDaysCount) div.classList.add("unlocked");
-      if (isToday) div.classList.add("today");
-
-      div.dataset.label = `Day ${reward.day}`;
-
-      div.innerHTML = `
-        <div class="reward-icon">${reward.icon}</div>
-        <div class="reward-name">${reward.label}</div>
-        <div class="reward-amount">${reward.amount}</div>
-        ${
-          isLocked
-            ? `<div class="lock-tag">🔒 Locked</div>`
-            : isToday
-            ? `<div class="lock-tag">🎯 Claim today</div>`
-            : `<div class="lock-tag">✅ Unlocked</div>`
-        }
-      `;
-      weekStrip.appendChild(div);
-    });
-
-    // -----------------------
-    // MONTH GRID
-    // -----------------------
-
-    const monthGrid = document.getElementById("monthGrid");
-
-    function renderMonthGrid() {
-      // Day names
-      const dowNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-      dowNames.forEach((name) => {
-        const div = document.createElement("div");
-        div.className = "dow";
-        div.textContent = name;
-        monthGrid.appendChild(div);
-      });
-
-      const firstDay = new Date(eventYear, eventMonthIndex, 1).getDay();
-
-      // empty cells before day 1
-      for (let i = 0; i < firstDay; i++) {
-        const empty = document.createElement("div");
-        monthGrid.appendChild(empty);
-      }
-
-      rewardsByDay.forEach((reward, index) => {
-        const dayNumber = reward.day;
-        const isLocked = dayNumber > claimedDaysCount;
-        const isToday = dayNumber === eventToday;
-        const isClaimed = dayNumber < eventToday;
-
-        const div = document.createElement("div");
-        div.className = "calendar-day";
-        if (isLocked) div.classList.add("locked");
-        if (isClaimed) div.classList.add("claimed");
-        if (isToday) div.classList.add("today");
-
-        div.innerHTML = `
-          <span class="date">${dayNumber}</span>
-          <span class="status">${
-            isLocked ? "Locked" : isToday ? "Ready to claim" : "Claimed"
-          }</span>
-          <span class="icon">${reward.icon}</span>
-        `;
-
-        monthGrid.appendChild(div);
-      });
-    }
-
-    renderMonthGrid();
-
-    // Scroll helpers
-    document.getElementById("jumpTodayBtn").addEventListener("click", () => {
-      const todayCell = monthGrid.querySelector(".calendar-day.today");
-      if (todayCell) {
-        todayCell.scrollIntoView({ behavior: "smooth", block: "center", inline: "center" });
-      }
-    });
-
-    document.getElementById("scrollToEndBtn").addEventListener("click", () => {
-      const days = monthGrid.querySelectorAll(".calendar-day");
-      if (days.length) {
-        days[days.length - 1].scrollIntoView({
-          behavior: "smooth",
-          block: "center",
-          inline: "center"
-        });
-      }
-    });
-
-    // -----------------------
-    // RANKING: PODIUM + TABLE
-    // -----------------------
-
     const podiumGrid = document.getElementById("podiumGrid");
-    const rankingTable = document.getElementById("rankingTable");
-    const rankUpdated = document.getElementById("rankUpdated");
-    const footerUpdated = document.getElementById("footerUpdated");
+    const rankingList = document.getElementById("rankingList");
+    const updatedAt = document.getElementById("updatedAt");
 
-    const updatedAt = new Date();
-    const updatedLabel = updatedAt.toLocaleString(undefined, {
-      month: "short",
-      day: "2-digit",
-      hour: "2-digit",
-      minute: "2-digit"
-    });
-    rankUpdated.textContent = updatedLabel;
-    footerUpdated.textContent = updatedLabel;
-
-    function numberToShort(n) {
+    function shortNum(n) {
       if (n >= 1_000_000) return (n / 1_000_000).toFixed(1) + "M";
       if (n >= 1_000) return (n / 1_000).toFixed(1) + "K";
       return n.toString();
     }
-
-    function initials(username) {
-      return username
+    function initials(name) {
+      return name
         .split(/[^A-Za-z0-9]+/)
         .filter(Boolean)
         .slice(0, 2)
-        .map((s) => s[0].toUpperCase())
+        .map((p) => p[0].toUpperCase())
         .join("");
     }
 
-    function renderPodium(data) {
-      const top3 = data.slice(0, 3);
-      podiumGrid.innerHTML = "";
-      top3.forEach((player, index) => {
-        const rank = index + 1;
-        const item = document.createElement("div");
-        item.className = `podium-item rank-${rank}`;
-        item.innerHTML = `
-          <div class="podium-rank-badge">#${rank}</div>
-          <div class="avatar-circle">${initials(player.username)}</div>
-          <div class="podium-name">${player.username}</div>
-          <div class="podium-turnover">
-            <span>${numberToShort(player.turnover)}</span><span> TO</span>
-          </div>
-        `;
-        podiumGrid.appendChild(item);
-      });
-    }
+    const now = new Date();
+    updatedAt.textContent =
+      "Updated " +
+      now.toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit" });
 
-    function renderRankingTable(data) {
-      rankingTable.innerHTML = "";
-      data.forEach((player, index) => {
-        const rank = index + 1;
-        const row = document.createElement("div");
-        row.className = "ranking-row";
-        if (rank <= 3) row.classList.add("highlight");
+    // Podium
+    rankingData.slice(0, 3).forEach((player, index) => {
+      const rank = index + 1;
+      const card = document.createElement("div");
+      card.className = "podium-item rank-" + rank;
+      card.innerHTML = `
+        <div class="podium-rank">#${rank}</div>
+        <div class="podium-avatar">${initials(player.username)}</div>
+        <div class="podium-name">${player.username}</div>
+        <div class="podium-turnover">${shortNum(player.turnover)} TO</div>
+      `;
+      podiumGrid.appendChild(card);
+    });
 
-        row.innerHTML = `
-          <div class="ranking-rank-badge">#${rank}</div>
-          <div class="ranking-name-block">
-            <div class="ranking-avatar">${initials(player.username)}</div>
-            <div class="ranking-name">${player.username}</div>
-          </div>
-          <div class="ranking-turnover">
-            <span>${numberToShort(player.turnover)}</span>
-            <span class="label">Turnover</span>
-          </div>
-        `;
-        rankingTable.appendChild(row);
-      });
-    }
+    // List
+    rankingData.forEach((player, index) => {
+      const rank = index + 1;
+      const row = document.createElement("div");
+      row.className = "ranking-row";
+      if (rank <= 3) row.classList.add("highlight");
+      row.innerHTML = `
+        <div class="rank-badge">#${rank}</div>
+        <div class="rank-main">
+          <div class="rank-avatar">${initials(player.username)}</div>
+          <div class="rank-name">${player.username}</div>
+        </div>
+        <div class="rank-turnover">
+          ${shortNum(player.turnover)}
+          <span class="label">Turnover</span>
+        </div>
+      `;
+      rankingList.appendChild(row);
+    });
 
-    renderPodium(rankingData);
-    renderRankingTable(rankingData);
-
-    // -----------------------
-    // SEARCH
-    // -----------------------
-
+    // Search
     const searchInput = document.getElementById("searchInput");
     const searchBtn = document.getElementById("searchBtn");
     const searchResult = document.getElementById("searchResult");
@@ -1579,71 +1542,91 @@
       const username = usernameRaw.trim().toLowerCase();
       if (!username) return null;
 
-      const inTop20Index = rankingData.findIndex(
+      const index = rankingData.findIndex(
         (p) => p.username.toLowerCase() === username
       );
-      if (inTop20Index >= 0) {
-        return {
-          ...rankingData[inTop20Index],
-          rank: inTop20Index + 1,
-          inTop20: true
-        };
+      if (index >= 0) {
+        return { ...rankingData[index], rank: index + 1, inTop20: true };
       }
 
       const extra = extraRanks.find(
         (p) => p.username.toLowerCase() === username
       );
-      if (extra) {
-        return { ...extra, inTop20: false };
-      }
+      if (extra) return { ...extra, inTop20: false };
+
       return null;
     }
 
     function handleSearch() {
-      const query = searchInput.value;
-      const result = findRank(query);
-      rankingTable
-        .querySelectorAll(".ranking-row")
-        .forEach((row) => row.classList.remove("highlight-user"));
-
-      if (!query.trim()) {
+      const q = searchInput.value;
+      if (!q.trim()) {
         searchResult.textContent = "";
         return;
       }
 
+      Array.from(rankingList.children).forEach((row) =>
+        row.classList.remove("highlight-user")
+      );
+
+      const result = findRank(q);
       if (!result) {
         searchResult.innerHTML =
-          `No ranking found for <strong>${query}</strong> yet. ` +
-          `Make sure your GitHub username is listed in the event Google Sheet.`;
+          `No ranking found for <strong>${q}</strong> yet. Add your username to the Google Sheet to join the board.`;
         return;
       }
 
       if (result.inTop20) {
         searchResult.innerHTML =
-          `Nice! <strong>${result.username}</strong> is currently ` +
-          `<strong>#${result.rank}</strong> with <strong>${numberToShort(
-            result.turnover
-          )}</strong> turnover.`;
-        // highlight their row
-        const row = rankingTable.children[result.rank - 1];
+          `<strong>${result.username}</strong> is currently <strong>#${result.rank}</strong> ` +
+          `with <strong>${shortNum(result.turnover)}</strong> turnover.`;
+
+        const row = rankingList.children[result.rank - 1];
         if (row) {
           row.classList.add("highlight");
           row.scrollIntoView({ behavior: "smooth", block: "center" });
         }
       } else {
         searchResult.innerHTML =
-          `<strong>${result.username}</strong> is currently ranked ` +
-          `<strong>#${result.rank}</strong> with <strong>${numberToShort(
-            result.turnover
-          )}</strong> turnover (outside top 20 list).`;
+          `<strong>${result.username}</strong> is currently <strong>#${result.rank}</strong> ` +
+          `with <strong>${shortNum(result.turnover)}</strong> turnover (outside Top 20 list).`;
       }
     }
 
-    searchBtn.addEventListener("click", handleSearch);
-    searchInput.addEventListener("keydown", (e) => {
-      if (e.key === "Enter") {
-        handleSearch();
-      }
+    if (searchBtn) {
+      searchBtn.addEventListener("click", handleSearch);
+      searchInput.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") handleSearch();
+      });
+    }
+
+    // ---------------------------
+    // BOTTOM NAV TABS
+    // ---------------------------
+    const navButtons = document.querySelectorAll(".nav-btn");
+    const tabPanels = {
+      rewards: document.getElementById("tab-rewards"),
+      ranking: document.getElementById("tab-ranking")
+      // "info" is placeholder for T&C / community page if you add it later
+    };
+
+    navButtons.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const target = btn.dataset.tabTarget;
+
+        if (target === "info") {
+          showToast("T&C / Info section coming soon.");
+          return;
+        }
+
+        navButtons.forEach((b) => b.classList.remove("active"));
+        btn.classList.add("active");
+
+        Object.entries(tabPanels).forEach(([key, panel]) => {
+          panel.classList.toggle("active", key === target);
+        });
+
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      });
     });
   </script>
 </body>
