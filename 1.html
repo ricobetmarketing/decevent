@@ -2,1097 +2,1062 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>December Daily Rewards App</title>
+  <title>Week 1 Rewards & Turnover Ranking</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700&display=swap" rel="stylesheet" />
+
   <style>
-    :root{
-      --bg:#050716;
-      --accent:#ffb347;
-      --accent-2:#ff6bd5;
-      --accent-3:#28e7ff;
-      --accent-4:#37e29b;
-      --card:#121428;
-      --card-soft:#191c37;
-      --text:#f7f8ff;
-      --muted:#a3a7d2;
-      --border:#272a4a;
-      --danger:#ff4b6e;
-      --lock:#585f96;
-      --radius-xl:28px;
-      --radius-lg:20px;
-      --radius-md:14px;
-      --shadow-app:0 22px 60px rgba(0,0,0,.75);
+    :root {
+      --bg: #050715;
+      --bg2: #111827;
+      --accent: #ffb347;
+      --accent2: #fb7185;
+      --accent3: #4ef0ff;
+      --accent4: #34d399;
+      --card: #111827;
+      --card2: #1f2937;
+      --text: #f9fafb;
+      --muted: #9ca3af;
+      --border: #374151;
+      --gold: #fbbf24;
+      --radius-lg: 20px;
+      --radius-md: 14px;
+      --shadow: 0 18px 45px rgba(0, 0, 0, 0.75);
     }
 
-    *{box-sizing:border-box;}
+    * { box-sizing: border-box; }
 
-    body{
-      margin:0;
-      font-family:"Baloo 2",system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Baloo 2", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       background:
-              radial-gradient(circle at 10% 0%,rgba(255,126,214,.25),transparent 60%),
-              radial-gradient(circle at 100% 100%,rgba(95,206,255,.25),transparent 60%),
-              radial-gradient(circle at 0% 100%,rgba(255,208,128,.2),transparent 55%),
-              var(--bg);
-      color:var(--text);
-      min-height:100vh;
-      display:flex;
-      justify-content:center;
-      align-items:center;
-      padding:16px;
+        radial-gradient(circle at 0 0, rgba(255, 111, 210, 0.26), transparent 60%),
+        radial-gradient(circle at 100% 100%, rgba(56, 189, 248, 0.26), transparent 60%),
+        linear-gradient(180deg, #111827 0%, #020617 55%);
+      color: var(--text);
+      display: flex;
+      justify-content: center;
+      padding: 24px 12px 32px;
     }
 
-    /* APP SHELL */
-
-    .app-shell{
-      width:100%;
-      max-width:460px;
-      background:linear-gradient(160deg,#0f1124,#090b17);
-      border-radius:32px;
-      padding:14px 12px 10px;
-      border:1px solid rgba(255,255,255,.06);
-      box-shadow:var(--shadow-app);
-      position:relative;
-      overflow:hidden;
+    .page {
+      width: 100%;
+      max-width: 1200px;
+      background: radial-gradient(circle at 50% 0, rgba(255, 255, 255, 0.12), transparent 65%),
+                  linear-gradient(180deg, #111827, #020617);
+      border-radius: 24px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: var(--shadow);
+      padding: 18px 18px 20px;
+      position: relative;
+      overflow: hidden;
     }
 
-    .app-shell::before{
-      content:"";
-      position:absolute;
-      inset:0;
+    .page::before,
+    .page::after {
+      content: "";
+      position: absolute;
+      border-radius: 999px;
+      filter: blur(30px);
+      opacity: 0.7;
+      pointer-events: none;
+    }
+    .page::before {
+      width: 240px; height: 240px;
+      top: -80px; left: -80px;
+      background: radial-gradient(circle, rgba(251, 191, 36, 0.8), transparent 60%);
+    }
+    .page::after {
+      width: 260px; height: 260px;
+      bottom: -120px; right: -100px;
+      background: radial-gradient(circle, rgba(56, 189, 248, 0.9), transparent 60%);
+    }
+
+    .inner { position: relative; z-index: 1; }
+
+    /* HEADER */
+
+    .header {
+      display: grid;
+      grid-template-columns: minmax(0, 2.2fr) minmax(0, 1.2fr);
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+
+    @media (max-width: 800px) {
+      .header {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    .title-block {
+      padding: 10px 14px;
+      border-radius: 18px;
       background:
-        radial-gradient(circle at 0 0,rgba(255,255,255,.08),transparent 55%),
-        radial-gradient(circle at 100% 100%,rgba(255,255,255,.04),transparent 55%);
-      opacity:.9;
-      pointer-events:none;
+        radial-gradient(circle at 0 0, rgba(255, 255, 255, 0.16), transparent 55%),
+        linear-gradient(135deg, #1f2937, #020617);
+      border: 1px solid rgba(255, 255, 255, 0.12);
     }
 
-    .app-inner{
-      position:relative;
-      z-index:1;
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 3px 12px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #fbbf24, #fb7185);
+      color: #1e1307;
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      font-weight: 700;
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.8);
+    }
+    .badge span:first-child { font-size: 16px; }
+
+    .title-main {
+      margin-top: 4px;
+      font-size: 26px;
+      line-height: 1.05;
+      text-shadow: 0 4px 0 #000, 0 10px 18px rgba(0, 0, 0, 0.9);
+    }
+    .title-main span.highlight {
+      background: linear-gradient(110deg, #fee2e2, #fef3c7, #bfdbfe);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
     }
 
-    /* STATUS BAR STYLE HEADER */
-
-    .app-status{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      font-size:11px;
-      color:var(--muted);
-      margin-bottom:6px;
-      padding:0 4px;
+    .subtitle {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 4px;
     }
 
-    .app-status-time{
-      font-weight:600;
-      letter-spacing:.05em;
+    .next-reward {
+      justify-self: end;
+      padding: 8px 10px;
+      border-radius: 18px;
+      background:
+        radial-gradient(circle at 0 0, rgba(255, 255, 255, 0.15), transparent 55%),
+        linear-gradient(135deg, #020617, #111827);
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      font-size: 12px;
+      color: var(--muted);
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
     }
 
-    .app-status-icons span{
-      margin-left:4px;
-      font-size:12px;
+    .next-reward span.label {
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-size: 10px;
     }
-
-    /* APP TOP HEADER */
-
-    .app-header{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      padding:0 4px 8px;
+    .next-reward span.time {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--accent3);
     }
-
-    .app-title-block{
-      display:flex;
-      flex-direction:column;
-      gap:2px;
-    }
-
-    .badge{
-      display:inline-flex;
-      align-items:center;
-      gap:6px;
-      padding:2px 10px;
-      border-radius:36px;
-      font-size:10px;
-      letter-spacing:.08em;
-      text-transform:uppercase;
-      background:linear-gradient(90deg,#ffb347,#ff6bd5);
-      color:#2a0712;
-      font-weight:700;
-      box-shadow:0 6px 16px rgba(255,144,214,.7);
-    }
-
-    .badge span:first-child{font-size:13px;}
-
-    .app-title{
-      font-size:18px;
-      margin:0;
-    }
-
-    .app-title span{
-      background:linear-gradient(120deg,#ffe49b,#ff9bb9,#8ef5ff);
-      -webkit-background-clip:text;
-      background-clip:text;
-      color:transparent;
-    }
-
-    .app-subtitle{
-      font-size:11px;
-      color:var(--muted);
-    }
-
-    .avatar-pill{
-      display:flex;
-      align-items:center;
-      gap:8px;
-      padding:4px 8px 4px 4px;
-      background:rgba(18,22,52,.98);
-      border-radius:30px;
-      border:1px solid rgba(255,255,255,.08);
-    }
-
-    .avatar-circle{
-      width:30px;
-      height:30px;
-      border-radius:50%;
-      background:radial-gradient(circle,rgba(255,255,255,.25),transparent 60%);
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      font-size:17px;
-      border:1px solid rgba(255,255,255,.65);
-    }
-
-    .avatar-pill small{
-      display:block;
-      font-size:9px;
-      color:var(--muted);
-    }
-
-    .avatar-pill strong{
-      font-size:11px;
+    .next-reward span.meta {
+      font-size: 10px;
     }
 
     /* TABS */
 
-    .app-tabs{
-      margin-top:8px;
-      background:rgba(10,12,26,.9);
-      padding:4px;
-      border-radius:22px;
-      display:flex;
-      gap:4px;
-      border:1px solid rgba(255,255,255,.04);
+    .tab-nav {
+      margin-bottom: 12px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.95);
+      border: 1px solid rgba(255, 255, 255, 0.08);
     }
 
-    .app-tab-btn{
-      flex:1;
-      border-radius:18px;
-      border:none;
-      padding:7px 4px;
-      font-family:inherit;
-      font-size:12px;
-      background:transparent;
-      color:var(--muted);
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      gap:6px;
-      cursor:pointer;
-      transition:.18s ease;
+    .tab-btn {
+      border: 0;
+      background: transparent;
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-family: inherit;
+      font-size: 12px;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      transition: background 0.15s ease, color 0.15s ease, transform 0.12s ease;
     }
 
-    .app-tab-btn span.icon{
-      font-size:16px;
+    .tab-btn span.icon { font-size: 16px; }
+
+    .tab-btn.active {
+      background: linear-gradient(135deg, #fbbf24, #fb7185);
+      color: #1e1307;
+      box-shadow: 0 8px 18px rgba(0, 0, 0, 0.6);
+      transform: translateY(-1px);
     }
 
-    .app-tab-btn.active{
-      background:linear-gradient(135deg,#ffb347,#ff6bd5);
-      color:#230814;
-      box-shadow:0 6px 18px rgba(0,0,0,.6);
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    /* GENERIC PANEL */
+
+    .panel {
+      background: radial-gradient(circle at 50% -40%, rgba(255, 255, 255, 0.14), transparent 60%),
+                  linear-gradient(180deg, #111827, #020617);
+      border-radius: 20px;
+      padding: 10px 12px 12px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: 0 14px 26px rgba(0, 0, 0, 0.9);
     }
 
-    /* CONTENT AREA */
+    /* REWARDS PANEL */
 
-    .app-content{
-      margin-top:12px;
-      border-radius:var(--radius-xl);
-      background:linear-gradient(165deg,#171931,#0a0c19);
-      padding:10px 10px 12px;
-      border:1px solid rgba(255,255,255,.05);
-      max-height:560px;
-      overflow:hidden;
-      display:flex;
-      flex-direction:column;
+    .panel-header {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      align-items: flex-start;
+      margin-bottom: 10px;
     }
-
-    .tab-screen{display:none;flex:1;min-height:0;}
-    .tab-screen.active{display:flex;flex-direction:column;}
-
-    /* REWARDS SCREEN */
-
-    .section-header{
-      display:flex;
-      justify-content:space-between;
-      align-items:flex-start;
-      gap:8px;
-      margin-bottom:8px;
+    .panel-title {
+      font-size: 16px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
     }
-
-    .section-title{
-      font-size:14px;
-      display:flex;
-      align-items:center;
-      gap:6px;
+    .panel-title span.icon { font-size: 20px; }
+    .panel-sub {
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+    .panel-badge {
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, #fbbf24, #fb7185);
+      color: #1e1307;
+      font-size: 11px;
+      font-weight: 700;
+      border: 1px solid rgba(254, 243, 199, 0.9);
+      white-space: nowrap;
     }
 
-    .section-title span.icon{font-size:16px;}
-
-    .section-sub{
-      font-size:10px;
-      color:var(--muted);
-      margin-top:2px;
+    .progress-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 11px;
+      color: var(--muted);
+      margin-bottom: 10px;
     }
 
-    .streak-pill{
-      display:flex;
-      flex-direction:column;
-      align-items:flex-end;
-      gap:3px;
-      font-size:10px;
-      color:var(--muted);
+    .progress-bar {
+      flex: 1;
+      height: 10px;
+      border-radius: 999px;
+      background: #020617;
+      border: 1px solid rgba(148, 163, 184, 0.8);
+      overflow: hidden;
+      position: relative;
     }
 
-    .streak-label{
-      display:flex;
-      align-items:center;
-      gap:4px;
+    .progress-fill {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, #34d399, #a3e635, #facc15);
+      transform-origin: left;
     }
 
-    .streak-label span{font-size:13px;}
-
-    .streak-bar{
-      width:120px;
-      height:7px;
-      border-radius:20px;
-      background:#1b1e3a;
-      overflow:hidden;
-      border:1px solid rgba(255,255,255,.08);
-      position:relative;
-    }
-    .streak-bar-fill{
-      position:absolute;
-      inset:0;
-      transform-origin:left;
-      background:linear-gradient(90deg,#37e29b,#9be15d);
+    .progress-label {
+      font-size: 11px;
+      color: var(--accent4);
+      font-weight: 600;
+      white-space: nowrap;
     }
 
-    .streak-text{
-      font-size:11px;
-      font-weight:600;
-      color:var(--accent-4);
+    /* WEEK STRIP */
+
+    .week-strip {
+      display: grid;
+      grid-template-columns: repeat(7, minmax(0, 1fr));
+      gap: 10px;
+      margin-bottom: 12px;
     }
 
-    /* WEEK CARDS (7 days) */
-
-    .week-strip{
-      display:flex;
-      gap:6px;
-      margin-bottom:10px;
-      overflow-x:auto;
-      padding-bottom:2px;
-    }
-    .week-day-card{
-      flex:0 0 64px;
-      border-radius:16px;
-      background:var(--card-soft);
-      padding:6px 4px;
-      text-align:center;
-      border:1px solid var(--border);
-      font-size:10px;
-      position:relative;
-    }
-    .week-day-card .day-num{
-      font-weight:700;
-      font-size:11px;
-    }
-    .week-day-card .reward-icon{
-      font-size:18px;
-      margin-top:2px;
-    }
-    .week-day-card .reward-amount{
-      font-size:10px;
-      margin-top:1px;
-      color:var(--accent-3);
-    }
-    .week-day-card .state{
-      margin-top:2px;
-      font-size:9px;
-      color:var(--muted);
-    }
-    .week-day-card.locked{
-      opacity:.6;
-      border-style:dashed;
-      color:var(--lock);
-    }
-    .week-day-card.today{
-      border-color:var(--accent);
-      box-shadow:0 0 0 1px rgba(0,0,0,.5),0 8px 18px rgba(255,179,71,.6);
-    }
-    .week-day-card.today .state{color:var(--accent);}
-    .week-label{
-      font-size:9px;
-      color:var(--muted);
-      margin-bottom:4px;
+    @media (max-width: 880px) {
+      .week-strip {
+        grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
+      }
     }
 
-    /* CALENDAR */
-
-    .calendar-card{
-      border-radius:18px;
-      background:var(--card);
-      padding:8px;
-      border:1px solid var(--border);
-      display:flex;
-      flex-direction:column;
-      gap:6px;
-      flex:1;
-      min-height:0;
+    .day-pill {
+      border-radius: 14px;
+      background: var(--card2);
+      border: 1px solid var(--border);
+      padding: 6px 6px 8px;
+      text-align: center;
+      font-size: 11px;
+      position: relative;
+      cursor: pointer;
+      transition: transform 0.12s ease, box-shadow 0.12s ease, border-color 0.12s ease;
     }
-    .calendar-header{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:6px;
-    }
-    .calendar-title{
-      font-size:12px;
-      display:flex;
-      align-items:center;
-      gap:6px;
-    }
-    .calendar-title span{font-size:16px;}
-    .calendar-actions{
-      display:flex;
-      gap:6px;
-    }
-    .calendar-actions button{
-      border-radius:999px;
-      border:none;
-      background:#202340;
-      padding:3px 8px;
-      font-size:10px;
-      color:var(--muted);
-      display:flex;
-      align-items:center;
-      gap:3px;
-      cursor:pointer;
+    .day-pill:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.55);
     }
 
-    .calendar-grid-wrapper{
-      flex:1;
-      min-height:0;
-      overflow:auto;
-      margin-top:2px;
+    .day-pill .day-label { font-weight: 700; }
+    .day-pill .icon { font-size: 20px; margin-top: 4px; }
+    .day-pill .amount { font-size: 11px; margin-top: 2px; color: var(--gold); }
+    .day-pill .state { margin-top: 2px; font-size: 10px; color: var(--muted); }
+
+    .day-pill.locked {
+      opacity: 0.65;
+      border-style: dashed;
     }
-    .calendar-grid{
-      display:grid;
-      grid-template-columns:repeat(7,minmax(0,1fr));
-      gap:4px;
-      font-size:10px;
+    .day-pill.today {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.9), 0 12px 22px rgba(251, 191, 36, 0.9);
     }
-    .dow{
-      text-align:center;
-      color:var(--muted);
-      font-size:8px;
-      text-transform:uppercase;
-      letter-spacing:.08em;
+    .day-pill.today .state { color: var(--accent); }
+    .day-pill.claimed .state { color: var(--accent4); }
+    .day-pill.active {
+      border-color: var(--accent3);
+      box-shadow: 0 0 0 1px rgba(15, 23, 42, 0.9), 0 10px 24px rgba(56, 189, 248, 0.8);
     }
 
-    .calendar-day{
-      height:38px;
-      border-radius:12px;
-      background:#181b36;
-      border:1px solid rgba(255,255,255,.05);
-      padding:3px 4px;
-      display:flex;
-      flex-direction:column;
-      justify-content:space-between;
-      position:relative;
-    }
-    .calendar-day .date{
-      font-size:10px;
-      font-weight:600;
-    }
-    .calendar-day .status{
-      font-size:8px;
-      color:var(--muted);
-    }
-    .calendar-day .icon{
-      position:absolute;
-      bottom:3px;
-      right:4px;
-      font-size:11px;
-      opacity:.8;
-    }
-    .calendar-day.locked{
-      opacity:.55;
-      border-style:dashed;
-      border-color:rgba(148,163,184,.6);
-    }
-    .calendar-day.locked .status{color:var(--lock);}
-    .calendar-day.claimed{
-      border-color:rgba(55,226,155,.8);
-    }
-    .calendar-day.claimed .status{color:var(--accent-4);}
-    .calendar-day.today{
-      border-color:var(--accent);
-      box-shadow:0 0 0 1px rgba(0,0,0,.5),0 8px 18px rgba(255,179,71,.7);
-    }
-    .calendar-day.today::after{
-      content:"Today";
-      position:absolute;
-      top:2px;
-      right:3px;
-      font-size:8px;
-      padding:1px 5px;
-      border-radius:999px;
-      background:linear-gradient(135deg,#ffb347,#ff6bd5);
-      color:#250812;
-      font-weight:700;
+    /* SELECTED CARD */
+
+    .selected-card {
+      border-radius: var(--radius-lg);
+      background: radial-gradient(circle at 0 0, rgba(255, 255, 255, 0.18), transparent 60%),
+                  linear-gradient(135deg, #1f2937, #020617);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      padding: 10px 10px 10px;
+      display: grid;
+      grid-template-columns: auto minmax(0, 1.3fr) minmax(0, 1.4fr);
+      gap: 10px;
+      align-items: center;
     }
 
-    .legend{
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      margin-top:4px;
-      font-size:9px;
-      color:var(--muted);
-    }
-    .legend-group{
-      display:flex;
-      gap:8px;
-      align-items:center;
-    }
-    .legend-item{
-      display:flex;
-      align-items:center;
-      gap:4px;
-    }
-    .legend-dot{
-      width:8px;
-      height:8px;
-      border-radius:50%;
+    @media (max-width: 720px) {
+      .selected-card {
+        grid-template-columns: minmax(0, 1fr);
+        text-align: left;
+      }
     }
 
-    /* RANKING SCREEN */
-
-    .ranking-scroll{
-      flex:1;
-      min-height:0;
-      overflow:auto;
-      display:flex;
-      flex-direction:column;
-      gap:10px;
+    .selected-icon {
+      font-size: 40px;
+      padding: 10px;
+      border-radius: 16px;
+      background: linear-gradient(135deg, #fbbf24, #fb7185);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #1f1307;
+      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.8);
     }
 
-    .podium-strip{
-      display:flex;
-      gap:8px;
+    .selected-main h3 {
+      margin: 0;
+      font-size: 18px;
     }
-    .podium-card{
-      flex:1;
-      border-radius:var(--radius-md);
-      background:var(--card);
-      border:1px solid var(--border);
-      padding:8px 6px;
-      text-align:center;
-      position:relative;
+    .selected-main .amount {
+      font-size: 16px;
+      color: var(--gold);
+      margin-top: 2px;
     }
-    .podium-card.top{
-      background:linear-gradient(140deg,#ffd46b,#ff9b7b);
-      color:#261204;
-    }
-    .podium-rank{
-      position:absolute;
-      top:4px;
-      left:6px;
-      font-size:9px;
-      padding:2px 6px;
-      border-radius:999px;
-      background:rgba(0,0,0,.35);
-      color:#fff;
-    }
-    .podium-card.top .podium-rank{
-      background:rgba(0,0,0,.5);
-      color:#fff4ce;
-    }
-    .podium-avatar{
-      width:34px;
-      height:34px;
-      border-radius:50%;
-      margin:10px auto 4px;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      background:radial-gradient(circle,rgba(255,255,255,.26),transparent 60%);
-      border:2px solid rgba(255,255,255,.9);
-      font-size:17px;
-    }
-    .podium-card.top .podium-avatar{
-      box-shadow:0 0 0 3px rgba(255,255,255,.6);
-    }
-    .podium-name{
-      font-size:11px;
-      font-weight:700;
-      white-space:nowrap;
-      overflow:hidden;
-      text-overflow:ellipsis;
-    }
-    .podium-turnover{
-      font-size:10px;
-      margin-top:2px;
+    .selected-main .tagline {
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 2px;
     }
 
-    .small-label{
-      font-size:9px;
-      color:var(--muted);
-      margin-bottom:3px;
+    .selected-meta {
+      font-size: 11px;
+      color: var(--muted);
+      display: grid;
+      gap: 3px;
+    }
+    .selected-meta span strong {
+      color: var(--accent3);
+      font-weight: 700;
     }
 
-    .search-card{
-      border-radius:var(--radius-md);
-      background:var(--card);
-      border:1px solid var(--border);
-      padding:8px 8px 6px;
-    }
-    .search-row{
-      display:flex;
-      gap:6px;
-      margin-top:4px;
-    }
-    .search-row input{
-      flex:1;
-      border-radius:999px;
-      border:1px solid rgba(148,163,184,.8);
-      background:#080a18;
-      padding:6px 10px;
-      font-family:inherit;
-      font-size:11px;
-      color:var(--text);
-      outline:none;
-    }
-    .search-row input::placeholder{color:var(--muted);}
-    .search-row button{
-      border-radius:999px;
-      border:none;
-      padding:6px 10px;
-      font-size:11px;
-      font-weight:700;
-      background:linear-gradient(135deg,#37e29b,#4ade80);
-      color:#021b15;
-      cursor:pointer;
-    }
-    .search-result{
-      margin-top:4px;
-      font-size:10px;
-      color:var(--muted);
-      min-height:14px;
-    }
-    .search-result strong{color:var(--accent-3);}
+    /* RANKING PANEL */
 
-    .table-card{
-      border-radius:var(--radius-md);
-      background:var(--card);
-      border:1px solid var(--border);
-      padding:6px 6px 8px;
+    .ranking-header {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      align-items: flex-start;
+      margin-bottom: 8px;
     }
-    .table-header{
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      font-size:11px;
-      margin-bottom:4px;
+    .ranking-title {
+      font-size: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
     }
-    .table-header small{
-      font-size:9px;
-      color:var(--muted);
+    .ranking-title span.topline {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .ranking-title span.topline .icon { font-size: 20px; }
+    .ranking-title .sub {
+      font-size: 11px;
+      color: var(--muted);
+    }
+    .ranking-updated {
+      font-size: 10px;
+      color: var(--muted);
+      padding: 3px 8px;
+      border-radius: 999px;
+      background: #020617;
+      border: 1px solid rgba(148, 163, 184, 0.7);
+      white-space: nowrap;
     }
 
-    .ranking-list{
-      max-height:260px;
-      overflow:auto;
-      margin-top:2px;
+    .ranking-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+      gap: 8px;
+      align-items: start;
     }
-    .ranking-row{
-      display:grid;
-      grid-template-columns:30px minmax(0,1fr) minmax(0,70px);
-      gap:6px;
-      align-items:center;
-      padding:5px 5px;
-      border-radius:12px;
-      font-size:10px;
-      background:#15172c;
-      margin-bottom:3px;
-    }
-    .ranking-row:nth-child(even){
-      background:#13162b;
-    }
-    .ranking-row.highlight{
-      border:1px solid var(--accent-3);
-      box-shadow:0 0 0 1px rgba(0,0,0,.4),0 8px 18px rgba(40,231,255,.55);
-    }
-    .rank-badge{
-      width:24px;
-      height:24px;
-      border-radius:50%;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      border:1px solid rgba(148,163,184,.7);
-      background:#080a18;
-      font-size:10px;
-    }
-    .rank-row-main{
-      display:flex;
-      align-items:center;
-      gap:6px;
-      overflow:hidden;
-    }
-    .rank-avatar{
-      width:22px;
-      height:22px;
-      border-radius:50%;
-      background:radial-gradient(circle,rgba(255,255,255,.2),transparent 60%);
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      font-size:11px;
-      border:1px solid rgba(148,163,184,.7);
-    }
-    .rank-name{
-      white-space:nowrap;
-      overflow:hidden;
-      text-overflow:ellipsis;
-      font-weight:600;
-    }
-    .rank-turnover{
-      text-align:right;
-      font-weight:600;
-      font-size:10px;
-    }
-    .rank-turnover span.label{
-      display:block;
-      font-size:8px;
-      color:var(--muted);
-      font-weight:400;
+    @media (max-width: 900px) {
+      .ranking-layout {
+        grid-template-columns: minmax(0, 1fr);
+      }
     }
 
-    .footer-line{
-      margin-top:8px;
-      font-size:9px;
-      color:var(--muted);
-      text-align:center;
+    .podium-panel {
+      border-radius: var(--radius-md);
+      background: radial-gradient(circle at 50% 0, rgba(255, 255, 255, 0.22), transparent 60%),
+                  linear-gradient(135deg, #1f2937, #020617);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      padding: 8px 8px 10px;
+    }
+    .podium-header {
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 6px;
+      display: flex;
+      justify-content: space-between;
+      gap: 6px;
+    }
+    .podium-header strong { color: var(--text); }
+
+    .podium-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
     }
 
-    @media(max-width:520px){
-      .app-shell{border-radius:26px;}
+    .podium-item {
+      border-radius: 16px;
+      background: linear-gradient(180deg, #111827, #020617);
+      border: 1px solid rgba(148, 163, 184, 0.7);
+      padding: 8px 6px 10px;
+      text-align: center;
+      position: relative;
+    }
+    .podium-item.rank-1 {
+      background: linear-gradient(180deg, #fbbf24, #fb7185);
+      color: #1e1307;
+      transform: translateY(-4px);
+      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.9);
+    }
+
+    .podium-rank {
+      position: absolute;
+      top: 4px;
+      left: 50%;
+      transform: translateX(-50%);
+      border-radius: 999px;
+      padding: 2px 8px;
+      font-size: 10px;
+      background: rgba(0, 0, 0, 0.7);
+      color: #fef9c3;
+      border: 1px solid rgba(255, 255, 255, 0.8);
+    }
+
+    .podium-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      margin: 14px auto 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 2px solid rgba(255, 255, 255, 0.9);
+      background: radial-gradient(circle, rgba(255, 255, 255, 0.3), transparent 60%);
+      font-size: 16px;
+    }
+
+    .podium-name {
+      font-size: 12px;
+      font-weight: 700;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .podium-turnover {
+      font-size: 11px;
+      margin-top: 2px;
+    }
+
+    .table-panel {
+      border-radius: var(--radius-md);
+      background: var(--card);
+      border: 1px solid var(--border);
+      padding: 8px 8px 10px;
+    }
+
+    .search-row {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 4px;
+    }
+    .search-row input {
+      flex: 1;
+      border-radius: 999px;
+      border: 1px solid rgba(191, 219, 254, 0.9);
+      background: #020617;
+      color: var(--text);
+      font-family: inherit;
+      font-size: 11px;
+      padding: 6px 10px;
+      outline: none;
+    }
+    .search-row input::placeholder { color: var(--muted); }
+
+    .search-row button {
+      border-radius: 999px;
+      border: 0;
+      padding: 6px 10px;
+      font-size: 11px;
+      font-weight: 700;
+      background: linear-gradient(135deg, #34d399, #4ade80);
+      color: #022c22;
+      cursor: pointer;
+      box-shadow: 0 10px 18px rgba(34, 197, 94, 0.75);
+      white-space: nowrap;
+    }
+
+    .search-result {
+      font-size: 10px;
+      color: var(--muted);
+      min-height: 14px;
+    }
+    .search-result strong { color: var(--accent3); }
+
+    .list-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 11px;
+      color: var(--muted);
+      margin: 4px 0;
+    }
+
+    .ranking-list {
+      max-height: 230px;
+      overflow-y: auto;
+      border-radius: 14px;
+    }
+
+    .ranking-row {
+      display: grid;
+      grid-template-columns: 30px minmax(0, 1fr) minmax(0, 70px);
+      gap: 6px;
+      align-items: center;
+      padding: 5px 6px;
+      font-size: 10px;
+      background: #020617;
+    }
+    .ranking-row:nth-child(even) { background: #040716; }
+
+    .ranking-row.highlight {
+      border: 1px solid var(--accent3);
+      box-shadow: 0 0 0 1px rgba(15, 23, 42, 0.9), 0 10px 24px rgba(56, 189, 248, 0.9);
+      position: relative;
+      z-index: 1;
+    }
+
+    .rank-badge {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid rgba(148, 163, 184, 0.8);
+      background: radial-gradient(circle, rgba(255, 255, 255, 0.18), transparent 60%);
+    }
+
+    .rank-main {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      overflow: hidden;
+    }
+    .rank-avatar {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid rgba(148, 163, 184, 0.9);
+      background: radial-gradient(circle, rgba(255, 255, 255, 0.23), transparent 60%);
+      font-size: 11px;
+    }
+    .rank-name {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      font-weight: 600;
+    }
+    .rank-turnover {
+      text-align: right;
+      font-weight: 600;
+    }
+    .rank-turnover span.label {
+      display: block;
+      font-size: 8px;
+      color: var(--muted);
+      font-weight: 400;
+    }
+
+    @media (max-width: 640px) {
+      .page {
+        padding: 16px 12px 18px;
+        border-radius: 20px;
+      }
+    }
+
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #020617;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #4b5563;
+      border-radius: 999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #9ca3af;
     }
   </style>
 </head>
 <body>
-  <div class="app-shell">
-    <div class="app-inner">
-      <div class="app-status">
-        <div class="app-status-time" id="statusTime">12:00</div>
-        <div class="app-status-icons">
-          <span>📶</span>
-          <span>📡</span>
-          <span>🔋</span>
-        </div>
-      </div>
-
-      <div class="app-header">
-        <div class="app-title-block">
+  <div class="page">
+    <div class="inner">
+      <!-- HEADER -->
+      <header class="header">
+        <div class="title-block">
           <div class="badge">
             <span>🎄</span>
-            <span>December Check-in</span>
+            <span>Week 1 Check-in</span>
           </div>
-          <h1 class="app-title">
-            Holiday <span>Reward App</span>
-          </h1>
-          <div class="app-subtitle">
-            Open daily on GitHub, tap to claim rewards and climb the turnover ranking.
+          <div class="title-main">
+            Holiday <span class="highlight">Reward Calendar</span>
           </div>
-        </div>
-        <div class="avatar-pill">
-          <div class="avatar-circle">🎮</div>
-          <div>
-            <small>Event</small>
-            <strong>Dec 1 – 31</strong>
+          <div class="subtitle">
+            Log in every day this week on GitHub, claim your daily rewards and push your turnover ranking.
           </div>
         </div>
-      </div>
 
-      <!-- Tabs -->
-      <nav class="app-tabs">
-        <button class="app-tab-btn active" data-target="screen-rewards">
-          <span class="icon">📅</span> Rewards
+        <div class="next-reward">
+          <span class="label">Next reward in</span>
+          <span class="time" id="nextRewardTime">--:--:--</span>
+          <span class="meta">Day resets at 00:00 (server time).</span>
+        </div>
+      </header>
+
+      <!-- TABS -->
+      <nav class="tab-nav">
+        <button class="tab-btn active" data-tab="rewards">
+          <span class="icon">📅</span>
+          <span>Week 1 Rewards</span>
         </button>
-        <button class="app-tab-btn" data-target="screen-ranking">
-          <span class="icon">🏆</span> Ranking
+        <button class="tab-btn" data-tab="ranking">
+          <span class="icon">🏆</span>
+          <span>Turnover Ranking</span>
         </button>
       </nav>
 
-      <!-- Content -->
-      <div class="app-content">
-
-        <!-- Rewards Screen -->
-        <section id="screen-rewards" class="tab-screen active">
-          <div class="section-header">
+      <!-- TAB 1: REWARDS -->
+      <section id="tab-rewards" class="tab-panel active">
+        <section class="panel">
+          <div class="panel-header">
             <div>
-              <div class="section-title">
-                <span class="icon">✨</span>
-                <span>Daily check-in rewards</span>
+              <div class="panel-title">
+                <span class="icon">🎁</span>
+                <span>Week 1 Rewards (7 Days)</span>
               </div>
-              <div class="section-sub">
-                Keep your streak to unlock all 31 days. First 7 days show your immediate prizes.
+              <div class="panel-sub">
+                Tap any day to see reward details. Keep your streak to unlock the big chest on Day&nbsp;7.
               </div>
             </div>
-            <div class="streak-pill">
-              <div class="streak-label">
-                <span>🔥</span> streak
-              </div>
-              <div class="streak-bar">
-                <div class="streak-bar-fill" id="streakFill"></div>
-              </div>
-              <div class="streak-text" id="streakText">0 / 31 days</div>
-            </div>
+            <div class="panel-badge">7-Day Streak Bonus</div>
           </div>
 
-          <div class="week-label">This week</div>
+          <div class="progress-row">
+            <span>Progress</span>
+            <div class="progress-bar">
+              <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <span class="progress-label" id="progressLabel">0 / 7 days</span>
+          </div>
+
           <div class="week-strip" id="weekStrip"></div>
 
-          <div class="calendar-card">
-            <div class="calendar-header">
-              <div class="calendar-title">
-                <span>📆</span>
-                <div>
-                  December calendar
-                  <div class="small-label">Rewards unlock day by day from your check-ins.</div>
-                </div>
-              </div>
-              <div class="calendar-actions">
-                <button type="button" id="btnToday">🎯 Today</button>
-                <button type="button" id="btnLast">🎁 Last day</button>
-              </div>
-            </div>
-
-            <div class="calendar-grid-wrapper">
-              <div class="calendar-grid" id="calendarGrid"></div>
-            </div>
-
-            <div class="legend">
-              <div class="legend-group">
-                <div class="legend-item">
-                  <span class="legend-dot" style="background:var(--accent);"></span>Today
-                </div>
-                <div class="legend-item">
-                  <span class="legend-dot" style="background:var(--accent-4);"></span>Claimed
-                </div>
-                <div class="legend-item">
-                  <span class="legend-dot" style="background:var(--lock);"></span>Locked
-                </div>
-              </div>
-              <span>Auto-synced from your daily GitHub visits.</span>
-            </div>
-          </div>
+          <div class="selected-card" id="selectedCard"></div>
         </section>
+      </section>
 
-        <!-- Ranking Screen -->
-        <section id="screen-ranking" class="tab-screen">
-          <div class="section-header">
-            <div>
-              <div class="section-title">
+      <!-- TAB 2: RANKING -->
+      <section id="tab-ranking" class="tab-panel">
+        <section class="panel">
+          <header class="ranking-header">
+            <div class="ranking-title">
+              <span class="topline">
                 <span class="icon">🏁</span>
-                <span>Daily turnover ranking</span>
-              </div>
-              <div class="section-sub">
-                Top 3 get the spotlight. Full top 20 below, synced from Google Sheet.
-              </div>
+                <span>Daily Turnover Ranking</span>
+              </span>
+              <span class="sub">
+                Top 3 appear on the podium. Top 20 listed below (synced from Google Sheet).
+              </span>
             </div>
-            <div class="small-label" id="rankUpdated">Updated –</div>
-          </div>
+            <div class="ranking-updated" id="updatedAt">Updated –</div>
+          </header>
 
-          <div class="ranking-scroll">
-            <div>
-              <div class="small-label">Today’s podium</div>
-              <div class="podium-strip" id="podiumStrip"></div>
+          <div class="ranking-layout">
+            <!-- Podium -->
+            <div class="podium-panel">
+              <div class="podium-header">
+                <strong>Today’s Champions</strong>
+                <span>Extra bonus for #1–3</span>
+              </div>
+              <div class="podium-grid" id="podiumGrid"></div>
             </div>
 
-            <div class="search-card">
-              <div class="small-label">Find your username</div>
+            <!-- Search & List -->
+            <div class="table-panel">
               <div class="search-row">
-                <input id="searchInput" placeholder="Type your GitHub username…" />
-                <button id="searchBtn">Check</button>
+                <input id="searchInput" placeholder="Search your GitHub username…" />
+                <button id="searchBtn">Check Rank</button>
               </div>
               <div class="search-result" id="searchResult"></div>
-            </div>
 
-            <div class="table-card">
-              <div class="table-header">
-                <span>Top 20 turnover</span>
-                <small>Auto-refreshed from Sheet</small>
+              <div class="list-header">
+                <span>Top 20 Turnover</span>
+                <span>Full list in Google Sheet</span>
               </div>
+
               <div class="ranking-list" id="rankingList"></div>
             </div>
           </div>
         </section>
-      </div>
-
-      <div class="footer-line">
-        Bookmark this page on GitHub Pages and open it like an app every day.
-      </div>
+      </section>
     </div>
   </div>
 
   <script>
-    // simple clock
-    const statusTime = document.getElementById("statusTime");
-    function updateTime(){
-      const now = new Date();
-      statusTime.textContent = now.toLocaleTimeString(undefined,{hour:"2-digit",minute:"2-digit"});
-    }
-    updateTime();
-    setInterval(updateTime,60000);
+    // ---- TABS ----
+    const tabButtons = document.querySelectorAll(".tab-btn");
+    const tabPanels = {
+      rewards: document.getElementById("tab-rewards"),
+      ranking: document.getElementById("tab-ranking")
+    };
 
-    // Tabs
-    document.querySelectorAll(".app-tab-btn").forEach(btn=>{
-      btn.addEventListener("click",()=>{
-        document.querySelectorAll(".app-tab-btn").forEach(b=>b.classList.remove("active"));
-        btn.classList.add("active");
-        const targetId = btn.dataset.target;
-        document.querySelectorAll(".tab-screen").forEach(s=>{
-          s.classList.toggle("active",s.id===targetId);
+    tabButtons.forEach(btn => {
+      btn.addEventListener("click", () => {
+        const tab = btn.dataset.tab;
+        tabButtons.forEach(b => b.classList.toggle("active", b === btn));
+        Object.entries(tabPanels).forEach(([key, panel]) => {
+          panel.classList.toggle("active", key === tab);
         });
       });
     });
 
-    // Rewards data
-    const today = new Date();
-    const year = today.getFullYear();
-    const monthIndex = 11; // December
-    const daysInMonth = 31;
-    const isDecember = today.getMonth() === monthIndex;
-    const todayDay = isDecember ? today.getDate() : Math.min(today.getDate(),31);
-    const claimedCount = Math.max(1,todayDay); // demo
+    // ---- CONFIG / SAMPLE DATA ----
+    const totalDays = 7;
+    const todayIndex = 3; // 1-based "today", adjust to your logic
 
-    const rewardIcons = ["💰","💎","⚡","🎁","⭐","🧪","🎟️","📦"];
-    const rewardNames = ["Coins","Gems","Energy","Loot Box","Star Shards","Boost Potion","Spin Ticket","Mystery Pack"];
-
-    const rewards = Array.from({length:daysInMonth},(_,i)=>({
-      day:i+1,
-      icon:rewardIcons[i%rewardIcons.length],
-      name:rewardNames[i%rewardNames.length],
-      amount:`${(i+1)*10}`
-    }));
-
-    // Streak
-    const streakFill = document.getElementById("streakFill");
-    const streakText = document.getElementById("streakText");
-    const pct = claimedCount / daysInMonth;
-    streakFill.style.transform = `scaleX(${pct})`;
-    streakText.textContent = `${claimedCount} / ${daysInMonth} days`;
-
-    // Week range
-    function getWeekRange(day){
-      const firstDow = new Date(year,monthIndex,1).getDay();
-      const idx = firstDow + (day-1);
-      const weekIdx = Math.floor(idx/7);
-      const startIdx = weekIdx*7 - firstDow + 1;
-      let start = Math.max(1,startIdx);
-      let end = Math.min(daysInMonth,start+6);
-      if(end-start<6) start = Math.max(1,end-6);
-      return {start,end};
-    }
-    const weekStrip = document.getElementById("weekStrip");
-    const {start,end} = getWeekRange(todayDay);
-    rewards.slice(start-1,end).forEach(r=>{
-      const div=document.createElement("div");
-      const isLocked = r.day>claimedCount;
-      const isToday = r.day===todayDay;
-      div.className="week-day-card";
-      if(isLocked) div.classList.add("locked");
-      if(isToday) div.classList.add("today");
-      div.innerHTML=`
-        <div class="day-num">Day ${r.day}</div>
-        <div class="reward-icon">${r.icon}</div>
-        <div class="reward-amount">${r.amount}</div>
-        <div class="state">${isLocked?"🔒 Locked":isToday?"🎯 Today":"✅ Claimed"}</div>
-      `;
-      weekStrip.appendChild(div);
-    });
-
-    // Calendar grid
-    const calendarGrid=document.getElementById("calendarGrid");
-    const dows=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
-    dows.forEach(d=>{
-      const el=document.createElement("div");
-      el.className="dow";
-      el.textContent=d;
-      calendarGrid.appendChild(el);
-    });
-
-    const firstDow = new Date(year,monthIndex,1).getDay();
-    for(let i=0;i<firstDow;i++){
-      const el=document.createElement("div");
-      calendarGrid.appendChild(el);
-    }
-
-    rewards.forEach(r=>{
-      const isLocked=r.day>claimedCount;
-      const isToday=r.day===todayDay;
-      const isClaimed=r.day<todayDay;
-      const div=document.createElement("div");
-      div.className="calendar-day";
-      if(isLocked) div.classList.add("locked");
-      if(isClaimed) div.classList.add("claimed");
-      if(isToday) div.classList.add("today");
-      div.innerHTML=`
-        <span class="date">${r.day}</span>
-        <span class="status">${isLocked?"Locked":isToday?"Ready":"Claimed"}</span>
-        <span class="icon">${r.icon}</span>
-      `;
-      calendarGrid.appendChild(div);
-    });
-
-    document.getElementById("btnToday").addEventListener("click",()=>{
-      const el=document.querySelector(".calendar-day.today");
-      if(el) el.scrollIntoView({behavior:"smooth",block:"center",inline:"center"});
-    });
-    document.getElementById("btnLast").addEventListener("click",()=>{
-      const days=[...document.querySelectorAll(".calendar-day")];
-      if(days.length) days[days.length-1].scrollIntoView({behavior:"smooth",block:"center",inline:"center"});
-    });
-
-    // Ranking data (demo)
-    const rankingData=[
-      {username:"SnowLegend",turnover:98500},
-      {username:"WinterWhale",turnover:95600},
-      {username:"CodeElf",turnover:93200},
-      {username:"DecemberDev",turnover:91000},
-      {username:"HolidayHero",turnover:88750},
-      {username:"FestiveFox",turnover:86500},
-      {username:"SantaScript",turnover:84250},
-      {username:"GitGifts",turnover:82900},
-      {username:"CandyCane",turnover:81200},
-      {username:"FrostyBug",turnover:79800},
-      {username:"ReindeerRun",turnover:78200},
-      {username:"PullRequest",turnover:76900},
-      {username:"YuleLog",turnover:75400},
-      {username:"MergeWizard",turnover:74000},
-      {username:"Snowflake",turnover:72950},
-      {username:"HolidayCommit",turnover:71500},
-      {username:"NorthStar",turnover:70600},
-      {username:"BlizzardByte",turnover:69100},
-      {username:"PineTree",turnover:67800},
-      {username:"FuzzyPenguin",turnover:66400}
-    ];
-    const extraRanks=[
-      {username:"You",turnover:43210,rank:54},
-      {username:"ExampleUser",turnover:51000,rank:26}
+    const weekRewards = [
+      { day: 1, icon: "💰", name: "Starter Coins", amount: "350M", tagline: "Kick off your holiday streak." },
+      { day: 2, icon: "⚡", name: "Energy Burst", amount: "80x", tagline: "Extra raids for the day." },
+      { day: 3, icon: "🎁", name: "Loot Crate", amount: "Epic", tagline: "Random high-value goodies." },
+      { day: 4, icon: "🧪", name: "Boost Potion", amount: "2x", tagline: "Double turnover for 1 run." },
+      { day: 5, icon: "💎", name: "Gem Drop", amount: "120", tagline: "Save up for premium perks." },
+      { day: 6, icon: "🎟️", name: "Bonus Tickets", amount: "3x", tagline: "Extra spins or entries." },
+      {
+        day: 7,
+        icon: "👑",
+        name: "Week 1 Grand Chest",
+        amount: "1.7B + extras",
+        tagline: "Coins, energy, XP & mystery bonus if you checked in all 7 days."
+      }
     ];
 
-    const podiumStrip=document.getElementById("podiumStrip");
-    function initials(name){
-      return name.split(/[^A-Za-z0-9]+/).filter(Boolean).slice(0,2).map(s=>s[0].toUpperCase()).join("");
-    }
-    function shortNum(n){
-      if(n>=1_000_000) return (n/1_000_000).toFixed(1)+"M";
-      if(n>=1_000) return (n/1_000).toFixed(1)+"K";
+    const rankingData = [
+      { username: "SnowLegend", turnover: 98500 },
+      { username: "WinterWhale", turnover: 95600 },
+      { username: "CodeElf", turnover: 93200 },
+      { username: "DecemberDev", turnover: 91000 },
+      { username: "HolidayHero", turnover: 88750 },
+      { username: "FestiveFox", turnover: 86500 },
+      { username: "SantaScript", turnover: 84250 },
+      { username: "GitGifts", turnover: 82900 },
+      { username: "CandyCane", turnover: 81200 },
+      { username: "FrostyBug", turnover: 79800 },
+      { username: "ReindeerRun", turnover: 78200 },
+      { username: "PullRequest", turnover: 76900 },
+      { username: "YuleLog", turnover: 75400 },
+      { username: "MergeWizard", turnover: 74000 },
+      { username: "Snowflake", turnover: 72950 },
+      { username: "HolidayCommit", turnover: 71500 },
+      { username: "NorthStar", turnover: 70600 },
+      { username: "BlizzardByte", turnover: 69100 },
+      { username: "PineTree", turnover: 67800 },
+      { username: "FuzzyPenguin", turnover: 66400 }
+    ];
+
+    const extraRanks = [
+      { username: "You", turnover: 43210, rank: 54 },
+      { username: "ExampleUser", turnover: 51000, rank: 26 }
+    ];
+
+    // ---- UTILITIES ----
+    function shortNum(n) {
+      if (n >= 1_000_000) return (n / 1_000_000).toFixed(1) + "M";
+      if (n >= 1_000) return (n / 1_000).toFixed(1) + "K";
       return n.toString();
     }
+    function initials(name) {
+      return name
+        .split(/[^A-Za-z0-9]+/)
+        .filter(Boolean)
+        .slice(0, 2)
+        .map((p) => p[0].toUpperCase())
+        .join("");
+    }
 
-    rankingData.slice(0,3).forEach((p,i)=>{
-      const card=document.createElement("div");
-      card.className="podium-card"+(i===0?" top":"");
-      card.innerHTML=`
-        <div class="podium-rank">#${i+1}</div>
-        <div class="podium-avatar">${initials(p.username)}</div>
-        <div class="podium-name">${p.username}</div>
-        <div class="podium-turnover">${shortNum(p.turnover)} TO</div>
+    // ---- COUNTDOWN ----
+    const nextRewardTimeEl = document.getElementById("nextRewardTime");
+    function updateCountdown() {
+      const now = new Date();
+      const next = new Date();
+      next.setHours(24, 0, 0, 0);
+      const diff = next - now;
+      if (diff <= 0) {
+        nextRewardTimeEl.textContent = "00:00:00";
+        return;
+      }
+      const h = String(Math.floor(diff / (1000 * 60 * 60))).padStart(2, "0");
+      const m = String(Math.floor((diff / (1000 * 60)) % 60)).padStart(2, "0");
+      const s = String(Math.floor((diff / 1000) % 60)).padStart(2, "0");
+      nextRewardTimeEl.textContent = `${h}:${m}:${s}`;
+    }
+    updateCountdown();
+    setInterval(updateCountdown, 1000);
+
+    // ---- WEEK STRIP + SELECTED CARD ----
+    const weekStrip = document.getElementById("weekStrip");
+    const selectedCard = document.getElementById("selectedCard");
+    const progressFill = document.getElementById("progressFill");
+    const progressLabel = document.getElementById("progressLabel");
+
+    let selectedDay = todayIndex;
+
+    function renderWeekStrip() {
+      weekStrip.innerHTML = "";
+      weekRewards.forEach((reward) => {
+        const isLocked = reward.day > todayIndex;
+        const isToday = reward.day === todayIndex;
+        const isClaimed = reward.day < todayIndex;
+
+        const pill = document.createElement("button");
+        pill.type = "button";
+        pill.className = "day-pill";
+        if (isLocked) pill.classList.add("locked");
+        if (isToday) pill.classList.add("today");
+        if (isClaimed) pill.classList.add("claimed");
+        if (reward.day === selectedDay) pill.classList.add("active");
+
+        let stateText = "Locked";
+        if (!isLocked) stateText = isToday ? "Today" : "Claimed";
+
+        pill.innerHTML = `
+          <div class="day-label">Day ${reward.day}</div>
+          <div class="icon">${reward.icon}</div>
+          <div class="amount">${reward.amount}</div>
+          <div class="state">${stateText}</div>
+        `;
+        pill.addEventListener("click", () => {
+          selectedDay = reward.day;
+          renderWeekStrip();
+          renderSelectedCard();
+        });
+
+        weekStrip.appendChild(pill);
+      });
+    }
+
+    function renderSelectedCard() {
+      const reward = weekRewards.find((r) => r.day === selectedDay) || weekRewards[0];
+      const isLocked = reward.day > todayIndex;
+      const isToday = reward.day === todayIndex;
+      const isClaimed = reward.day < todayIndex;
+
+      let stateText = "Locked";
+      if (!isLocked) stateText = isToday ? "Ready to claim" : "Already claimed";
+
+      selectedCard.innerHTML = `
+        <div class="selected-icon">${reward.icon}</div>
+        <div class="selected-main">
+          <h3>Day ${reward.day}: ${reward.name}</h3>
+          <div class="amount">${reward.amount}</div>
+          <div class="tagline">${reward.tagline}</div>
+        </div>
+        <div class="selected-meta">
+          <span>Status: <strong>${stateText}</strong></span>
+          <span>Requirement: <strong>Log in on Day ${reward.day} (no streak break)</strong></span>
+          ${
+            reward.day === 7
+              ? `<span>Bonus: <strong>Coins, Energy, XP & mystery reward</strong> for full 7-day streak.</span>`
+              : `<span>Tip: <strong>Keep checking in</strong> – missing a day locks the remaining rewards.</span>`
+          }
+        </div>
       `;
-      podiumStrip.appendChild(card);
+    }
+
+    const progress = todayIndex / totalDays;
+    progressFill.style.transform = `scaleX(${progress})`;
+    progressLabel.textContent = `${todayIndex} / ${totalDays} days`;
+
+    renderWeekStrip();
+    renderSelectedCard();
+
+    // ---- RANKING / PODIUM ----
+    const podiumGrid = document.getElementById("podiumGrid");
+    const rankingList = document.getElementById("rankingList");
+    const updatedAt = document.getElementById("updatedAt");
+
+    const now = new Date();
+    updatedAt.textContent =
+      "Updated " +
+      now.toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit" });
+
+    rankingData.slice(0, 3).forEach((player, index) => {
+      const rank = index + 1;
+      const card = document.createElement("div");
+      card.className = "podium-item rank-" + rank;
+      card.innerHTML = `
+        <div class="podium-rank">#${rank}</div>
+        <div class="podium-avatar">${initials(player.username)}</div>
+        <div class="podium-name">${player.username}</div>
+        <div class="podium-turnover">${shortNum(player.turnover)} TO</div>
+      `;
+      podiumGrid.appendChild(card);
     });
 
-    const rankingList=document.getElementById("rankingList");
-    rankingData.forEach((p,i)=>{
-      const row=document.createElement("div");
-      row.className="ranking-row";
-      if(i<3) row.classList.add("highlight");
-      row.innerHTML=`
-        <div class="rank-badge">#${i+1}</div>
-        <div class="rank-row-main">
-          <div class="rank-avatar">${initials(p.username)}</div>
-          <div class="rank-name">${p.username}</div>
+    rankingData.forEach((player, index) => {
+      const rank = index + 1;
+      const row = document.createElement("div");
+      row.className = "ranking-row";
+      if (rank <= 3) row.classList.add("highlight");
+      row.innerHTML = `
+        <div class="rank-badge">#${rank}</div>
+        <div class="rank-main">
+          <div class="rank-avatar">${initials(player.username)}</div>
+          <div class="rank-name">${player.username}</div>
         </div>
         <div class="rank-turnover">
-          ${shortNum(p.turnover)}
+          ${shortNum(player.turnover)}
           <span class="label">Turnover</span>
         </div>
       `;
       rankingList.appendChild(row);
     });
 
-    // updated label
-    const rankUpdated=document.getElementById("rankUpdated");
-    const updated=new Date();
-    rankUpdated.textContent="Updated "+updated.toLocaleTimeString(undefined,{hour:"2-digit",minute:"2-digit"});
+    // ---- SEARCH ----
+    const searchInput = document.getElementById("searchInput");
+    const searchBtn = document.getElementById("searchBtn");
+    const searchResult = document.getElementById("searchResult");
 
-    // Search
-    const searchInput=document.getElementById("searchInput");
-    const searchBtn=document.getElementById("searchBtn");
-    const searchResult=document.getElementById("searchResult");
+    function findRank(usernameRaw) {
+      const username = usernameRaw.trim().toLowerCase();
+      if (!username) return null;
 
-    function findRank(name){
-      const username=name.trim().toLowerCase();
-      if(!username) return null;
-      const idx=rankingData.findIndex(p=>p.username.toLowerCase()===username);
-      if(idx>=0) return {...rankingData[idx],rank:idx+1,inTop20:true};
-      const extra=extraRanks.find(p=>p.username.toLowerCase()===username);
-      if(extra) return {...extra,inTop20:false};
+      const index = rankingData.findIndex(
+        (p) => p.username.toLowerCase() === username
+      );
+      if (index >= 0) {
+        return { ...rankingData[index], rank: index + 1, inTop20: true };
+      }
+
+      const extra = extraRanks.find(
+        (p) => p.username.toLowerCase() === username
+      );
+      if (extra) return { ...extra, inTop20: false };
+
       return null;
     }
 
-    function handleSearch(){
-      const q=searchInput.value;
-      document.querySelectorAll(".ranking-row").forEach(r=>r.classList.remove("highlight-user"));
-      if(!q.trim()){searchResult.textContent="";return;}
-      const r=findRank(q);
-      if(!r){
-        searchResult.innerHTML=`No ranking found for <strong>${q}</strong> yet. Make sure your username is added to the Google Sheet.`;
+    function handleSearch() {
+      const q = searchInput.value;
+      if (!q.trim()) {
+        searchResult.textContent = "";
         return;
       }
-      if(r.inTop20){
-        searchResult.innerHTML=`<strong>${r.username}</strong> is <strong>#${r.rank}</strong> with <strong>${shortNum(r.turnover)}</strong> turnover.`;
-        const row=rankingList.children[r.rank-1];
-        if(row){
+
+      Array.from(rankingList.children).forEach((row) =>
+        row.classList.remove("highlight-user")
+      );
+
+      const result = findRank(q);
+      if (!result) {
+        searchResult.innerHTML =
+          `No ranking found for <strong>${q}</strong> yet. Add your username to the Google Sheet to join the board.`;
+        return;
+      }
+
+      if (result.inTop20) {
+        searchResult.innerHTML =
+          `<strong>${result.username}</strong> is currently <strong>#${result.rank}</strong> ` +
+          `with <strong>${shortNum(result.turnover)}</strong> turnover.`;
+
+        const row = rankingList.children[result.rank - 1];
+        if (row) {
           row.classList.add("highlight");
-          row.scrollIntoView({behavior:"smooth",block:"center"});
+          row.scrollIntoView({ behavior: "smooth", block: "center" });
         }
-      }else{
-        searchResult.innerHTML=`<strong>${r.username}</strong> is currently <strong>#${r.rank}</strong> with <strong>${shortNum(r.turnover)}</strong> turnover (outside top 20).`;
+      } else {
+        searchResult.innerHTML =
+          `<strong>${result.username}</strong> is currently <strong>#${result.rank}</strong> ` +
+          `with <strong>${shortNum(result.turnover)}</strong> turnover (outside Top 20 list).`;
       }
     }
 
-    searchBtn.addEventListener("click",handleSearch);
-    searchInput.addEventListener("keydown",e=>{
-      if(e.key==="Enter") handleSearch();
-    });
+    if (searchBtn) {
+      searchBtn.addEventListener("click", handleSearch);
+      searchInput.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") handleSearch();
+      });
+    }
   </script>
 </body>
 </html>
