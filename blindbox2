@@ -2,19 +2,15 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Blue Squishy Christmas Calendar</title>
+  <title>Image Tiles Christmas Calendar</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600&family=Patrick+Hand&display=swap" rel="stylesheet" />
   <style>
     :root {
       --bg-blue: #e0f2fe;
-      --tile-blue: #5c8df6;
-      --tile-blue-dark: #4062c8;
       --text-main: #0f172a;
-      --muted: #e5f0ff;
+      --muted: #94a3b8;
       --accent-yellow: #fde047;
-      --accent-red: #fb7185;
-      --accent-green: #22c55e;
     }
 
     * { box-sizing: border-box; }
@@ -45,13 +41,12 @@
       overflow: hidden;
     }
 
-    /* fun doodle border */
     .calendar-shell::before {
       content: "";
       position: absolute;
       inset: 6px;
       border-radius: 22px;
-      border: 2px dashed rgba(148, 163, 184, 0.7);
+      border: 2px dashed rgba(148, 163, 184, 0.6);
       pointer-events: none;
     }
 
@@ -60,17 +55,8 @@
       z-index: 1;
     }
 
-    .top-row {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      gap: 10px 16px;
-      margin-bottom: 10px;
-      padding: 0 6px;
-    }
-
-    .title-block {
-      flex: 1 1 180px;
+    .header {
+      padding: 0 6px 6px;
     }
 
     .calendar-title {
@@ -86,53 +72,34 @@
       color: #475569;
     }
 
-    .sample-image {
-      flex: 0 0 auto;
-      max-width: 220px;
-      border-radius: 18px;
-      overflow: hidden;
-      border: 2px solid #bfdbfe;
-      box-shadow: 0 10px 26px rgba(15, 23, 42, 0.35);
-      background: #fff;
-    }
-
-    .sample-image img {
-      width: 100%;
-      display: block;
-    }
-
-    /* GRID */
+    /* GRID -------------------------------------------------- */
 
     .calendar-grid {
-      margin-top: 12px;
+      margin-top: 10px;
       padding: 4px 4px 0;
       display: grid;
       grid-template-columns: repeat(7, minmax(0, 1fr));
       grid-auto-rows: 90px;
       gap: 12px;
     }
-
     @media (max-width: 860px) {
       .calendar-grid {
         grid-template-columns: repeat(6, minmax(0, 1fr));
         grid-auto-rows: 86px;
       }
     }
-
     @media (max-width: 680px) {
       .calendar-grid {
         grid-template-columns: repeat(5, minmax(0, 1fr));
         grid-auto-rows: 84px;
       }
     }
-
     @media (max-width: 520px) {
       .calendar-grid {
         grid-template-columns: repeat(4, minmax(0, 1fr));
         grid-auto-rows: 80px;
       }
     }
-
     @media (max-width: 380px) {
       .calendar-grid {
         grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -140,7 +107,7 @@
       }
     }
 
-    /* TILE (blue squishy shape) */
+    /* TILE -------------------------------------------------- */
 
     .day-tile {
       position: relative;
@@ -157,10 +124,11 @@
       width: 100%;
       height: 100%;
       border-radius: 30% / 35%;
-      background: radial-gradient(circle at 20% 0, rgba(255, 255, 255, 0.6), transparent 55%),
-                  radial-gradient(circle at 80% 110%, rgba(30, 64, 175, 0.45), transparent 60%),
-                  linear-gradient(145deg, #5b8ff5, #3b82f6);
-      box-shadow: 0 7px 0 #4062c8, 0 10px 18px rgba(15, 23, 42, 0.5);
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      box-shadow: 0 7px 0 rgba(15, 23, 42, 0.35),
+                  0 10px 18px rgba(15, 23, 42, 0.5);
       padding: 6px 6px 4px;
       display: flex;
       flex-direction: column;
@@ -168,35 +136,37 @@
       align-items: stretch;
       color: #f9fafb;
       transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease, opacity 0.15s ease;
+      overflow: hidden;
     }
 
-    .tile-inner::after {
+    /* subtle dark overlay so numbers/text are readable */
+    .tile-inner::before {
       content: "";
       position: absolute;
-      inset: 6px;
-      border-radius: inherit;
-      border: 1px dashed rgba(191, 219, 254, 0.8);
+      inset: 0;
+      background: linear-gradient(150deg, rgba(15,23,42,0.15), rgba(15,23,42,0.35));
+      mix-blend-mode: multiply;
       pointer-events: none;
+      z-index: 0;
+    }
+
+    .tile-header,
+    .tile-footer {
+      position: relative;
+      z-index: 1;
     }
 
     .tile-header {
       display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      gap: 4px;
-      font-size: 11px;
-    }
-
-    .tile-icon {
-      font-size: 20px;
-      text-shadow: 0 2px 4px rgba(15, 23, 42, 0.45);
+      justify-content: flex-end;
+      align-items: center;
+      font-size: 18px;
+      font-weight: 600;
+      text-shadow: 0 2px 4px rgba(15, 23, 42, 0.7);
     }
 
     .tile-number {
       margin-left: auto;
-      font-weight: 600;
-      font-size: 18px;
-      text-shadow: 0 2px 4px rgba(15, 23, 42, 0.45);
     }
 
     .tile-footer {
@@ -205,12 +175,13 @@
       justify-content: space-between;
       gap: 4px;
       font-size: 9px;
+      text-shadow: 0 1px 3px rgba(15, 23, 42, 0.8);
     }
 
     .state-pill {
       padding: 2px 6px;
       border-radius: 999px;
-      background: rgba(15, 23, 42, 0.28);
+      background: rgba(15, 23, 42, 0.45);
       text-transform: uppercase;
       letter-spacing: 0.12em;
       white-space: nowrap;
@@ -219,16 +190,15 @@
     .today-pill {
       background: #fde047;
       color: #92400e;
-      box-shadow: 0 2px 4px rgba(15, 23, 42, 0.4);
+      box-shadow: 0 2px 4px rgba(15, 23, 42, 0.5);
     }
 
     .info-badge {
-      position: relative;
       width: 16px;
       height: 16px;
       border-radius: 999px;
-      background: rgba(15, 23, 42, 0.85);
-      border: 1px solid rgba(191, 219, 254, 0.9);
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(191, 219, 254, 0.95);
       font-size: 10px;
       display: flex;
       align-items: center;
@@ -241,7 +211,7 @@
       margin-left: 2px;
     }
 
-    /* TOOLTIP */
+    /* TOOLTIP ----------------------------------------------- */
 
     .tooltip {
       position: absolute;
@@ -281,24 +251,26 @@
       transform: translateY(0);
     }
 
-    /* STATES (past/today/future) */
+    /* STATES ----------------------------------------------- */
 
     .day-tile.past .tile-inner {
-      filter: grayscale(0.25) brightness(0.95);
+      filter: grayscale(0.25) brightness(0.93);
       opacity: 0.9;
-      box-shadow: 0 6px 0 #2e3a8c, 0 10px 16px rgba(15, 23, 42, 0.45);
+      box-shadow: 0 6px 0 rgba(15,23,42,0.5),
+                  0 10px 16px rgba(15,23,42,0.55);
     }
 
     .day-tile.future .tile-inner {
-      filter: grayscale(0.1) brightness(0.85);
-      box-shadow: 0 6px 0 #334155, 0 10px 16px rgba(15, 23, 42, 0.35);
+      filter: grayscale(0.1) brightness(0.88);
+      box-shadow: 0 6px 0 rgba(15,23,42,0.45),
+                  0 10px 16px rgba(15,23,42,0.5);
     }
 
     .day-tile.today .tile-inner {
       box-shadow:
         0 0 0 3px rgba(251, 191, 36, 0.95),
         0 0 24px rgba(251, 191, 36, 0.95),
-        0 9px 16px rgba(15, 23, 42, 0.8);
+        0 9px 16px rgba(15, 23, 42, 0.85);
       transform: translateY(-2px);
       animation: wobble 1.6s ease-in-out infinite;
     }
@@ -310,10 +282,12 @@
       75% { transform: translateY(-1px) rotate(-0.8deg); }
     }
 
+    /* LEGEND ----------------------------------------------- */
+
     .calendar-legend {
       margin-top: 12px;
       font-size: 11px;
-      color: #64748b;
+      color: var(--muted);
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
@@ -333,32 +307,25 @@
       border-radius: 999px;
       display: inline-block;
     }
-    .dot-past { background: #9ca3af; }
-    .dot-today { background: #fde047; box-shadow: 0 0 10px rgba(251, 191, 36, 0.9); }
+    .dot-past   { background: #9ca3af; }
+    .dot-today  { background: #fde047; box-shadow: 0 0 10px rgba(251, 191, 36, 0.9); }
     .dot-future { background: #93c5fd; border: 1px solid #60a5fa; }
 
     .legend-note {
       margin-top: 4px;
       font-size: 10px;
       text-align: center;
-      color: #64748b;
+      color: var(--muted);
     }
   </style>
 </head>
 <body>
   <div class="calendar-shell">
     <div class="calendar-inner">
-      <div class="top-row">
-        <div class="title-block">
-          <div class="calendar-title">calendar numbers</div>
-          <div class="calendar-sub">
-            One surprise per day • 1–31 December. Hover / tap any tile for details.
-          </div>
-        </div>
-
-        <!-- Your reference image (remove this block if you don't want it visible) -->
-        <div class="sample-image">
-          <img src="/mnt/data/928648c5-e9e0-4162-89c4-dd5bcb353b2e.png" alt="Reference calendar design" />
+      <div class="header">
+        <div class="calendar-title">calendar numbers</div>
+        <div class="calendar-sub">
+          One surprise per day • 1–31 December. Hover / tap any tile for details.
         </div>
       </div>
 
@@ -376,42 +343,67 @@
         </span>
       </div>
       <div class="legend-note">
-        Reward text can be different for every date; edit it directly in the JavaScript config.
+        Change image URLs and reward text in the JavaScript config below.
       </div>
     </div>
   </div>
 
   <script>
-    // --------- CONFIG ----------
+    // ---------- DATE LOGIC ----------
     const NOW = new Date();
     const DECEMBER = 11;          // month index (Dec)
-    const USE_REAL_DATE = true;   // set to false for testing
-    const demoDay = 3;            // fake "today" if not using real date
+    const USE_REAL_DATE = true;   // set false for testing
+    const demoDay = 3;            // fake "today" when testing
 
     const isDecember = NOW.getMonth() === DECEMBER;
     const todayDay = USE_REAL_DATE && isDecember ? NOW.getDate() : demoDay;
 
     const TOTAL_DAYS = 31;
 
-    // icons per day to mimic your doodle style (feel free to change)
-    const icons = {
-      1: "⛄",  2: "🎁",  3: "❄️",  4: "🎁",  5: "🎁",  6: "🎄",
-      7: "🔴",  8: "⭐",  9: "🍭", 10: "🎁", 11: "❄️",
-      12: "🎅", 13: "❄️", 14: "⭐", 15: "🧢", 16: "❄️",
-      17: "🌲", 18: "⭐", 19: "🍒", 20: "⭐", 21: "🔔",
-      22: "🎄", 23: "🎅", 24: "⭐", 25: "🍪", 26: "⭐",
-      27: "🎁", 28: "🔔", 29: "🎄", 30: "⭐", 31: "🧦"
+    // ---------- IMAGE URLs PER TILE ----------
+    // Replace each placeholder with your real artwork URL.
+    const dayImages = {
+      1: "/mnt/data/8bb12e9f-ebf0-4b28-b80f-271972bcf192.png", // example using your uploaded sheet
+      2: "https://via.placeholder.com/200x200.png?text=2",
+      3: "https://via.placeholder.com/200x200.png?text=3",
+      4: "https://via.placeholder.com/200x200.png?text=4",
+      5: "https://via.placeholder.com/200x200.png?text=5",
+      6: "https://via.placeholder.com/200x200.png?text=6",
+      7: "https://via.placeholder.com/200x200.png?text=7",
+      8: "https://via.placeholder.com/200x200.png?text=8",
+      9: "https://via.placeholder.com/200x200.png?text=9",
+      10: "https://via.placeholder.com/200x200.png?text=10",
+      11: "https://via.placeholder.com/200x200.png?text=11",
+      12: "https://via.placeholder.com/200x200.png?text=12",
+      13: "https://via.placeholder.com/200x200.png?text=13",
+      14: "https://via.placeholder.com/200x200.png?text=14",
+      15: "https://via.placeholder.com/200x200.png?text=15",
+      16: "https://via.placeholder.com/200x200.png?text=16",
+      17: "https://via.placeholder.com/200x200.png?text=17",
+      18: "https://via.placeholder.com/200x200.png?text=18",
+      19: "https://via.placeholder.com/200x200.png?text=19",
+      20: "https://via.placeholder.com/200x200.png?text=20",
+      21: "https://via.placeholder.com/200x200.png?text=21",
+      22: "https://via.placeholder.com/200x200.png?text=22",
+      23: "https://via.placeholder.com/200x200.png?text=23",
+      24: "https://via.placeholder.com/200x200.png?text=24",
+      25: "https://via.placeholder.com/200x200.png?text=25",
+      26: "https://via.placeholder.com/200x200.png?text=26",
+      27: "https://via.placeholder.com/200x200.png?text=27",
+      28: "https://via.placeholder.com/200x200.png?text=28",
+      29: "https://via.placeholder.com/200x200.png?text=29",
+      30: "https://via.placeholder.com/200x200.png?text=30",
+      31: "https://via.placeholder.com/200x200.png?text=31"
     };
 
-    // Tooltip / reward description per day
+    // ---------- REWARD TEXT PER DAY ----------
     const rewards = {
       1: "Up to 100 Free Spins<br>VIP 01–03: 20 FS<br>VIP 04–05: 50 FS<br>VIP 06+: 100 FS",
       2: "Coin Pack – up to 500M<br>VIP 01–03: 80M<br>VIP 04–05: 200M<br>VIP 06+: 500M",
       3: "Epic Loot Crate – up to 3x epic items.",
       4: "Turnover Boost – up to 2x turnover for 2 hours.",
-      5: "Energy Rush – bonus raid/attack energy.",
-      6: "Super Tree Pack – coins + spins.",
-      // ...you can fill all days here
+      5: "Energy Rush – bonus raid / attack energy.",
+      // ...fill 6–31 with your real copy as needed
     };
 
     const grid = document.getElementById("calendarGrid");
@@ -427,16 +419,16 @@
         "future";
       tile.classList.add(state);
 
-      const tooltipHtml = rewards[day] || "Reward details coming soon – ask support if you are not sure.";
+      const imgUrl = dayImages[day] || `https://via.placeholder.com/200x200.png?text=${day}`;
+      const tooltipHtml = rewards[day] || "Reward details coming soon.";
 
       let stateLabel = "Locked";
       if (state === "past") stateLabel = "Claimed";
       if (state === "today") stateLabel = "Today";
 
       tile.innerHTML = `
-        <div class="tile-inner">
+        <div class="tile-inner" style="background-image:url('${imgUrl}')">
           <div class="tile-header">
-            <div class="tile-icon">${icons[day] || "🎄"}</div>
             <div class="tile-number">${day}</div>
           </div>
           <div class="tile-footer">
