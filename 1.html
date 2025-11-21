@@ -2,14 +2,12 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Week 1 Rewards & Turnover Ranking</title>
+  <title>December Reward Calendar & Ranking</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700&display=swap" rel="stylesheet" />
-
   <style>
     :root {
       --bg: #050715;
-      --bg2: #111827;
       --accent: #ffb347;
       --accent2: #fb7185;
       --accent3: #4ef0ff;
@@ -23,6 +21,7 @@
       --radius-lg: 20px;
       --radius-md: 14px;
       --shadow: 0 18px 45px rgba(0, 0, 0, 0.75);
+      --nav-height: 70px;
     }
 
     * { box-sizing: border-box; }
@@ -38,7 +37,7 @@
       color: var(--text);
       display: flex;
       justify-content: center;
-      padding: 24px 12px 32px;
+      padding: 24px 12px calc(32px + var(--nav-height));
     }
 
     .page {
@@ -165,47 +164,10 @@
       font-size: 10px;
     }
 
-    /* TABS */
-
-    .tab-nav {
-      margin-bottom: 12px;
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      padding: 3px;
-      border-radius: 999px;
-      background: rgba(15, 23, 42, 0.95);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-    }
-
-    .tab-btn {
-      border: 0;
-      background: transparent;
-      padding: 6px 14px;
-      border-radius: 999px;
-      font-family: inherit;
-      font-size: 12px;
-      color: var(--muted);
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      cursor: pointer;
-      transition: background 0.15s ease, color 0.15s ease, transform 0.12s ease;
-    }
-
-    .tab-btn span.icon { font-size: 16px; }
-
-    .tab-btn.active {
-      background: linear-gradient(135deg, #fbbf24, #fb7185);
-      color: #1e1307;
-      box-shadow: 0 8px 18px rgba(0, 0, 0, 0.6);
-      transform: translateY(-1px);
-    }
+    /* TABS (CONTENT) */
 
     .tab-panel { display: none; }
     .tab-panel.active { display: block; }
-
-    /* GENERIC PANEL */
 
     .panel {
       background: radial-gradient(circle at 50% -40%, rgba(255, 255, 255, 0.14), transparent 60%),
@@ -214,6 +176,111 @@
       padding: 10px 12px 12px;
       border: 1px solid rgba(255, 255, 255, 0.08);
       box-shadow: 0 14px 26px rgba(0, 0, 0, 0.9);
+    }
+
+    /* MONTH PROGRESS */
+
+    .month-progress {
+      margin-bottom: 14px;
+    }
+
+    .month-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+      margin-bottom: 4px;
+      color: var(--muted);
+    }
+
+    .month-header strong {
+      color: var(--text);
+      font-size: 13px;
+    }
+
+    .month-bar-wrap {
+      position: relative;
+      height: 32px;
+      border-radius: 999px;
+      background: #020617;
+      border: 1px solid rgba(148, 163, 184, 0.7);
+      overflow: hidden;
+      padding: 9px 10px;
+    }
+
+    .month-bar {
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      overflow: hidden;
+    }
+
+    .month-fill {
+      position: absolute;
+      inset: 0;
+      transform-origin: left;
+      background: linear-gradient(90deg, #34d399, #a3e635, #facc15);
+    }
+
+    .week-markers {
+      position: relative;
+      z-index: 1;
+      height: 100%;
+    }
+
+    .week-marker {
+      position: absolute;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0;
+      font-size: 9px;
+      color: var(--muted);
+    }
+
+    .week-dot {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: #020617;
+      border: 1px solid rgba(148, 163, 184, 0.8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+    }
+
+    .week-marker.complete .week-dot {
+      background: #16a34a;
+      border-color: #bbf7d0;
+      color: #022c22;
+      position: relative;
+    }
+    .week-marker.complete .week-dot::after {
+      content: "✔";
+      font-size: 11px;
+    }
+
+    .week-marker.active .week-dot {
+      background: #fbbf24;
+      color: #1e1307;
+      border-color: #fef3c7;
+    }
+
+    .month-footer {
+      margin-top: 4px;
+      font-size: 11px;
+      color: var(--muted);
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .month-footer strong {
+      color: var(--accent4);
     }
 
     /* REWARDS PANEL */
@@ -248,41 +315,6 @@
       white-space: nowrap;
     }
 
-    .progress-row {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 11px;
-      color: var(--muted);
-      margin-bottom: 10px;
-    }
-
-    .progress-bar {
-      flex: 1;
-      height: 10px;
-      border-radius: 999px;
-      background: #020617;
-      border: 1px solid rgba(148, 163, 184, 0.8);
-      overflow: hidden;
-      position: relative;
-    }
-
-    .progress-fill {
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(90deg, #34d399, #a3e635, #facc15);
-      transform-origin: left;
-    }
-
-    .progress-label {
-      font-size: 11px;
-      color: var(--accent4);
-      font-weight: 600;
-      white-space: nowrap;
-    }
-
-    /* WEEK STRIP */
-
     .week-strip {
       display: grid;
       grid-template-columns: repeat(7, minmax(0, 1fr));
@@ -305,7 +337,7 @@
       font-size: 11px;
       position: relative;
       cursor: pointer;
-      transition: transform 0.12s ease, box-shadow 0.12s ease, border-color 0.12s ease;
+      transition: transform 0.12s ease, box-shadow 0.12s ease, border-color 0.12s ease, opacity 0.12s ease;
     }
     .day-pill:hover {
       transform: translateY(-2px);
@@ -313,12 +345,13 @@
     }
 
     .day-pill .day-label { font-weight: 700; }
+    .day-pill .date-label { font-size: 9px; color: var(--muted); }
     .day-pill .icon { font-size: 20px; margin-top: 4px; }
     .day-pill .amount { font-size: 11px; margin-top: 2px; color: var(--gold); }
     .day-pill .state { margin-top: 2px; font-size: 10px; color: var(--muted); }
 
     .day-pill.locked {
-      opacity: 0.65;
+      opacity: 0.55;
       border-style: dashed;
     }
     .day-pill.today {
@@ -326,13 +359,19 @@
       box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.9), 0 12px 22px rgba(251, 191, 36, 0.9);
     }
     .day-pill.today .state { color: var(--accent); }
-    .day-pill.claimed .state { color: var(--accent4); }
+    .day-pill.past {
+      filter: grayscale(0.1);
+      opacity: 0.8;
+    }
+    .day-pill.past .state {
+      color: var(--accent4);
+    }
     .day-pill.active {
       border-color: var(--accent3);
       box-shadow: 0 0 0 1px rgba(15, 23, 42, 0.9), 0 10px 24px rgba(56, 189, 248, 0.8);
     }
 
-    /* SELECTED CARD */
+    /* SELECTED TODAY / DAY CARD */
 
     .selected-card {
       border-radius: var(--radius-lg);
@@ -341,7 +380,7 @@
       border: 1px solid rgba(255, 255, 255, 0.16);
       padding: 10px 10px 10px;
       display: grid;
-      grid-template-columns: auto minmax(0, 1.3fr) minmax(0, 1.4fr);
+      grid-template-columns: auto minmax(0, 1.3fr) minmax(0, 1.3fr);
       gap: 10px;
       align-items: center;
     }
@@ -384,11 +423,35 @@
       font-size: 11px;
       color: var(--muted);
       display: grid;
-      gap: 3px;
+      gap: 4px;
     }
     .selected-meta span strong {
       color: var(--accent3);
       font-weight: 700;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 6px 12px;
+      border-radius: 999px;
+      border: 0;
+      font-family: inherit;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+      background: linear-gradient(135deg, #4ef0ff, #818cf8);
+      color: #020617;
+      box-shadow: 0 10px 18px rgba(59, 130, 246, 0.7);
+      margin-top: 4px;
+    }
+
+    .btn[disabled] {
+      opacity: 0.4;
+      cursor: default;
+      box-shadow: none;
     }
 
     /* RANKING PANEL */
@@ -637,12 +700,88 @@
       font-weight: 400;
     }
 
-    @media (max-width: 640px) {
-      .page {
-        padding: 16px 12px 18px;
-        border-radius: 20px;
-      }
+    /* BOTTOM NAV */
+
+    .bottom-nav {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: var(--nav-height);
+      display: flex;
+      justify-content: center;
+      z-index: 20;
+      pointer-events: none;
     }
+    .bottom-nav-inner {
+      pointer-events: auto;
+      width: 100%;
+      max-width: 1200px;
+      padding: 8px 12px;
+    }
+
+    .bottom-nav-bar {
+      background: rgba(3, 7, 18, 0.96);
+      border-radius: 18px 18px 0 0;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      padding: 6px 8px 8px;
+      border: 1px solid rgba(31, 41, 55, 0.9);
+      box-shadow: 0 -6px 22px rgba(0, 0, 0, 0.9);
+    }
+
+    .nav-btn {
+      flex: 1;
+      border: 0;
+      background: transparent;
+      color: #9ca3af;
+      font-family: inherit;
+      font-size: 11px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+      cursor: pointer;
+    }
+
+    .nav-btn span.icon {
+      font-size: 16px;
+    }
+
+    .nav-btn.active {
+      color: #f9fafb;
+    }
+    .nav-btn.active span.icon {
+      color: var(--accent);
+    }
+
+    /* TOAST */
+
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: calc(var(--nav-height) + 16px);
+      transform: translateX(-50%) translateY(10px);
+      background: radial-gradient(circle at 0 0, rgba(255,255,255,0.15), transparent 55%),
+                  linear-gradient(135deg, #22c55e, #16a34a);
+      color: #022c22;
+      padding: 8px 14px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 700;
+      box-shadow: 0 10px 22px rgba(0,0,0,0.7);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.15s ease, transform 0.15s ease;
+      z-index: 30;
+    }
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    /* SCROLLBARS */
 
     ::-webkit-scrollbar {
       width: 6px;
@@ -658,6 +797,13 @@
     ::-webkit-scrollbar-thumb:hover {
       background: #9ca3af;
     }
+
+    @media (max-width: 640px) {
+      .page {
+        padding: 16px 12px 18px;
+        border-radius: 20px;
+      }
+    }
   </style>
 </head>
 <body>
@@ -668,57 +814,56 @@
         <div class="title-block">
           <div class="badge">
             <span>🎄</span>
-            <span>Week 1 Check-in</span>
+            <span>December Check-in</span>
           </div>
           <div class="title-main">
             Holiday <span class="highlight">Reward Calendar</span>
           </div>
           <div class="subtitle">
-            Log in every day this week on GitHub, claim your daily rewards and push your turnover ranking.
+            Open this page every day in December, claim your daily rewards, and climb the turnover ranking.
           </div>
         </div>
 
         <div class="next-reward">
           <span class="label">Next reward in</span>
           <span class="time" id="nextRewardTime">--:--:--</span>
-          <span class="meta">Day resets at 00:00 (server time).</span>
+          <span class="meta">New reward unlocks at 00:00 (server time).</span>
         </div>
       </header>
 
-      <!-- TABS -->
-      <nav class="tab-nav">
-        <button class="tab-btn active" data-tab="rewards">
-          <span class="icon">📅</span>
-          <span>Week 1 Rewards</span>
-        </button>
-        <button class="tab-btn" data-tab="ranking">
-          <span class="icon">🏆</span>
-          <span>Turnover Ranking</span>
-        </button>
-      </nav>
-
-      <!-- TAB 1: REWARDS -->
+      <!-- TAB: REWARDS -->
       <section id="tab-rewards" class="tab-panel active">
         <section class="panel">
+          <!-- Month progress -->
+          <div class="month-progress">
+            <div class="month-header">
+              <strong>December Progress</strong>
+              <span id="monthSummary">Day 0 / 31</span>
+            </div>
+            <div class="month-bar-wrap">
+              <div class="month-bar">
+                <div class="month-fill" id="monthFill"></div>
+              </div>
+              <div class="week-markers" id="weekMarkers"></div>
+            </div>
+            <div class="month-footer">
+              <span>Weeks <strong>1–5</strong> represent all December rewards.</span>
+              <span>Complete a full week to light up a ✅ week badge.</span>
+            </div>
+          </div>
+
+          <!-- Week 1 rewards -->
           <div class="panel-header">
             <div>
               <div class="panel-title">
                 <span class="icon">🎁</span>
-                <span>Week 1 Rewards (7 Days)</span>
+                <span>Week 1 Rewards (Dec 1 – 7)</span>
               </div>
               <div class="panel-sub">
-                Tap any day to see reward details. Keep your streak to unlock the big chest on Day&nbsp;7.
+                Past days stay visible in grey, today’s reward is active, upcoming days are locked.
               </div>
             </div>
-            <div class="panel-badge">7-Day Streak Bonus</div>
-          </div>
-
-          <div class="progress-row">
-            <span>Progress</span>
-            <div class="progress-bar">
-              <div class="progress-fill" id="progressFill"></div>
-            </div>
-            <span class="progress-label" id="progressLabel">0 / 7 days</span>
+            <div class="panel-badge">Tap to view reward & code</div>
           </div>
 
           <div class="week-strip" id="weekStrip"></div>
@@ -727,7 +872,7 @@
         </section>
       </section>
 
-      <!-- TAB 2: RANKING -->
+      <!-- TAB: RANKING -->
       <section id="tab-ranking" class="tab-panel">
         <section class="panel">
           <header class="ranking-header">
@@ -753,11 +898,11 @@
               <div class="podium-grid" id="podiumGrid"></div>
             </div>
 
-            <!-- Search & List -->
+            <!-- Search & list -->
             <div class="table-panel">
               <div class="search-row">
                 <input id="searchInput" placeholder="Search your GitHub username…" />
-                <button id="searchBtn">Check Rank</button>
+                <button id="searchBtn">Find</button>
               </div>
               <div class="search-result" id="searchResult"></div>
 
@@ -774,27 +919,116 @@
     </div>
   </div>
 
-  <script>
-    // ---- TABS ----
-    const tabButtons = document.querySelectorAll(".tab-btn");
-    const tabPanels = {
-      rewards: document.getElementById("tab-rewards"),
-      ranking: document.getElementById("tab-ranking")
-    };
+  <!-- Bottom app nav -->
+  <nav class="bottom-nav">
+    <div class="bottom-nav-inner">
+      <div class="bottom-nav-bar">
+        <button class="nav-btn active" data-tab-target="rewards">
+          <span class="icon">📅</span>
+          <span>Rewards</span>
+        </button>
+        <button class="nav-btn" data-tab-target="ranking">
+          <span class="icon">🏆</span>
+          <span>Ranking</span>
+        </button>
+        <button class="nav-btn" data-tab-target="info">
+          <span class="icon">❓</span>
+          <span>Info</span>
+        </button>
+      </div>
+    </div>
+  </nav>
 
-    tabButtons.forEach(btn => {
-      btn.addEventListener("click", () => {
-        const tab = btn.dataset.tab;
-        tabButtons.forEach(b => b.classList.toggle("active", b === btn));
-        Object.entries(tabPanels).forEach(([key, panel]) => {
-          panel.classList.toggle("active", key === tab);
-        });
-      });
+  <div id="toast" class="toast">Voucher code copied!</div>
+
+  <script>
+    // ---------------------------
+    // DATE / DECEMBER CONTEXT
+    // ---------------------------
+    const today = new Date();
+    const currentYear = today.getFullYear();
+    const DECEMBER_MONTH = 11; // index 11 = December
+    const isDecemberNow = today.getMonth() === DECEMBER_MONTH;
+    // If not December yet, use demo day (change here for testing)
+    const decDayToday = isDecemberNow ? today.getDate() : 3;
+
+    // Clamp between 1–31 for safety
+    const todayInDecember = Math.min(Math.max(decDayToday, 1), 31);
+
+    // ---------------------------
+    // COUNTDOWN TO NEXT DAY
+    // ---------------------------
+    const nextRewardTimeEl = document.getElementById("nextRewardTime");
+
+    function updateCountdown() {
+      const now = new Date();
+      const next = new Date();
+      next.setHours(24, 0, 0, 0); // midnight
+      const diff = next - now;
+      if (diff <= 0) {
+        nextRewardTimeEl.textContent = "00:00:00";
+        return;
+      }
+      const h = String(Math.floor(diff / (1000 * 60 * 60))).padStart(2, "0");
+      const m = String(Math.floor((diff / (1000 * 60)) % 60)).padStart(2, "0");
+      const s = String(Math.floor((diff / 1000) % 60)).padStart(2, "0");
+      nextRewardTimeEl.textContent = `${h}:${m}:${s}`;
+    }
+    updateCountdown();
+    setInterval(updateCountdown, 1000);
+
+    // ---------------------------
+    // DECEMBER MONTH PROGRESS
+    // ---------------------------
+    const totalDaysDecember = 31;
+    const monthFill = document.getElementById("monthFill");
+    const monthSummary = document.getElementById("monthSummary");
+    const weekMarkersContainer = document.getElementById("weekMarkers");
+
+    const monthProgress = todayInDecember / totalDaysDecember;
+    monthFill.style.transform = `scaleX(${monthProgress})`;
+    monthSummary.textContent = `Day ${todayInDecember} / ${totalDaysDecember}`;
+
+    // Define 5 weeks (approx) of December
+    const weeks = [
+      { label: "W1", start: 1, end: 7 },
+      { label: "W2", start: 8, end: 14 },
+      { label: "W3", start: 15, end: 21 },
+      { label: "W4", start: 22, end: 28 },
+      { label: "W5", start: 29, end: 31 }
+    ];
+
+    weeks.forEach((week, index) => {
+      const mid = (week.start + week.end) / 2;
+      const pos = (mid / totalDaysDecember) * 100;
+      const status =
+        todayInDecember >= week.end
+          ? "complete"
+          : todayInDecember >= week.start
+          ? "active"
+          : "upcoming";
+
+      const marker = document.createElement("div");
+      marker.className = "week-marker " + status;
+      marker.style.left = pos + "%";
+      marker.innerHTML = `
+        <div class="week-dot">${index + 1}</div>
+        <div>${week.label}</div>
+      `;
+      weekMarkersContainer.appendChild(marker);
     });
 
-    // ---- CONFIG / SAMPLE DATA ----
-    const totalDays = 7;
-    const todayIndex = 3; // 1-based "today", adjust to your logic
+    // ---------------------------
+    // WEEK 1 REWARDS (DEC 1–7)
+    // ---------------------------
+    const weekStrip = document.getElementById("weekStrip");
+    const selectedCard = document.getElementById("selectedCard");
+
+    // Generate demo voucher codes for all of December
+    const voucherCodes = {};
+    for (let d = 1; d <= 31; d++) {
+      voucherCodes[d] = `DEC${String(d).padStart(2, "0")}-VOUCHER`;
+    }
 
     const weekRewards = [
       { day: 1, icon: "💰", name: "Starter Coins", amount: "350M", tagline: "Kick off your holiday streak." },
@@ -812,6 +1046,141 @@
       }
     ];
 
+    const weekdayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+    const decYear = currentYear;
+    let selectedDay = Math.min(Math.max(todayInDecember, 1), 7); // select today's day in week 1 if possible
+
+    function renderWeekStrip() {
+      weekStrip.innerHTML = "";
+
+      weekRewards.forEach((reward) => {
+        const calendarDate = new Date(decYear, DECEMBER_MONTH, reward.day);
+        const dow = weekdayNames[calendarDate.getDay()];
+        const isToday = reward.day === todayInDecember;
+        const isPast = reward.day < todayInDecember;
+        const isFuture = reward.day > todayInDecember;
+        const isLocked = isFuture;
+
+        const pill = document.createElement("button");
+        pill.type = "button";
+        pill.className = "day-pill";
+        if (isToday) pill.classList.add("today");
+        if (isPast) pill.classList.add("past");
+        if (isLocked) pill.classList.add("locked");
+        if (reward.day === selectedDay) pill.classList.add("active");
+
+        let stateText = "Locked 🔒";
+        if (isPast) stateText = "Claimed ✅";
+        if (isToday) stateText = "Today’s Reward 🎯";
+
+        pill.innerHTML = `
+          <div class="day-label">Day ${reward.day}</div>
+          <div class="date-label">${dow}, Dec ${reward.day}</div>
+          <div class="icon">${reward.icon}</div>
+          <div class="amount">${reward.amount}</div>
+          <div class="state">${stateText}</div>
+        `;
+
+        pill.addEventListener("click", () => {
+          selectedDay = reward.day;
+          renderWeekStrip();
+          renderSelectedCard();
+          if (isToday && !isLocked) {
+            // optional: copy on tap as well
+            handleCopyVoucher(reward.day);
+          }
+        });
+
+        weekStrip.appendChild(pill);
+      });
+    }
+
+    function renderSelectedCard() {
+      const reward =
+        weekRewards.find((r) => r.day === selectedDay) || weekRewards[0];
+      const isToday = reward.day === todayInDecember;
+      const isPast = reward.day < todayInDecember;
+      const isFuture = reward.day > todayInDecember;
+      const isLocked = isFuture;
+      const code = voucherCodes[reward.day];
+
+      let statusText = "Locked (not available yet)";
+      if (isPast) statusText = "Already claimed earlier this week.";
+      if (isToday) statusText = "Live now – claim & use your voucher today!";
+
+      selectedCard.innerHTML = `
+        <div class="selected-icon">${reward.icon}</div>
+        <div class="selected-main">
+          <h3>${isToday ? "Today’s Reward" : "Day " + reward.day + " Reward"}</h3>
+          <div class="amount">${reward.name} – ${reward.amount}</div>
+          <div class="tagline">${reward.tagline}</div>
+        </div>
+        <div class="selected-meta">
+          <span>Status: <strong>${statusText}</strong></span>
+          <span>Voucher code: <strong>${code}</strong></span>
+          <span>How it works: copy the code & redeem it inside your game / promo flow.</span>
+          <button id="copyCodeBtn" class="btn" ${isToday && !isLocked ? "" : "disabled"}>
+            <span>📋</span> <span>Copy today’s code</span>
+          </button>
+          <span style="font-size:10px; color:${isToday ? "#bbf7d0" : "#9ca3af"};">
+            ${isToday
+              ? "This is your current running reward. Copy & use it before the day ends."
+              : "Only today’s reward can be copied. Past codes are expired and future ones are locked."}
+          </span>
+        </div>
+      `;
+
+      const copyBtn = document.getElementById("copyCodeBtn");
+      if (copyBtn && isToday && !isLocked) {
+        copyBtn.addEventListener("click", () => handleCopyVoucher(reward.day));
+      }
+    }
+
+    // ---------------------------
+    // CLIPBOARD + TOAST
+    // ---------------------------
+    const toastEl = document.getElementById("toast");
+
+    function showToast(message) {
+      toastEl.textContent = message;
+      toastEl.classList.add("show");
+      setTimeout(() => toastEl.classList.remove("show"), 1800);
+    }
+
+    function handleCopyVoucher(day) {
+      const code = voucherCodes[day];
+      if (!code) return;
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard
+          .writeText(code)
+          .then(() => showToast("Voucher code copied!"))
+          .catch(() => fallbackCopy(code));
+      } else {
+        fallbackCopy(code);
+      }
+    }
+
+    function fallbackCopy(text) {
+      const ta = document.createElement("textarea");
+      ta.value = text;
+      document.body.appendChild(ta);
+      ta.select();
+      try {
+        document.execCommand("copy");
+        showToast("Voucher code copied!");
+      } catch (e) {
+        showToast("Unable to copy, please copy manually.");
+      }
+      document.body.removeChild(ta);
+    }
+
+    // Initial render for rewards
+    renderWeekStrip();
+    renderSelectedCard();
+
+    // ---------------------------
+    // RANKING / PODIUM
+    // ---------------------------
     const rankingData = [
       { username: "SnowLegend", turnover: 98500 },
       { username: "WinterWhale", turnover: 95600 },
@@ -840,7 +1209,10 @@
       { username: "ExampleUser", turnover: 51000, rank: 26 }
     ];
 
-    // ---- UTILITIES ----
+    const podiumGrid = document.getElementById("podiumGrid");
+    const rankingList = document.getElementById("rankingList");
+    const updatedAt = document.getElementById("updatedAt");
+
     function shortNum(n) {
       if (n >= 1_000_000) return (n / 1_000_000).toFixed(1) + "M";
       if (n >= 1_000) return (n / 1_000).toFixed(1) + "K";
@@ -855,112 +1227,12 @@
         .join("");
     }
 
-    // ---- COUNTDOWN ----
-    const nextRewardTimeEl = document.getElementById("nextRewardTime");
-    function updateCountdown() {
-      const now = new Date();
-      const next = new Date();
-      next.setHours(24, 0, 0, 0);
-      const diff = next - now;
-      if (diff <= 0) {
-        nextRewardTimeEl.textContent = "00:00:00";
-        return;
-      }
-      const h = String(Math.floor(diff / (1000 * 60 * 60))).padStart(2, "0");
-      const m = String(Math.floor((diff / (1000 * 60)) % 60)).padStart(2, "0");
-      const s = String(Math.floor((diff / 1000) % 60)).padStart(2, "0");
-      nextRewardTimeEl.textContent = `${h}:${m}:${s}`;
-    }
-    updateCountdown();
-    setInterval(updateCountdown, 1000);
-
-    // ---- WEEK STRIP + SELECTED CARD ----
-    const weekStrip = document.getElementById("weekStrip");
-    const selectedCard = document.getElementById("selectedCard");
-    const progressFill = document.getElementById("progressFill");
-    const progressLabel = document.getElementById("progressLabel");
-
-    let selectedDay = todayIndex;
-
-    function renderWeekStrip() {
-      weekStrip.innerHTML = "";
-      weekRewards.forEach((reward) => {
-        const isLocked = reward.day > todayIndex;
-        const isToday = reward.day === todayIndex;
-        const isClaimed = reward.day < todayIndex;
-
-        const pill = document.createElement("button");
-        pill.type = "button";
-        pill.className = "day-pill";
-        if (isLocked) pill.classList.add("locked");
-        if (isToday) pill.classList.add("today");
-        if (isClaimed) pill.classList.add("claimed");
-        if (reward.day === selectedDay) pill.classList.add("active");
-
-        let stateText = "Locked";
-        if (!isLocked) stateText = isToday ? "Today" : "Claimed";
-
-        pill.innerHTML = `
-          <div class="day-label">Day ${reward.day}</div>
-          <div class="icon">${reward.icon}</div>
-          <div class="amount">${reward.amount}</div>
-          <div class="state">${stateText}</div>
-        `;
-        pill.addEventListener("click", () => {
-          selectedDay = reward.day;
-          renderWeekStrip();
-          renderSelectedCard();
-        });
-
-        weekStrip.appendChild(pill);
-      });
-    }
-
-    function renderSelectedCard() {
-      const reward = weekRewards.find((r) => r.day === selectedDay) || weekRewards[0];
-      const isLocked = reward.day > todayIndex;
-      const isToday = reward.day === todayIndex;
-      const isClaimed = reward.day < todayIndex;
-
-      let stateText = "Locked";
-      if (!isLocked) stateText = isToday ? "Ready to claim" : "Already claimed";
-
-      selectedCard.innerHTML = `
-        <div class="selected-icon">${reward.icon}</div>
-        <div class="selected-main">
-          <h3>Day ${reward.day}: ${reward.name}</h3>
-          <div class="amount">${reward.amount}</div>
-          <div class="tagline">${reward.tagline}</div>
-        </div>
-        <div class="selected-meta">
-          <span>Status: <strong>${stateText}</strong></span>
-          <span>Requirement: <strong>Log in on Day ${reward.day} (no streak break)</strong></span>
-          ${
-            reward.day === 7
-              ? `<span>Bonus: <strong>Coins, Energy, XP & mystery reward</strong> for full 7-day streak.</span>`
-              : `<span>Tip: <strong>Keep checking in</strong> – missing a day locks the remaining rewards.</span>`
-          }
-        </div>
-      `;
-    }
-
-    const progress = todayIndex / totalDays;
-    progressFill.style.transform = `scaleX(${progress})`;
-    progressLabel.textContent = `${todayIndex} / ${totalDays} days`;
-
-    renderWeekStrip();
-    renderSelectedCard();
-
-    // ---- RANKING / PODIUM ----
-    const podiumGrid = document.getElementById("podiumGrid");
-    const rankingList = document.getElementById("rankingList");
-    const updatedAt = document.getElementById("updatedAt");
-
     const now = new Date();
     updatedAt.textContent =
       "Updated " +
       now.toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit" });
 
+    // Podium
     rankingData.slice(0, 3).forEach((player, index) => {
       const rank = index + 1;
       const card = document.createElement("div");
@@ -974,6 +1246,7 @@
       podiumGrid.appendChild(card);
     });
 
+    // List
     rankingData.forEach((player, index) => {
       const rank = index + 1;
       const row = document.createElement("div");
@@ -993,7 +1266,7 @@
       rankingList.appendChild(row);
     });
 
-    // ---- SEARCH ----
+    // Search
     const searchInput = document.getElementById("searchInput");
     const searchBtn = document.getElementById("searchBtn");
     const searchResult = document.getElementById("searchResult");
@@ -1058,6 +1331,38 @@
         if (e.key === "Enter") handleSearch();
       });
     }
+
+    // ---------------------------
+    // BOTTOM NAV TABS
+    // ---------------------------
+    const navButtons = document.querySelectorAll(".nav-btn");
+    const tabPanels = {
+      rewards: document.getElementById("tab-rewards"),
+      ranking: document.getElementById("tab-ranking")
+      // "info" currently just keeps current tab; you can add a 3rd panel if needed
+    };
+
+    navButtons.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const target = btn.dataset.tabTarget;
+
+        if (target === "info") {
+          // Placeholder: you can open a modal or scroll to FAQ, etc.
+          showToast("Info / T&C section coming soon.");
+          return;
+        }
+
+        navButtons.forEach((b) => b.classList.remove("active"));
+        btn.classList.add("active");
+
+        Object.entries(tabPanels).forEach(([key, panel]) => {
+          panel.classList.toggle("active", key === target);
+        });
+
+        // Scroll to top of page content when switching tabs
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      });
+    });
   </script>
 </body>
 </html>
