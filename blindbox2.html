@@ -132,44 +132,27 @@
       padding: 6px 6px 4px;
       display: flex;
       flex-direction: column;
-      justify-content: space-between;
+      justify-content: flex-end;
       align-items: stretch;
       color: #f9fafb;
       transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease, opacity 0.15s ease;
       overflow: hidden;
     }
 
-    /* subtle dark overlay so numbers/text are readable */
+    /* subtle dark overlay */
     .tile-inner::before {
       content: "";
       position: absolute;
       inset: 0;
-      background: linear-gradient(150deg, rgba(15,23,42,0.15), rgba(15,23,42,0.35));
+      background: linear-gradient(150deg, rgba(15,23,42,0.15), rgba(15,23,42,0.3));
       mix-blend-mode: multiply;
       pointer-events: none;
       z-index: 0;
     }
 
-    .tile-header,
     .tile-footer {
       position: relative;
       z-index: 1;
-    }
-
-    .tile-header {
-      display: flex;
-      justify-content: flex-end;
-      align-items: center;
-      font-size: 18px;
-      font-weight: 600;
-      text-shadow: 0 2px 4px rgba(15, 23, 42, 0.7);
-    }
-
-    .tile-number {
-      margin-left: auto;
-    }
-
-    .tile-footer {
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -351,9 +334,9 @@
   <script>
     // ---------- DATE LOGIC ----------
     const NOW = new Date();
-    const DECEMBER = 11;          // month index (Dec)
-    const USE_REAL_DATE = true;   // set false for testing
-    const demoDay = 3;            // fake "today" when testing
+    const DECEMBER = 11;
+    const USE_REAL_DATE = true;
+    const demoDay = 3;
 
     const isDecember = NOW.getMonth() === DECEMBER;
     const todayDay = USE_REAL_DATE && isDecember ? NOW.getDate() : demoDay;
@@ -361,15 +344,14 @@
     const TOTAL_DAYS = 31;
 
     // ---------- IMAGE URLs PER TILE ----------
-    // Replace each placeholder with your real artwork URL.
     const dayImages = {
-      1: "https://ricomx.ft-crm.com/media-api/serve/8e80d42c-a80e-45c5-bfa4-a5e536e98c66_1.png", // example using your uploaded sheet
-      2: "https://ricomx.ft-crm.com/media-api/serve/1b6616ff-bec4-4ace-9a38-f265f5742fb1_4.png",
-      3: "https://ricomx.ft-crm.com/media-api/serve/3fdfb609-030c-45c9-bb7c-8a481fb56816_3.png",
-      4: "https://ricomx.ft-crm.com/media-api/serve/389b1b85-289b-4c82-82d6-5c782a188f5d_5.png",
-      5: "https://ricomx.ft-crm.com/media-api/serve/adc37439-2f3e-4768-870b-ab2cd8d52893_6.png",
-      6: "https://ricomx.ft-crm.com/media-api/serve/b80dd002-f32b-472e-9925-23c60718fde5_7.png",
-      7: "https://ricomx.ft-crm.com/media-api/serve/97eb4ee3-bd06-4d97-8d87-94fa61e081ee_2.png",
+      1: "https://ricomx.ft-crm.com/media-api/serve/f2a2f819-d739-4c29-8362-5886e183ee2f_1.png",
+      2: "https://ricomx.ft-crm.com/media-api/serve/f471d8c3-2f77-4a3d-8a3c-1b7d6905da7c_2.png",
+      3: "https://ricomx.ft-crm.com/media-api/serve/ac01f059-b35b-43a1-b350-77e4f6da4ea2_3.png",
+      4: "https://ricomx.ft-crm.com/media-api/serve/075cddcf-896d-4edb-84f0-09e2cc519714_4.png",
+      5: "https://ricomx.ft-crm.com/media-api/serve/e60036e3-a65e-419d-8794-bc3fb365e7eb_5.png",
+      6: "https://ricomx.ft-crm.com/media-api/serve/85c1afbb-9f00-4677-9e95-3eb1a1587518_6.png",
+      7: "https://ricomx.ft-crm.com/media-api/serve/f63cff77-ca4c-4674-bb05-682f7885281c_7.png",
       8: "https://via.placeholder.com/200x200.png?text=8",
       9: "https://via.placeholder.com/200x200.png?text=9",
       10: "https://via.placeholder.com/200x200.png?text=10",
@@ -400,10 +382,7 @@
     const rewards = {
       1: "Up to 100 Free Spins<br>VIP 01–03: 20 FS<br>VIP 04–05: 50 FS<br>VIP 06+: 100 FS",
       2: "Coin Pack – up to 500M<br>VIP 01–03: 80M<br>VIP 04–05: 200M<br>VIP 06+: 500M",
-      3: "Epic Loot Crate – up to 3x epic items.",
-      4: "Turnover Boost – up to 2x turnover for 2 hours.",
-      5: "Energy Rush – bonus raid / attack energy.",
-      // ...fill 6–31 with your real copy as needed
+      3: "Epic Loot Crate – up to 3x epic items."
     };
 
     const grid = document.getElementById("calendarGrid");
@@ -428,9 +407,7 @@
 
       tile.innerHTML = `
         <div class="tile-inner" style="background-image:url('${imgUrl}')">
-          <div class="tile-header">
-            <div class="tile-number">${day}</div>
-          </div>
+          
           <div class="tile-footer">
             <div class="state-pill ${state === "today" ? "today-pill" : ""}">
               ${stateLabel}
