@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Blue Squishy Christmas Calendar</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600&family=Patrick+Hand&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg-blue: #e0f2fe;
+      --tile-blue: #5c8df6;
+      --tile-blue-dark: #4062c8;
+      --text-main: #0f172a;
+      --muted: #e5f0ff;
+      --accent-yellow: #fde047;
+      --accent-red: #fb7185;
+      --accent-green: #22c55e;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background:
+        radial-gradient(circle at 0 0, rgba(96, 165, 250, 0.4), transparent 55%),
+        radial-gradient(circle at 100% 100%, rgba(251, 113, 133, 0.35), transparent 55%),
+        linear-gradient(180deg, #bfdbfe, #e0f2fe);
+      font-family: "Fredoka", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--text-main);
+      padding: 14px 8px;
+    }
+
+    .calendar-shell {
+      width: min(960px, 100%);
+      background: #f9fafb;
+      border-radius: 28px;
+      border: 3px solid #bfdbfe;
+      box-shadow: 0 20px 60px rgba(15, 23, 42, 0.5);
+      padding: 16px 12px 18px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* fun doodle border */
+    .calendar-shell::before {
+      content: "";
+      position: absolute;
+      inset: 6px;
+      border-radius: 22px;
+      border: 2px dashed rgba(148, 163, 184, 0.7);
+      pointer-events: none;
+    }
+
+    .calendar-inner {
+      position: relative;
+      z-index: 1;
+    }
+
+    .top-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px 16px;
+      margin-bottom: 10px;
+      padding: 0 6px;
+    }
+
+    .title-block {
+      flex: 1 1 180px;
+    }
+
+    .calendar-title {
+      font-family: "Patrick Hand", cursive;
+      font-size: 28px;
+      color: #1d4ed8;
+      text-shadow: 0 2px 0 rgba(15, 23, 42, 0.1);
+    }
+
+    .calendar-sub {
+      margin-top: 2px;
+      font-size: 12px;
+      color: #475569;
+    }
+
+    .sample-image {
+      flex: 0 0 auto;
+      max-width: 220px;
+      border-radius: 18px;
+      overflow: hidden;
+      border: 2px solid #bfdbfe;
+      box-shadow: 0 10px 26px rgba(15, 23, 42, 0.35);
+      background: #fff;
+    }
+
+    .sample-image img {
+      width: 100%;
+      display: block;
+    }
+
+    /* GRID */
+
+    .calendar-grid {
+      margin-top: 12px;
+      padding: 4px 4px 0;
+      display: grid;
+      grid-template-columns: repeat(7, minmax(0, 1fr));
+      grid-auto-rows: 90px;
+      gap: 12px;
+    }
+
+    @media (max-width: 860px) {
+      .calendar-grid {
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+        grid-auto-rows: 86px;
+      }
+    }
+
+    @media (max-width: 680px) {
+      .calendar-grid {
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+        grid-auto-rows: 84px;
+      }
+    }
+
+    @media (max-width: 520px) {
+      .calendar-grid {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        grid-auto-rows: 80px;
+      }
+    }
+
+    @media (max-width: 380px) {
+      .calendar-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        grid-auto-rows: 78px;
+      }
+    }
+
+    /* TILE (blue squishy shape) */
+
+    .day-tile {
+      position: relative;
+      border: 0;
+      padding: 0;
+      margin: 0;
+      cursor: pointer;
+      background: transparent;
+      outline: none;
+    }
+
+    .tile-inner {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      border-radius: 30% / 35%;
+      background: radial-gradient(circle at 20% 0, rgba(255, 255, 255, 0.6), transparent 55%),
+                  radial-gradient(circle at 80% 110%, rgba(30, 64, 175, 0.45), transparent 60%),
+                  linear-gradient(145deg, #5b8ff5, #3b82f6);
+      box-shadow: 0 7px 0 #4062c8, 0 10px 18px rgba(15, 23, 42, 0.5);
+      padding: 6px 6px 4px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: stretch;
+      color: #f9fafb;
+      transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease, opacity 0.15s ease;
+    }
+
+    .tile-inner::after {
+      content: "";
+      position: absolute;
+      inset: 6px;
+      border-radius: inherit;
+      border: 1px dashed rgba(191, 219, 254, 0.8);
+      pointer-events: none;
+    }
+
+    .tile-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 4px;
+      font-size: 11px;
+    }
+
+    .tile-icon {
+      font-size: 20px;
+      text-shadow: 0 2px 4px rgba(15, 23, 42, 0.45);
+    }
+
+    .tile-number {
+      margin-left: auto;
+      font-weight: 600;
+      font-size: 18px;
+      text-shadow: 0 2px 4px rgba(15, 23, 42, 0.45);
+    }
+
+    .tile-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 4px;
+      font-size: 9px;
+    }
+
+    .state-pill {
+      padding: 2px 6px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.28);
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      white-space: nowrap;
+    }
+
+    .today-pill {
+      background: #fde047;
+      color: #92400e;
+      box-shadow: 0 2px 4px rgba(15, 23, 42, 0.4);
+    }
+
+    .info-badge {
+      position: relative;
+      width: 16px;
+      height: 16px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid rgba(191, 219, 254, 0.9);
+      font-size: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .lock-icon {
+      font-size: 14px;
+      margin-left: 2px;
+    }
+
+    /* TOOLTIP */
+
+    .tooltip {
+      position: absolute;
+      inset: auto 0 110% auto;
+      transform: translateY(6px);
+      max-width: 230px;
+      padding: 6px 8px;
+      border-radius: 10px;
+      background: rgba(15, 23, 42, 0.97);
+      border: 1px solid rgba(148, 163, 184, 0.9);
+      color: #e5e7eb;
+      font-size: 10px;
+      line-height: 1.4;
+      box-shadow: 0 10px 24px rgba(15, 23, 42, 0.95);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.15s ease, transform 0.15s ease;
+      z-index: 5;
+    }
+
+    .tooltip::after {
+      content: "";
+      position: absolute;
+      top: 100%;
+      right: 12px;
+      width: 8px;
+      height: 8px;
+      background: inherit;
+      border-bottom: inherit;
+      border-right: inherit;
+      transform: rotate(45deg);
+    }
+
+    .day-tile:hover .tooltip,
+    .day-tile:focus-within .tooltip {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* STATES (past/today/future) */
+
+    .day-tile.past .tile-inner {
+      filter: grayscale(0.25) brightness(0.95);
+      opacity: 0.9;
+      box-shadow: 0 6px 0 #2e3a8c, 0 10px 16px rgba(15, 23, 42, 0.45);
+    }
+
+    .day-tile.future .tile-inner {
+      filter: grayscale(0.1) brightness(0.85);
+      box-shadow: 0 6px 0 #334155, 0 10px 16px rgba(15, 23, 42, 0.35);
+    }
+
+    .day-tile.today .tile-inner {
+      box-shadow:
+        0 0 0 3px rgba(251, 191, 36, 0.95),
+        0 0 24px rgba(251, 191, 36, 0.95),
+        0 9px 16px rgba(15, 23, 42, 0.8);
+      transform: translateY(-2px);
+      animation: wobble 1.6s ease-in-out infinite;
+    }
+
+    @keyframes wobble {
+      0%, 100% { transform: translateY(-2px) rotate(0deg); }
+      25% { transform: translateY(-1px) rotate(-1.2deg); }
+      50% { transform: translateY(-2px) rotate(1.2deg); }
+      75% { transform: translateY(-1px) rotate(-0.8deg); }
+    }
+
+    .calendar-legend {
+      margin-top: 12px;
+      font-size: 11px;
+      color: #64748b;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 6px 14px;
+      padding: 0 6px;
+    }
+
+    .legend-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .legend-dot {
+      width: 11px;
+      height: 11px;
+      border-radius: 999px;
+      display: inline-block;
+    }
+    .dot-past { background: #9ca3af; }
+    .dot-today { background: #fde047; box-shadow: 0 0 10px rgba(251, 191, 36, 0.9); }
+    .dot-future { background: #93c5fd; border: 1px solid #60a5fa; }
+
+    .legend-note {
+      margin-top: 4px;
+      font-size: 10px;
+      text-align: center;
+      color: #64748b;
+    }
+  </style>
+</head>
+<body>
+  <div class="calendar-shell">
+    <div class="calendar-inner">
+      <div class="top-row">
+        <div class="title-block">
+          <div class="calendar-title">calendar numbers</div>
+          <div class="calendar-sub">
+            One surprise per day • 1–31 December. Hover / tap any tile for details.
+          </div>
+        </div>
+
+        <!-- Your reference image (remove this block if you don't want it visible) -->
+        <div class="sample-image">
+          <img src="/mnt/data/928648c5-e9e0-4162-89c4-dd5bcb353b2e.png" alt="Reference calendar design" />
+        </div>
+      </div>
+
+      <div id="calendarGrid" class="calendar-grid"></div>
+
+      <div class="calendar-legend">
+        <span class="legend-item">
+          <span class="legend-dot dot-past"></span> Past (claimed)
+        </span>
+        <span class="legend-item">
+          <span class="legend-dot dot-today"></span> Today (open)
+        </span>
+        <span class="legend-item">
+          <span class="legend-dot dot-future"></span> Locked
+        </span>
+      </div>
+      <div class="legend-note">
+        Reward text can be different for every date; edit it directly in the JavaScript config.
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // --------- CONFIG ----------
+    const NOW = new Date();
+    const DECEMBER = 11;          // month index (Dec)
+    const USE_REAL_DATE = true;   // set to false for testing
+    const demoDay = 3;            // fake "today" if not using real date
+
+    const isDecember = NOW.getMonth() === DECEMBER;
+    const todayDay = USE_REAL_DATE && isDecember ? NOW.getDate() : demoDay;
+
+    const TOTAL_DAYS = 31;
+
+    // icons per day to mimic your doodle style (feel free to change)
+    const icons = {
+      1: "⛄",  2: "🎁",  3: "❄️",  4: "🎁",  5: "🎁",  6: "🎄",
+      7: "🔴",  8: "⭐",  9: "🍭", 10: "🎁", 11: "❄️",
+      12: "🎅", 13: "❄️", 14: "⭐", 15: "🧢", 16: "❄️",
+      17: "🌲", 18: "⭐", 19: "🍒", 20: "⭐", 21: "🔔",
+      22: "🎄", 23: "🎅", 24: "⭐", 25: "🍪", 26: "⭐",
+      27: "🎁", 28: "🔔", 29: "🎄", 30: "⭐", 31: "🧦"
+    };
+
+    // Tooltip / reward description per day
+    const rewards = {
+      1: "Up to 100 Free Spins<br>VIP 01–03: 20 FS<br>VIP 04–05: 50 FS<br>VIP 06+: 100 FS",
+      2: "Coin Pack – up to 500M<br>VIP 01–03: 80M<br>VIP 04–05: 200M<br>VIP 06+: 500M",
+      3: "Epic Loot Crate – up to 3x epic items.",
+      4: "Turnover Boost – up to 2x turnover for 2 hours.",
+      5: "Energy Rush – bonus raid/attack energy.",
+      6: "Super Tree Pack – coins + spins.",
+      // ...you can fill all days here
+    };
+
+    const grid = document.getElementById("calendarGrid");
+
+    function createTile(day) {
+      const tile = document.createElement("button");
+      tile.type = "button";
+      tile.className = "day-tile";
+
+      const state =
+        day < todayDay ? "past" :
+        day === todayDay ? "today" :
+        "future";
+      tile.classList.add(state);
+
+      const tooltipHtml = rewards[day] || "Reward details coming soon – ask support if you are not sure.";
+
+      let stateLabel = "Locked";
+      if (state === "past") stateLabel = "Claimed";
+      if (state === "today") stateLabel = "Today";
+
+      tile.innerHTML = `
+        <div class="tile-inner">
+          <div class="tile-header">
+            <div class="tile-icon">${icons[day] || "🎄"}</div>
+            <div class="tile-number">${day}</div>
+          </div>
+          <div class="tile-footer">
+            <div class="state-pill ${state === "today" ? "today-pill" : ""}">
+              ${stateLabel}
+            </div>
+            <div style="display:flex;align-items:center;gap:2px;">
+              <div class="info-badge">i</div>
+              ${state === "future" ? '<span class="lock-icon">🔒</span>' : ""}
+            </div>
+          </div>
+        </div>
+        <div class="tooltip">${tooltipHtml}</div>
+      `;
+
+      return tile;
+    }
+
+    for (let day = 1; day <= TOTAL_DAYS; day++) {
+      grid.appendChild(createTile(day));
+    }
+  </script>
+</body>
+</html>
