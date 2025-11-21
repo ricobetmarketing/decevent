@@ -592,8 +592,27 @@
       transform: translateY(0);
     }
 
-    /* Voucher view */
+    /* VOUCHER MODAL (POPUP) */
     .voucher-panel {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.82);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 40;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+    }
+    .voucher-panel.show {
+      pointer-events: auto;
+      opacity: 1;
+    }
+
+    .voucher-inner {
+      max-width: 380px;
+      width: 90%;
       background: #fef2f2;
       border-radius: 26px;
       padding: 14px 14px 16px;
@@ -601,18 +620,14 @@
       box-shadow: var(--shadow-strong);
       position: relative;
       overflow: hidden;
-      display: none;
-      transform: translateY(8px);
-      opacity: 0;
-      transition: opacity 0.2s ease, transform 0.2s ease;
+      transform: translateY(12px);
+      transition: transform 0.2s ease;
     }
-    .voucher-panel.show {
-      display: block;
-      opacity: 1;
+    .voucher-panel.show .voucher-inner {
       transform: translateY(0);
     }
 
-    .voucher-panel::before {
+    .voucher-inner::before {
       content: "";
       position: absolute;
       inset: 0;
@@ -623,7 +638,7 @@
       pointer-events: none;
     }
 
-    .voucher-inner {
+    .voucher-main-wrap {
       position: relative;
       z-index: 1;
     }
@@ -736,7 +751,7 @@
       box-shadow: none;
     }
 
-    /* TURNOVER TAB (same ranking style as before) */
+    /* TURNOVER TAB  */
     .ranking-header {
       display: flex;
       justify-content: space-between;
@@ -1060,7 +1075,7 @@
       opacity: 0;
       pointer-events: none;
       transition: opacity 0.15s ease, transform 0.15s ease;
-      z-index: 30;
+      z-index: 50;
     }
     .toast.show {
       opacity: 1;
@@ -1218,55 +1233,6 @@
             <div class="day-grid" id="dayGrid"></div>
           </div>
         </div>
-
-        <!-- Voucher page (slides in when today tile clicked) -->
-        <div class="voucher-panel" id="voucherPanel">
-          <div class="voucher-inner">
-            <div class="voucher-header">
-              <div>
-                <div style="font-size:12px; text-transform:uppercase; letter-spacing:0.1em;">Voucher page</div>
-                <div style="font-size:10px; color:#9ca3af;">This is your reward for today’s calendar tile.</div>
-              </div>
-              <button class="voucher-back" id="voucherBackBtn">
-                ← Back to calendar
-              </button>
-            </div>
-
-            <div class="voucher-main">
-              <div class="voucher-day" id="voucherDayLabel">Day 2</div>
-              <div class="voucher-sub" id="voucherRewardText">
-                You have received: 50% OFF coupon from Mr. Rico Mart.
-              </div>
-
-              <div class="coupon-card">
-                <div>
-                  <div class="coupon-value" id="voucherBigText">50% OFF</div>
-                  <div class="coupon-label" id="voucherSmallText">
-                    Discount on selected Mr. Rico Mart bundles.
-                  </div>
-                </div>
-                <div class="coupon-code-box">
-                  <div style="font-size:10px; text-transform:uppercase; letter-spacing:0.2em;">Voucher code</div>
-                  <div id="voucherCodeText">DEC02-VOUCHER</div>
-                </div>
-              </div>
-
-              <div class="coupon-note">
-                Paste this code inside the promo section before the end of the day. Each code is valid for a single account only.
-              </div>
-
-              <div class="voucher-actions">
-                <button class="btn-primary" id="voucherCopyBtn">
-                  <span>📋</span>
-                  <span>Copy code & redeem</span>
-                </button>
-                <span id="voucherStatusHint">
-                  Available only for today. Past / future vouchers remain locked.
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
       </section>
     </section>
 
@@ -1312,6 +1278,57 @@
         </div>
       </section>
     </section>
+  </div>
+</div>
+
+<!-- Voucher popup -->
+<div class="voucher-panel" id="voucherPanel">
+  <div class="voucher-inner">
+    <div class="voucher-main-wrap">
+      <div class="voucher-header">
+        <div>
+          <div style="font-size:12px; text-transform:uppercase; letter-spacing:0.1em;">Voucher page</div>
+          <div style="font-size:10px; color:#9ca3af;">This is your reward for today’s calendar tile.</div>
+        </div>
+        <button class="voucher-back" id="voucherBackBtn">
+          ← Back to calendar
+        </button>
+      </div>
+
+      <div class="voucher-main">
+        <div class="voucher-day" id="voucherDayLabel">Day 2</div>
+        <div class="voucher-sub" id="voucherRewardText">
+          You have received: 50% OFF coupon from Mr. Rico Mart.
+        </div>
+
+        <div class="coupon-card">
+          <div>
+            <div class="coupon-value" id="voucherBigText">50% OFF</div>
+            <div class="coupon-label" id="voucherSmallText">
+              Discount on selected Mr. Rico Mart bundles.
+            </div>
+          </div>
+          <div class="coupon-code-box">
+            <div style="font-size:10px; text-transform:uppercase; letter-spacing:0.2em;">Voucher code</div>
+            <div id="voucherCodeText">DEC02-VOUCHER</div>
+          </div>
+        </div>
+
+        <div class="coupon-note">
+          Paste this code inside the promo section before the end of the day. Each code is valid for a single account only.
+        </div>
+
+        <div class="voucher-actions">
+          <button class="btn-primary" id="voucherCopyBtn">
+            <span>📋</span>
+            <span>Copy code & redeem</span>
+          </button>
+          <span id="voucherStatusHint">
+            Voucher is active for today only. Copy & redeem before the day ends.
+          </span>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -1433,7 +1450,7 @@
         </ul>`,
       bigText: "EPIC LOOT"
     }
-    // You can fill 4–31 similarly
+    // fill 4–31 if needed
   };
 
   function getReward(day) {
@@ -1528,7 +1545,7 @@
     });
   });
 
-  /* Voucher page logic */
+  /* Voucher modal logic */
   const voucherPanel = document.getElementById("voucherPanel");
   const voucherBackBtn = document.getElementById("voucherBackBtn");
   const voucherDayLabel = document.getElementById("voucherDayLabel");
@@ -1552,11 +1569,19 @@
     voucherCopyBtn.disabled = false;
 
     voucherPanel.classList.add("show");
-    voucherPanel.scrollIntoView({ behavior: "smooth", block: "start" });
   }
 
-  voucherBackBtn.addEventListener("click", () => {
+  function closeVoucher() {
     voucherPanel.classList.remove("show");
+  }
+
+  voucherBackBtn.addEventListener("click", closeVoucher);
+
+  // close when clicking outside the card
+  voucherPanel.addEventListener("click", (e) => {
+    if (e.target === voucherPanel) {
+      closeVoucher();
+    }
   });
 
   /* Copy code */
