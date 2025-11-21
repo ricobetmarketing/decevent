@@ -414,7 +414,7 @@
       box-shadow: 0 0 0 1px rgba(15, 23, 42, 0.9), 0 10px 24px rgba(56, 189, 248, 0.9);
     }
 
-    /* INFO ICON & TOOLTIP */
+    /* INFO ICON - triggers popup */
 
     .day-info-wrap {
       position: absolute;
@@ -445,50 +445,87 @@
       box-shadow: 0 6px 14px rgba(0,0,0,0.9);
     }
 
-    .info-tooltip {
-      position: absolute;
-      right: 0;
-      top: 22px;
-      min-width: 190px;
-      max-width: 230px;
-      padding: 6px 8px;
-      border-radius: 10px;
-      background: rgba(15, 23, 42, 0.98);
-      border: 1px solid rgba(148, 163, 184, 0.8);
-      font-size: 10px;
-      color: #e5e7eb;
-      box-shadow: 0 8px 18px rgba(0, 0, 0, 0.8);
-      z-index: 6;
-      opacity: 0;
+    /* POPUP / MODAL FOR INFO */
+
+    .info-modal {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 40;
       pointer-events: none;
-      transform: translateY(4px);
-      transition: opacity 0.12s ease, transform 0.12s ease;
+      opacity: 0;
+      transition: opacity 0.15s ease;
+    }
+    .info-modal.show {
+      opacity: 1;
+      pointer-events: auto;
     }
 
-    .info-tooltip strong {
+    .info-modal-backdrop {
+      position: absolute;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.85);
+      backdrop-filter: blur(4px);
+    }
+
+    .info-modal-panel {
+      position: relative;
+      max-width: 340px;
+      width: 90%;
+      background:
+        radial-gradient(circle at 0 0, rgba(255,255,255,0.18), transparent 60%),
+        linear-gradient(135deg, #020617, #020617);
+      border-radius: 18px;
+      border: 1px solid rgba(148, 163, 184, 0.8);
+      box-shadow: 0 18px 40px rgba(0,0,0,0.9);
+      padding: 10px 12px 10px;
+      color: #e5e7eb;
+      z-index: 41;
+      transform: translateY(8px);
+      transition: transform 0.15s ease;
+    }
+    .info-modal.show .info-modal-panel {
+      transform: translateY(0);
+    }
+
+    .info-modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 6px;
+      font-size: 13px;
+    }
+    .info-modal-header span {
+      font-weight: 700;
+    }
+
+    .info-modal-close {
+      border: 0;
+      background: transparent;
+      color: #9ca3af;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    .info-modal-body {
+      font-size: 11px;
+      max-height: 220px;
+      overflow-y: auto;
+    }
+    .info-modal-body strong {
+      color: #38bdf8;
       display: block;
       margin-bottom: 2px;
-      color: #38bdf8;
     }
-
-    .info-tooltip ul {
-      padding-left: 14px;
-      margin: 2px 0 0;
+    .info-modal-body ul {
+      padding-left: 16px;
+      margin: 4px 0 0;
     }
-
-    .info-tooltip li {
-      margin: 1px 0;
-    }
-
-    .day-info-wrap:hover .info-tooltip {
-      opacity: 1;
-      pointer-events: auto;
-      transform: translateY(0);
-    }
-    .day-info-wrap.open .info-tooltip {
-      opacity: 1;
-      pointer-events: auto;
-      transform: translateY(0);
+    .info-modal-body li {
+      margin: 2px 0;
     }
 
     /* SELECTED DAY CARD */
@@ -1090,6 +1127,18 @@
 
   <div id="toast" class="toast">Voucher code copied!</div>
 
+  <!-- Info popup modal -->
+  <div id="infoModal" class="info-modal">
+    <div class="info-modal-backdrop"></div>
+    <div class="info-modal-panel">
+      <div class="info-modal-header">
+        <span id="infoModalTitle">Day 1 – Reward</span>
+        <button id="infoModalClose" class="info-modal-close">✕</button>
+      </div>
+      <div id="infoModalBody" class="info-modal-body"></div>
+    </div>
+  </div>
+
   <script>
     // ---------------------------
     // DATE / DECEMBER CONTEXT
@@ -1321,9 +1370,6 @@
           <div class="state">${stateText}</div>
           <div class="day-info-wrap">
             <div class="info-icon">i</div>
-            <div class="info-tooltip">
-              ${reward.infoHtml}
-            </div>
           </div>
         `;
 
@@ -1337,15 +1383,12 @@
           }
         });
 
-        // Tooltip toggle on mobile
+        // "i" icon click -> open modal
         const infoWrap = pill.querySelector(".day-info-wrap");
         if (infoWrap) {
           infoWrap.addEventListener("click", (e) => {
             e.stopPropagation();
-            document
-              .querySelectorAll(".day-info-wrap.open")
-              .forEach((el) => el !== infoWrap && el.classList.remove("open"));
-            infoWrap.classList.toggle("open");
+            openInfoModal(reward);
           });
         }
 
@@ -1394,18 +1437,37 @@
       }
     }
 
-    // Close any open tooltips when clicking elsewhere
-    document.addEventListener("click", (e) => {
-      if (!e.target.closest(".day-info-wrap")) {
-        document
-          .querySelectorAll(".day-info-wrap.open")
-          .forEach((el) => el.classList.remove("open"));
-      }
-    });
-
     // Initial render for rewards
     renderWeekStrip();
     renderSelectedCard();
+
+    // ---------------------------
+    // INFO MODAL
+    // ---------------------------
+    const infoModal = document.getElementById("infoModal");
+    const infoModalTitle = document.getElementById("infoModalTitle");
+    const infoModalBody = document.getElementById("infoModalBody");
+    const infoModalClose = document.getElementById("infoModalClose");
+
+    function openInfoModal(reward) {
+      infoModalTitle.textContent = `Day ${reward.day} – ${reward.name}`;
+      infoModalBody.innerHTML = reward.infoHtml;
+      infoModal.classList.add("show");
+    }
+
+    function closeInfoModal() {
+      infoModal.classList.remove("show");
+    }
+
+    infoModalClose.addEventListener("click", closeInfoModal);
+    infoModal.addEventListener("click", (e) => {
+      if (e.target === infoModal || e.target.classList.contains("info-modal-backdrop")) {
+        closeInfoModal();
+      }
+    });
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") closeInfoModal();
+    });
 
     // ---------------------------
     // CLIPBOARD + TOAST
@@ -1438,7 +1500,7 @@
       ta.select();
       try {
         document.execCommand("copy");
-        showToast("Voucher code copied!");
+        showToast("Unable to auto copy, please paste manually.");
       } catch (e) {
         showToast("Unable to copy, please copy manually.");
       }
