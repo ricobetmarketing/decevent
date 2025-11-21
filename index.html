@@ -452,7 +452,7 @@
       color: var(--accent4);
     }
 
-    /* WEEK 1 PANEL */
+    /* PANEL HEADER */
 
     .panel-header {
       display: flex;
@@ -484,190 +484,243 @@
       white-space: nowrap;
     }
 
-    .week-strip {
-      display: grid;
-      grid-template-columns: repeat(7, minmax(0, 1fr));
-      gap: 10px;
-      margin-bottom: 12px;
+    /* WEEK SWITCHER + CALENDAR */
+
+    .week-switcher {
+      margin-top: 4px;
+      margin-bottom: 6px;
+      padding: 4px 2px 2px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
     }
 
-    @media (max-width: 880px) {
-      .week-strip {
-        grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
+    .week-pill {
+      border: 0;
+      border-radius: 999px;
+      padding: 6px 12px;
+      font-size: 11px;
+      cursor: pointer;
+      background: #020617;
+      color: #e5e7eb;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.7);
+      border: 1px solid rgba(55, 65, 81, 0.9);
+      transition: background 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+    }
+
+    .week-pill span.range {
+      font-size: 9px;
+      color: #9ca3af;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+    }
+
+    .week-pill.active {
+      background: linear-gradient(135deg, #4ef0ff, #818cf8);
+      color: #020617;
+      border-color: rgba(191, 219, 254, 0.95);
+      box-shadow:
+        0 0 0 1px rgba(15, 23, 42, 0.9),
+        0 10px 20px rgba(59, 130, 246, 0.9);
+      transform: translateY(-1px);
+    }
+
+    .week-pill.active span.range {
+      color: #1e293b;
+    }
+
+    .calendar-grid {
+      margin-top: 8px;
+      padding: 4px 4px 0;
+      display: grid;
+      grid-template-columns: repeat(7, minmax(0, 1fr));
+      grid-auto-rows: 90px;
+      gap: 10px;
+    }
+    @media (max-width: 860px) {
+      .calendar-grid {
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+        grid-auto-rows: 86px;
+      }
+    }
+    @media (max-width: 680px) {
+      .calendar-grid {
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+        grid-auto-rows: 84px;
+      }
+    }
+    @media (max-width: 520px) {
+      .calendar-grid {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        grid-auto-rows: 80px;
+      }
+    }
+    @media (max-width: 380px) {
+      .calendar-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        grid-auto-rows: 78px;
       }
     }
 
-    .day-pill {
-      border-radius: 14px;
-      background: linear-gradient(180deg, #111827, #020617);
-      border: 1px solid var(--border);
-      padding: 6px 7px 9px;
-      text-align: center;
-      font-size: 11px;
+    .day-tile {
       position: relative;
+      border: 0;
+      padding: 0;
+      margin: 0;
       cursor: pointer;
-      transition: transform 0.12s ease, box-shadow 0.12s ease, border-color 0.12s ease, opacity 0.12s ease;
+      background: transparent;
+      outline: none;
+    }
+
+    .day-tile.hidden-week {
+      display: none;
+    }
+
+    .tile-inner {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      border-radius: 30% / 35%;
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      box-shadow: 0 7px 0 rgba(0, 0, 0, 0.6),
+                  0 10px 20px rgba(0, 0, 0, 0.9);
+      padding: 6px 6px 4px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      align-items: stretch;
+      color: #f9fafb;
+      transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease, opacity 0.15s ease;
       overflow: hidden;
     }
-    .day-pill::before {
+
+    .tile-inner::before {
       content: "";
       position: absolute;
       inset: 0;
-      background: radial-gradient(circle at 50% -20%, rgba(255,255,255,0.22), transparent 60%);
-      opacity: 0.6;
+      background: linear-gradient(150deg, rgba(15,23,42,0.15), rgba(15,23,42,0.35));
+      mix-blend-mode: multiply;
       pointer-events: none;
+      z-index: 0;
     }
 
-    .day-pill:hover {
+    .tile-inner:hover {
       transform: translateY(-2px);
-      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.65);
+      box-shadow: 0 9px 22px rgba(0, 0, 0, 0.95);
     }
 
-    .day-pill .day-label { font-weight: 700; position: relative; z-index: 1; }
-    .day-pill .date-label { font-size: 9px; color: var(--muted); position: relative; z-index: 1; }
-    .day-pill .icon { font-size: 20px; margin-top: 4px; position: relative; z-index: 1; }
-    .day-pill .amount { font-size: 11px; margin-top: 2px; color: var(--gold); position: relative; z-index: 1; }
-    .day-pill .state { margin-top: 2px; font-size: 10px; color: var(--muted); position: relative; z-index: 1; }
-
-    .day-pill.locked {
-      opacity: 0.55;
-      border-style: dashed;
-    }
-    .day-pill.today {
-      border-color: var(--accent);
-      box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.9), 0 12px 22px rgba(251, 191, 36, 0.9);
-      animation: floatCard 2.6s infinite ease-in-out;
-    }
-    @keyframes floatCard {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-3px); }
+    .tile-footer {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 4px;
+      font-size: 9px;
+      text-shadow: 0 1px 3px rgba(15, 23, 42, 0.8);
     }
 
-    .day-pill.today .state { color: var(--accent); }
-    .day-pill.past {
-      filter: grayscale(0.1);
-      opacity: 0.85;
-    }
-    .day-pill.past .state {
-      color: var(--accent4);
-    }
-    .day-pill.active {
-      border-color: var(--accent3);
-      box-shadow: 0 0 0 1px rgba(15, 23, 42, 0.9), 0 10px 24px rgba(56, 189, 248, 0.9);
+    .state-pill {
+      padding: 2px 6px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.55);
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      white-space: nowrap;
     }
 
-    /* INFO ICON - triggers popup */
-
-    .day-info-wrap {
-      position: absolute;
-      top: 5px;
-      right: 5px;
-      font-size: 10px;
-      z-index: 3;
+    .today-pill {
+      background: #fde047;
+      color: #92400e;
+      box-shadow: 0 2px 4px rgba(15, 23, 42, 0.5);
     }
 
-    .info-icon {
+    .info-badge {
       width: 16px;
       height: 16px;
-      border-radius: 50%;
-      background: rgba(15, 23, 42, 0.95);
-      border: 1px solid rgba(148, 163, 184, 0.9);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #e5e7eb;
-      cursor: pointer;
-      font-weight: 700;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(191, 219, 254, 0.95);
       font-size: 10px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.7);
-      transition: transform 0.12s ease, box-shadow 0.12s ease;
-    }
-    .info-icon:hover {
-      transform: scale(1.05);
-      box-shadow: 0 6px 14px rgba(0,0,0,0.9);
-    }
-
-    /* POPUP / MODAL FOR INFO */
-
-    .info-modal {
-      position: fixed;
-      inset: 0;
       display: flex;
       align-items: center;
       justify-content: center;
-      z-index: 40;
-      pointer-events: none;
-      opacity: 0;
-      transition: opacity 0.15s ease;
-    }
-    .info-modal.show {
-      opacity: 1;
-      pointer-events: auto;
+      flex-shrink: 0;
     }
 
-    .info-modal-backdrop {
-      position: absolute;
-      inset: 0;
-      background: rgba(15, 23, 42, 0.85);
-      backdrop-filter: blur(4px);
-    }
-
-    .info-modal-panel {
-      position: relative;
-      max-width: 340px;
-      width: 90%;
-      background:
-        radial-gradient(circle at 0 0, rgba(255,255,255,0.18), transparent 60%),
-        linear-gradient(135deg, #020617, #020617);
-      border-radius: 18px;
-      border: 1px solid rgba(148, 163, 184, 0.8);
-      box-shadow: 0 18px 40px rgba(0,0,0,0.9);
-      padding: 10px 12px 10px;
-      color: #e5e7eb;
-      z-index: 41;
-      transform: translateY(8px);
-      transition: transform 0.15s ease;
-    }
-    .info-modal.show .info-modal-panel {
-      transform: translateY(0);
-    }
-
-    .info-modal-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 8px;
-      margin-bottom: 6px;
-      font-size: 13px;
-    }
-    .info-modal-header span {
-      font-weight: 700;
-    }
-
-    .info-modal-close {
-      border: 0;
-      background: transparent;
-      color: #9ca3af;
+    .lock-icon {
       font-size: 14px;
-      cursor: pointer;
+      margin-left: 2px;
     }
 
-    .info-modal-body {
-      font-size: 11px;
-      max-height: 220px;
-      overflow-y: auto;
+    .day-tile.past .tile-inner {
+      filter: grayscale(0.25) brightness(0.93);
+      opacity: 0.9;
     }
-    .info-modal-body strong {
-      color: #38bdf8;
-      display: block;
-      margin-bottom: 2px;
+
+    .day-tile.future .tile-inner {
+      filter: grayscale(0.1) brightness(0.88);
     }
-    .info-modal-body ul {
-      padding-left: 16px;
-      margin: 4px 0 0;
+
+    .day-tile.today .tile-inner {
+      box-shadow:
+        0 0 0 3px rgba(251, 191, 36, 0.95),
+        0 0 24px rgba(251, 191, 36, 0.95),
+        0 9px 16px rgba(0, 0, 0, 0.95);
+      transform: translateY(-2px);
+      animation: wobble 1.6s ease-in-out infinite;
     }
-    .info-modal-body li {
-      margin: 2px 0;
+
+    @keyframes wobble {
+      0%, 100% { transform: translateY(-2px) rotate(0deg); }
+      25% { transform: translateY(-1px) rotate(-1.2deg); }
+      50% { transform: translateY(-2px) rotate(1.2deg); }
+      75% { transform: translateY(-1px) rotate(-0.8deg); }
+    }
+
+    /* TOOLTIP (hover on tile / info icon) */
+
+    .tooltip {
+      position: absolute;
+      inset: auto 0 110% auto; /* above tile, right-aligned */
+      transform: translateY(6px);
+      max-width: 230px;
+      padding: 6px 8px;
+      border-radius: 10px;
+      background: rgba(15, 23, 42, 0.97);
+      border: 1px solid rgba(148, 163, 184, 0.9);
+      color: #e5e7eb;
+      font-size: 10px;
+      line-height: 1.4;
+      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.95);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.15s ease, transform 0.15s ease;
+      z-index: 5;
+    }
+
+    .tooltip::after {
+      content: "";
+      position: absolute;
+      top: 100%;
+      right: 12px;
+      width: 8px;
+      height: 8px;
+      background: inherit;
+      border-bottom: inherit;
+      border-right: inherit;
+      transform: rotate(45deg);
+    }
+
+    .day-tile:hover .tooltip,
+    .day-tile:focus-within .tooltip {
+      opacity: 1;
+      transform: translateY(0);
     }
 
     /* SELECTED DAY CARD */
@@ -685,6 +738,7 @@
       align-items: center;
       position: relative;
       overflow: hidden;
+      margin-top: 10px;
     }
 
     .selected-card::after {
@@ -778,7 +832,7 @@
       box-shadow: none;
     }
 
-    /* RANKING PANEL */
+    /* RANKING PANEL (unchanged) */
 
     .ranking-header {
       display: flex;
@@ -1232,22 +1286,48 @@
             </div>
           </div>
 
-          <!-- Week 1 rewards -->
+          <!-- Calendar panel -->
           <div class="panel-header">
             <div>
               <div class="panel-title">
                 <span class="icon">🎁</span>
-                <span>Week 1 Rewards (Dec 1 – 7)</span>
+                <span>Daily Rewards Calendar</span>
               </div>
               <div class="panel-sub">
-                Past days stay grey but visible, today’s drop is active, upcoming days remain locked.
+                Full December calendar. Past days stay visible, today glows, upcoming rewards stay locked until it’s time.
               </div>
             </div>
-            <div class="panel-badge">Tap a day for details & code</div>
+            <div class="panel-badge">Hover / tap the “i” icon</div>
           </div>
 
-          <div class="week-strip" id="weekStrip"></div>
+          <!-- Week selector -->
+          <div class="week-switcher">
+            <button class="week-pill" data-week="0">
+              Week 1
+              <span class="range">Dec 1–7</span>
+            </button>
+            <button class="week-pill" data-week="1">
+              Week 2
+              <span class="range">Dec 8–14</span>
+            </button>
+            <button class="week-pill" data-week="2">
+              Week 3
+              <span class="range">Dec 15–21</span>
+            </button>
+            <button class="week-pill" data-week="3">
+              Week 4
+              <span class="range">Dec 22–28</span>
+            </button>
+            <button class="week-pill" data-week="4">
+              Week 5
+              <span class="range">Dec 29–31</span>
+            </button>
+          </div>
 
+          <!-- Image tile calendar -->
+          <div id="calendarGrid" class="calendar-grid"></div>
+
+          <!-- Selected day card -->
           <div class="selected-card" id="selectedCard"></div>
         </section>
       </section>
@@ -1334,18 +1414,6 @@
 
   <div id="toast" class="toast">Voucher code copied!</div>
 
-  <!-- Info popup modal -->
-  <div id="infoModal" class="info-modal">
-    <div class="info-modal-backdrop"></div>
-    <div class="info-modal-panel">
-      <div class="info-modal-header">
-        <span id="infoModalTitle">Day 1 – Reward</span>
-        <button id="infoModalClose" class="info-modal-close">✕</button>
-      </div>
-      <div id="infoModalBody" class="info-modal-body"></div>
-    </div>
-  </div>
-
   <script>
     // ---------------------------
     // SNOW EFFECT
@@ -1379,7 +1447,7 @@
     const isDecemberNow = today.getMonth() === DECEMBER_MONTH;
 
     // For live version, keep this; for testing, change demoDay:
-    const demoDay = 3; // e.g. pretend it's Dec 3
+    const demoDay = 3; // pretend it's Dec 3 if not December
     const decDayToday = isDecemberNow ? today.getDate() : demoDay;
     const todayInDecember = Math.min(Math.max(decDayToday, 1), 31);
 
@@ -1448,18 +1516,54 @@
     }
 
     // ---------------------------
-    // WEEK 1 REWARDS (DEC 1–7)
+    // IMAGE TILE CALENDAR
     // ---------------------------
-    const weekStrip = document.getElementById("weekStrip");
+    const calendarGrid = document.getElementById("calendarGrid");
+    const weekSwitchButtons = document.querySelectorAll(".week-pill");
     const selectedCard = document.getElementById("selectedCard");
-    const weekdayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-    const decYear = currentYear;
 
+    // Per-day images (replace with your real URLs)
+    const dayImages = {
+      1: "https://ricomx.ft-crm.com/media-api/serve/f2a2f819-d739-4c29-8362-5886e183ee2f_1.png",
+      2: "https://ricomx.ft-crm.com/media-api/serve/f471d8c3-2f77-4a3d-8a3c-1b7d6905da7c_2.png",
+      3: "https://ricomx.ft-crm.com/media-api/serve/ac01f059-b35b-43a1-b350-77e4f6da4ea2_3.png",
+      4: "https://ricomx.ft-crm.com/media-api/serve/075cddcf-896d-4edb-84f0-09e2cc519714_4.png",
+      5: "https://ricomx.ft-crm.com/media-api/serve/e60036e3-a65e-419d-8794-bc3fb365e7eb_5.png",
+      6: "https://ricomx.ft-crm.com/media-api/serve/85c1afbb-9f00-4677-9e95-3eb1a1587518_6.png",
+      7: "https://ricomx.ft-crm.com/media-api/serve/f63cff77-ca4c-4674-bb05-682f7885281c_7.png",
+      8: "https://via.placeholder.com/200x200.png?text=8",
+      9: "https://via.placeholder.com/200x200.png?text=9",
+      10: "https://via.placeholder.com/200x200.png?text=10",
+      11: "https://via.placeholder.com/200x200.png?text=11",
+      12: "https://via.placeholder.com/200x200.png?text=12",
+      13: "https://via.placeholder.com/200x200.png?text=13",
+      14: "https://via.placeholder.com/200x200.png?text=14",
+      15: "https://via.placeholder.com/200x200.png?text=15",
+      16: "https://via.placeholder.com/200x200.png?text=16",
+      17: "https://via.placeholder.com/200x200.png?text=17",
+      18: "https://via.placeholder.com/200x200.png?text=18",
+      19: "https://via.placeholder.com/200x200.png?text=19",
+      20: "https://via.placeholder.com/200x200.png?text=20",
+      21: "https://via.placeholder.com/200x200.png?text=21",
+      22: "https://via.placeholder.com/200x200.png?text=22",
+      23: "https://via.placeholder.com/200x200.png?text=23",
+      24: "https://via.placeholder.com/200x200.png?text=24",
+      25: "https://via.placeholder.com/200x200.png?text=25",
+      26: "https://via.placeholder.com/200x200.png?text=26",
+      27: "https://via.placeholder.com/200x200.png?text=27",
+      28: "https://via.placeholder.com/200x200.png?text=28",
+      29: "https://via.placeholder.com/200x200.png?text=29",
+      30: "https://via.placeholder.com/200x200.png?text=30",
+      31: "https://via.placeholder.com/200x200.png?text=31"
+    };
+
+    // Voucher codes for each day
     const voucherCodes = {};
     for (let d = 1; d <= 31; d++) {
       voucherCodes[d] = `DEC${String(d).padStart(2, "0")}-VOUCHER`;
     }
 
+    // Detailed rewards (example for days 1–7)
     const weekRewards = [
       {
         day: 1,
@@ -1568,68 +1672,85 @@
       }
     ];
 
-    let selectedDay = Math.min(Math.max(todayInDecember, 1), 7);
+    function getRewardByDay(day) {
+      const r = weekRewards.find((x) => x.day === day);
+      if (r) return r;
+      return {
+        day,
+        icon: "🎁",
+        name: `Day ${day} Reward`,
+        amount: "Mystery",
+        tagline: "Reward details will be announced for this date.",
+        infoHtml: `
+          <strong>Daily Reward</strong>
+          <ul>
+            <li>Details for Day ${day} will be announced on the promo page.</li>
+          </ul>`
+      };
+    }
 
-    function renderWeekStrip() {
-      if (!weekStrip) return;
-      weekStrip.innerHTML = "";
+    let selectedDay = todayInDecember;
 
-      weekRewards.forEach((reward) => {
-        const calendarDate = new Date(decYear, DECEMBER_MONTH, reward.day);
-        const dow = weekdayNames[calendarDate.getDay()];
-        const isToday = reward.day === todayInDecember;
-        const isPast = reward.day < todayInDecember;
-        const isFuture = reward.day > todayInDecember;
-        const isLocked = isFuture;
+    function createDayTile(day) {
+      const tile = document.createElement("button");
+      tile.type = "button";
+      tile.className = "day-tile";
 
-        const pill = document.createElement("button");
-        pill.type = "button";
-        pill.className = "day-pill";
-        if (isToday) pill.classList.add("today");
-        if (isPast) pill.classList.add("past");
-        if (isLocked) pill.classList.add("locked");
-        if (reward.day === selectedDay) pill.classList.add("active");
+      const weekIndex = Math.floor((day - 1) / 7); // 0–4
+      tile.dataset.week = weekIndex;
 
-        let stateText = "Locked 🔒";
-        if (isPast) stateText = "Claimed ✅";
-        if (isToday) stateText = "Today’s Reward 🎯";
+      const state =
+        day < todayInDecember ? "past" :
+        day === todayInDecember ? "today" :
+        "future";
+      tile.classList.add(state);
 
-        pill.innerHTML = `
-          <div class="day-label">Day ${reward.day}</div>
-          <div class="date-label">${dow}, Dec ${reward.day}</div>
-          <div class="icon">${reward.icon}</div>
-          <div class="amount">${reward.amount}</div>
-          <div class="state">${stateText}</div>
-          <div class="day-info-wrap">
-            <div class="info-icon">i</div>
+      const imgUrl = dayImages[day] || `https://via.placeholder.com/200x200.png?text=${day}`;
+      let stateLabel = "Locked";
+      if (state === "past") stateLabel = "Claimed";
+      if (state === "today") stateLabel = "Today";
+
+      const reward = getRewardByDay(day);
+
+      tile.innerHTML = `
+        <div class="tile-inner" style="background-image:url('${imgUrl}')">
+          <div class="tile-footer">
+            <div class="state-pill ${state === "today" ? "today-pill" : ""}">
+              ${stateLabel}
+            </div>
+            <div style="display:flex;align-items:center;gap:2px;">
+              <div class="info-badge">i</div>
+              ${state === "future" ? '<span class="lock-icon">🔒</span>' : ""}
+            </div>
           </div>
-        `;
+        </div>
+        <div class="tooltip">
+          ${reward.infoHtml}
+        </div>
+      `;
 
-        pill.addEventListener("click", () => {
-          selectedDay = reward.day;
-          renderWeekStrip();
-          renderSelectedCard();
-          if (isToday && !isLocked) {
-            handleCopyVoucher(reward.day);
-          }
-        });
-
-        const infoWrap = pill.querySelector(".day-info-wrap");
-        if (infoWrap) {
-          infoWrap.addEventListener("click", (e) => {
-            e.stopPropagation();
-            openInfoModal(reward);
-          });
+      tile.addEventListener("click", () => {
+        selectedDay = day;
+        renderSelectedCard();
+        if (state === "today") {
+          handleCopyVoucher(day);
         }
-
-        weekStrip.appendChild(pill);
       });
+
+      return tile;
+    }
+
+    function renderCalendarGrid() {
+      if (!calendarGrid) return;
+      calendarGrid.innerHTML = "";
+      for (let day = 1; day <= 31; day++) {
+        calendarGrid.appendChild(createDayTile(day));
+      }
     }
 
     function renderSelectedCard() {
       if (!selectedCard) return;
-      const reward =
-        weekRewards.find((r) => r.day === selectedDay) || weekRewards[0];
+      const reward = getRewardByDay(selectedDay);
       const isToday = reward.day === todayInDecember;
       const isPast = reward.day < todayInDecember;
       const isFuture = reward.day > todayInDecember;
@@ -1637,7 +1758,7 @@
       const code = voucherCodes[reward.day];
 
       let statusText = "Locked (not available yet)";
-      if (isPast) statusText = "Already claimed earlier this week.";
+      if (isPast) statusText = "Already claimed earlier this month.";
       if (isToday) statusText = "Live now – claim & use your voucher today!";
 
       selectedCard.innerHTML = `
@@ -1668,35 +1789,27 @@
       }
     }
 
-    renderWeekStrip();
+    renderCalendarGrid();
     renderSelectedCard();
 
-    // ---------------------------
-    // INFO MODAL
-    // ---------------------------
-    const infoModal = document.getElementById("infoModal");
-    const infoModalTitle = document.getElementById("infoModalTitle");
-    const infoModalBody = document.getElementById("infoModalBody");
-    const infoModalClose = document.getElementById("infoModalClose");
-
-    function openInfoModal(reward) {
-      infoModalTitle.textContent = `Day ${reward.day} – ${reward.name}`;
-      infoModalBody.innerHTML = reward.infoHtml;
-      infoModal.classList.add("show");
+    function setActiveWeek(weekIndex) {
+      weekSwitchButtons.forEach((pill) => {
+        pill.classList.toggle("active", Number(pill.dataset.week) === weekIndex);
+      });
+      const tiles = document.querySelectorAll(".day-tile");
+      tiles.forEach((tile) => {
+        tile.classList.toggle("hidden-week", Number(tile.dataset.week) !== weekIndex);
+      });
     }
 
-    function closeInfoModal() {
-      infoModal.classList.remove("show");
-    }
+    const currentWeekIndex = Math.floor((todayInDecember - 1) / 7);
+    setActiveWeek(currentWeekIndex);
 
-    infoModalClose.addEventListener("click", closeInfoModal);
-    infoModal.addEventListener("click", (e) => {
-      if (e.target === infoModal || e.target.classList.contains("info-modal-backdrop")) {
-        closeInfoModal();
-      }
-    });
-    document.addEventListener("keydown", (e) => {
-      if (e.key === "Escape") closeInfoModal();
+    weekSwitchButtons.forEach((pill) => {
+      pill.addEventListener("click", () => {
+        const w = Number(pill.dataset.week);
+        setActiveWeek(w);
+      });
     });
 
     // ---------------------------
