@@ -65,7 +65,6 @@
       left: -80px;
       opacity: 0.8;
       pointer-events: none;
-      z-index: -1;
     }
     .page::after {
       content: "";
@@ -79,60 +78,31 @@
       right: -100px;
       opacity: 0.8;
       pointer-events: none;
-      z-index: -1;
     }
 
     .inner { position: relative; z-index: 1; }
 
-    /* Snow banks (累积雪 at bottom) */
-    .snow-banks {
-      position: absolute;
-      left: -8px;
-      right: -8px;
-      bottom: -18px;
-      height: 80px;
-      pointer-events: none;
-      z-index: 0;
-    }
-    .snow-bank {
-      position: absolute;
-      bottom: 0;
-      width: 70%;
-      height: 100%;
-      background:
-        radial-gradient(circle at 20% 10%, #ffffff, #e5f0ff 55%, transparent 75%);
-      opacity: 0.95;
-      filter: drop-shadow(0 -4px 12px rgba(15,23,42,0.9));
-    }
-    .snow-bank-left { left: -18px; }
-    .snow-bank-right {
-      right: -18px;
-      transform: scaleX(-1);
-    }
-
-    /* SNOW (falling) */
+    /* SNOW */
     .snowflake {
       position: fixed;
       top: -10px;
       color: #e5f0ff;
-      text-shadow: 0 0 4px rgba(15,23,42,0.6);
       font-size: 8px;
-      opacity: 0.85;
+      opacity: 0.65;
       pointer-events: none;
       z-index: 5;
       animation-name: snowFall;
       animation-timing-function: linear;
-      animation-iteration-count: 1;
+      animation-iteration-count: infinite;
     }
     @keyframes snowFall {
-      0% { transform: translate3d(0, -10px, 0); opacity: 0; }
-      10% { opacity: 1; }
-      100% { transform: translate3d(14px, 110vh, 0); opacity: 0; }
+      0% { transform: translateY(-10px); opacity: 0; }
+      10% { opacity: 0.9; }
+      100% { transform: translateY(110vh); opacity: 0; }
     }
 
     /* HEADER */
     .header {
-      margin-top: 6px;
       margin-bottom: 12px;
       display: grid;
       grid-template-columns: minmax(0, 1.8fr) minmax(0, 1.2fr);
@@ -145,34 +115,12 @@
 
     .hero-card {
       border-radius: 26px;
-      padding: 14px 16px;
+      padding: 12px 14px;
       background: linear-gradient(145deg, #f9735b, #fb7185, #facc15);
       color: #111827;
       box-shadow: var(--shadow-soft);
       position: relative;
       overflow: hidden;
-    }
-    .hero-card > * {
-      position: relative;
-      z-index: 1;
-    }
-
-    /* Snow cap on hero (累积雪) */
-    .hero-snow {
-      position: absolute;
-      left: -20px;
-      right: -20px;
-      top: -10px;
-      height: 26px;
-      background:
-        radial-gradient(circle at 10% 120%, #ffffff, transparent 70%),
-        radial-gradient(circle at 35% 130%, #ffffff, transparent 70%),
-        radial-gradient(circle at 60% 120%, #fefce8, transparent 70%),
-        radial-gradient(circle at 85% 125%, #ffffff, transparent 70%);
-      border-radius: 999px;
-      box-shadow: 0 4px 8px rgba(248,113,113,0.5);
-      pointer-events: none;
-      z-index: 0;
     }
 
     .hero-card::after {
@@ -205,113 +153,25 @@
       margin-top: 4px;
       font-size: 12px;
       opacity: 0.9;
-      max-width: 340px;
+      max-width: 320px;
     }
 
     .hero-tag {
-      margin-top: 9px;
+      margin-top: 8px;
       display: inline-flex;
       align-items: center;
       gap: 6px;
       background: rgba(15,23,42,0.88);
       color: #fbbf24;
-      padding: 5px 12px;
+      padding: 4px 10px;
       border-radius: 999px;
       font-size: 11px;
       box-shadow: 0 8px 16px rgba(15,23,42,0.45);
     }
 
-    /* Little Xmas tree & gift in hero */
-    .hero-illustration {
-      position: absolute;
-      right: 6px;
-      bottom: 6px;
-      width: 120px;
-      height: 80px;
-      pointer-events: none;
-      z-index: 1;
-    }
-    .hero-tree {
-      position: absolute;
-      bottom: 14px;
-      right: 26px;
-      width: 0;
-      height: 0;
-      border-left: 24px solid transparent;
-      border-right: 24px solid transparent;
-      border-bottom: 52px solid #16a34a;
-      filter: drop-shadow(0 8px 14px rgba(22,163,74,0.7));
-    }
-    .hero-tree::before {
-      content: "";
-      position: absolute;
-      bottom: 10px;
-      left: -22px;
-      border-left: 22px solid transparent;
-      border-right: 22px solid transparent;
-      border-bottom: 46px solid #22c55e;
-    }
-    .hero-tree::after {
-      content: "";
-      position: absolute;
-      bottom: 22px;
-      left: -18px;
-      border-left: 18px solid transparent;
-      border-right: 18px solid transparent;
-      border-bottom: 38px solid #4ade80;
-    }
-    .hero-tree-trunk {
-      position: absolute;
-      bottom: 8px;
-      right: 37px;
-      width: 14px;
-      height: 10px;
-      border-radius: 4px;
-      background: #92400e;
-      box-shadow: 0 3px 6px rgba(120,53,15,0.7);
-    }
-    .hero-star {
-      position: absolute;
-      bottom: 64px;
-      right: 33px;
-      font-size: 12px;
-      color: #facc15;
-      text-shadow: 0 0 6px rgba(250,204,21,0.9);
-    }
-    .hero-gift {
-      position: absolute;
-      bottom: 8px;
-      right: 4px;
-      width: 26px;
-      height: 18px;
-      border-radius: 4px;
-      background: linear-gradient(135deg, #fb7185, #f9735b);
-      box-shadow: 0 6px 10px rgba(248,113,113,0.7);
-    }
-    .hero-gift::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      margin: 0 auto;
-      width: 4px;
-      background: rgba(248,250,252,0.85);
-    }
-    .hero-gift::after {
-      content: "";
-      position: absolute;
-      top: -6px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 16px;
-      height: 8px;
-      border-radius: 8px 8px 0 0;
-      border: 2px solid rgba(248,250,252,0.9);
-      border-bottom: 0;
-    }
-
     .countdown-card {
       border-radius: 24px;
-      padding: 12px 14px;
+      padding: 10px 12px;
       background: radial-gradient(circle at 0 0, rgba(255,255,255,0.1), transparent 55%),
                   linear-gradient(160deg, #020617, #111827);
       border: 1px solid rgba(148,163,184,0.7);
@@ -322,8 +182,6 @@
       flex-direction: column;
       justify-content: space-between;
       gap: 6px;
-      position: relative;
-      overflow: hidden;
     }
 
     .countdown-label {
@@ -342,22 +200,6 @@
       color: #9ca3af;
     }
 
-    /* light snow dust on countdown card top */
-    .countdown-card::before {
-      content: "";
-      position: absolute;
-      left: -10px;
-      right: -10px;
-      top: -14px;
-      height: 24px;
-      background:
-        radial-gradient(circle at 15% 120%, rgba(248,250,252,0.9), transparent 70%),
-        radial-gradient(circle at 45% 120%, rgba(248,250,252,0.8), transparent 70%),
-        radial-gradient(circle at 75% 120%, rgba(254,249,195,0.9), transparent 70%);
-      opacity: 0.5;
-      pointer-events: none;
-    }
-
     /* TABS */
     .tab-panel { display: none; }
     .tab-panel.active { display: block; }
@@ -370,7 +212,7 @@
     }
 
     .section-title {
-      font-size: 16px;
+      font-size: 17px;
       margin-bottom: 4px;
     }
     .section-sub {
@@ -392,7 +234,7 @@
       background: var(--card);
       color: var(--text-dark);
       border-radius: 24px;
-      padding: 12px;
+      padding: 10px;
       box-shadow: var(--shadow-soft);
       position: relative;
       overflow: hidden;
@@ -401,11 +243,8 @@
       content: "";
       position: absolute;
       inset: 0;
-      background:
-        radial-gradient(circle at 100% 0, rgba(248, 113, 113, 0.14), transparent 55%),
-        radial-gradient(circle at 10% 0, rgba(248,250,252,0.9), transparent 70%);
+      background: radial-gradient(circle at 100% 0, rgba(248, 113, 113, 0.14), transparent 55%);
       pointer-events: none;
-      opacity: 0.9;
     }
     .event-tag {
       text-transform: uppercase;
@@ -416,15 +255,14 @@
     }
     .event-title {
       font-size: 17px;
-      font-weight: 700;
     }
     .event-meta {
-      margin-top: 5px;
+      margin-top: 4px;
       font-size: 12px;
       color: #6b7280;
     }
     .event-cta-row {
-      margin-top: 9px;
+      margin-top: 8px;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -437,7 +275,7 @@
       align-items: center;
       gap: 6px;
       border-radius: 999px;
-      padding: 7px 13px;
+      padding: 7px 12px;
       border: 0;
       cursor: pointer;
       font-size: 12px;
@@ -465,7 +303,7 @@
     .trending-row {
       display: grid;
       grid-auto-flow: column;
-      grid-auto-columns: minmax(180px, 1fr);
+      grid-auto-columns: minmax(170px, 1fr);
       gap: 10px;
       overflow-x: auto;
       padding-bottom: 4px;
@@ -474,9 +312,9 @@
       background: var(--card);
       color: var(--text-dark);
       border-radius: 22px;
-      padding: 9px;
+      padding: 8px;
       box-shadow: var(--shadow-soft);
-      min-width: 180px;
+      min-width: 170px;
       position: relative;
     }
     .trend-date {
@@ -498,7 +336,6 @@
     .trend-title {
       font-size: 13px;
       margin-bottom: 2px;
-      font-weight: 600;
     }
     .trend-meta {
       font-size: 11px;
@@ -519,27 +356,6 @@
       box-shadow: var(--shadow-strong);
       position: relative;
       overflow: hidden;
-    }
-    .calendar-card > * {
-      position: relative;
-      z-index: 1;
-    }
-
-    /* Snow cap on calendar card */
-    .calendar-snow {
-      position: absolute;
-      left: -20px;
-      right: -20px;
-      top: -14px;
-      height: 28px;
-      background:
-        radial-gradient(circle at 20% 120%, #ffffff, transparent 70%),
-        radial-gradient(circle at 50% 125%, #fefce8, transparent 70%),
-        radial-gradient(circle at 80% 120%, #ffffff, transparent 70%);
-      border-radius: 999px;
-      box-shadow: 0 4px 10px rgba(185,28,28,0.6);
-      pointer-events: none;
-      z-index: 0;
     }
 
     .calendar-card::before {
@@ -564,7 +380,7 @@
       font-size: 16px;
     }
     .calendar-header-sub {
-      font-size: 12px;
+      font-size: 11px;
       opacity: 0.9;
     }
 
@@ -577,7 +393,7 @@
     .week-chip {
       border-radius: 999px;
       border: 0;
-      padding: 6px 11px;
+      padding: 5px 10px;
       font-size: 12px;
       background: rgba(248, 113, 113, 0.9);
       color: #fee2e2;
@@ -649,11 +465,11 @@
       border-radius: 22px;
       background: #f9735b;
       box-shadow: 0 8px 18px rgba(185,28,28,0.7);
-      padding: 7px 5px 8px;
+      padding: 6px 4px 7px;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 3px;
+      gap: 2px;
       color: #fef2f2;
       position: relative;
       overflow: hidden;
@@ -691,8 +507,8 @@
       z-index: 2;
     }
     .info-badge {
-      width: 17px;
-      height: 17px;
+      width: 16px;
+      height: 16px;
       border-radius: 999px;
       background: rgba(248,250,252,0.9);
       color: #b91c1c;
@@ -749,7 +565,7 @@
       background: rgba(15,23,42,0.98);
       border: 1px solid rgba(148,163,184,0.85);
       color: #e5e7eb;
-      font-size: 11px;
+      font-size: 10px;
       line-height: 1.4;
       box-shadow: 0 10px 24px rgba(0,0,0,0.9);
       opacity: 0;
@@ -856,7 +672,7 @@
     }
 
     .voucher-day {
-      font-size: 16px;
+      font-size: 15px;
       font-weight: 700;
       margin-bottom: 2px;
     }
@@ -935,6 +751,21 @@
       box-shadow: none;
     }
 
+    .btn-secondary {
+      border-radius: 999px;
+      border: 0;
+      padding: 7px 14px;
+      background: #ffffff;
+      color: #b91c1c;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 8px 16px rgba(248,113,113,0.4);
+    }
+
     /* TURNOVER TAB  */
     .ranking-header {
       display: flex;
@@ -944,7 +775,7 @@
       margin-bottom: 8px;
     }
     .ranking-title {
-      font-size: 16px;
+      font-size: 17px;
       display: flex;
       flex-direction: column;
       gap: 2px;
@@ -1025,7 +856,7 @@
       transform: translateX(-50%);
       border-radius: 999px;
       padding: 2px 8px;
-      font-size: 11px;
+      font-size: 10px;
       background: rgba(0,0,0,0.72);
       color: #fef9c3;
       border: 1px solid rgba(255,255,255,0.8);
@@ -1195,7 +1026,7 @@
       pointer-events: auto;
       width: 100%;
       max-width: 1100px;
-      padding: 8px 12px 0;
+      padding: 0 12px 0;
     }
 
     .nav-bar {
@@ -1207,25 +1038,6 @@
       padding: 6px 8px 8px;
       border: 1px solid rgba(31,41,55,0.9);
       box-shadow: 0 -6px 22px rgba(0,0,0,0.9);
-      position: relative;
-      overflow: hidden;
-    }
-
-    /* Small snow edge on top of nav bar */
-    .nav-bar::before {
-      content: "";
-      position: absolute;
-      left: -10px;
-      right: -10px;
-      top: -10px;
-      height: 20px;
-      background:
-        radial-gradient(circle at 20% 120%, #ffffff, transparent 70%),
-        radial-gradient(circle at 50% 130%, #fefce8, transparent 70%),
-        radial-gradient(circle at 80% 120%, #ffffff, transparent 70%);
-      border-radius: 999px;
-      opacity: 0.9;
-      pointer-events: none;
     }
 
     .nav-btn {
@@ -1240,14 +1052,12 @@
       align-items: center;
       gap: 2px;
       cursor: pointer;
-      transition: color 0.12s ease, transform 0.12s ease;
-      position: relative;
-      z-index: 1;
+      transition: color 0.12s ease;
     }
 
     .nav-icon {
-      width: 18px;
-      height: 18px;
+      width: 20px;
+      height: 20px;
       stroke: currentColor;
       stroke-width: 1.8;
       fill: none;
@@ -1256,11 +1066,9 @@
 
     .nav-btn.active {
       color: #f9fafb;
-      transform: translateY(-1px);
     }
     .nav-btn.active .nav-icon {
       color: #f9735b;
-      transform: scale(1.15);
     }
 
     /* TOAST */
@@ -1274,7 +1082,7 @@
       color: #022c22;
       padding: 8px 14px;
       border-radius: 999px;
-      font-size: 11px;
+      font-size: 12px;
       font-weight: 700;
       box-shadow: 0 10px 22px rgba(0,0,0,0.7);
       opacity: 0;
@@ -1296,18 +1104,10 @@
 </head>
 <body>
 <div class="page">
-  <!-- Accumulated snow at bottom -->
-  <div class="snow-banks">
-    <div class="snow-bank snow-bank-left"></div>
-    <div class="snow-bank snow-bank-right"></div>
-  </div>
-
   <div class="inner">
     <!-- HEADER -->
     <header class="header">
       <div class="hero-card">
-        <div class="hero-snow"></div>
-
         <div class="hero-greeting">Happy holidays, Rico! 🎄</div>
         <div class="hero-title">
           <span>Christmas Month</span>
@@ -1319,14 +1119,6 @@
         <div class="hero-tag">
           <span>⭐</span>
           <span>Week 1 is live – don’t miss today’s drop.</span>
-        </div>
-
-        <!-- Little Christmas illustration -->
-        <div class="hero-illustration">
-          <div class="hero-tree"></div>
-          <div class="hero-tree-trunk"></div>
-          <div class="hero-star">★</div>
-          <div class="hero-gift"></div>
         </div>
       </div>
 
@@ -1350,15 +1142,15 @@
             Complete both missions to maximise your Christmas rewards.
           </div>
           <div class="home-banners">
-            <!-- Banner 1: Daily Check In Rewards -->
+            <!-- Daily Check-in Rewards -->
             <article class="event-banner">
-              <div class="event-tag">Mission 01 · Calendar</div>
-              <div class="event-title">Daily Check In Rewards</div>
+              <div class="event-tag">Mission 01 · Daily Check-in</div>
+              <div class="event-title">Daily Check-In Rewards</div>
               <div class="event-meta">
-                Open the Christmas calendar, tap today’s tile and grab your daily voucher reward.
+                Open today’s calendar tile to collect your daily voucher and keep your festive streak alive.
               </div>
               <div class="event-cta-row">
-                <span>1 voucher per day · 31 days of gifts</span>
+                <span>1 tile per day · Streak-based bonuses</span>
                 <button class="event-pill secondary" data-goto-tab="calendar">
                   <span class="dot"></span>
                   <span>Go to calendar</span>
@@ -1366,18 +1158,18 @@
               </div>
             </article>
 
-            <!-- Banner 2: Daily Turnover Challenge -->
+            <!-- Daily Turnover Challenge -->
             <article class="event-banner">
               <div class="event-tag">Mission 02 · Turnover</div>
               <div class="event-title">Daily Turnover Challenge</div>
               <div class="event-meta">
-                Play and spin today to boost your turnover and climb the Christmas challenge leaderboard.
+                Spin, raid, and play to push your turnover and climb the festive leaderboard.
               </div>
               <div class="event-cta-row">
-                <span>Daily reset · Bonus for Top players</span>
+                <span>Top 20 show in-app · Extra prizes for #1–3</span>
                 <button class="event-pill" data-goto-tab="turnover">
                   <span class="dot"></span>
-                  <span>View challenge</span>
+                  <span>View ranking</span>
                 </button>
               </div>
             </article>
@@ -1391,20 +1183,31 @@
             Quick look at what’s happening this week.
           </div>
           <div class="trending-row">
-            <!-- Referral Rush now in trending -->
+            <!-- Referral Rush moved here -->
             <article class="trending-card">
-              <div class="trend-date">Dec · Ongoing</div>
+              <div class="trend-date">All December · Social</div>
               <div class="trend-image" style="background:linear-gradient(120deg,#fb7185,#f97316);"></div>
               <div class="trend-title">Referral Rush</div>
-              <div class="trend-meta">Invite friends and collect extra turnover & free spins.</div>
+              <div class="trend-meta">
+                Invite friends, share your link, and collect bonus turnover & free spins based on referrals.
+              </div>
             </article>
 
-            <!-- Mr. Rico Mart now in trending -->
+            <!-- Mr Rico Mart moved here -->
             <article class="trending-card">
-              <div class="trend-date">Dec · Ongoing</div>
+              <div class="trend-date">Daily · All Week</div>
               <div class="trend-image" style="background:linear-gradient(120deg,#22c55e,#16a34a);"></div>
               <div class="trend-title">Mr. Rico Mart</div>
-              <div class="trend-meta">Redeem your claimed vouchers for spins, coins & gifts.</div>
+              <div class="trend-meta">
+                Redeem your calendar vouchers for spins, coins & gifts in the festive Mart.
+              </div>
+            </article>
+
+            <article class="trending-card">
+              <div class="trend-date">16 Dec · 2 hrs left</div>
+              <div class="trend-image"></div>
+              <div class="trend-title">Knitting Session</div>
+              <div class="trend-meta">Cosy spins with extra warm multipliers.</div>
             </article>
 
             <article class="trending-card">
@@ -1416,9 +1219,16 @@
 
             <article class="trending-card">
               <div class="trend-date">24 Dec</div>
-              <div class="trend-image"></div>
+              <div class="trend-image" style="background:linear-gradient(120deg,#22c55e,#16a34a);"></div>
               <div class="trend-title">Christmas Eve Wheel</div>
               <div class="trend-meta">One spin, massive surprise jackpot.</div>
+            </article>
+
+            <article class="trending-card">
+              <div class="trend-date">31 Dec</div>
+              <div class="trend-image" style="background:linear-gradient(120deg,#fb7185,#f97316);"></div>
+              <div class="trend-title">New Year Finale</div>
+              <div class="trend-meta">Blowout rewards for top turnover players.</div>
             </article>
           </div>
         </div>
@@ -1429,8 +1239,6 @@
     <section id="tab-calendar" class="tab-panel">
       <section class="calendar-section">
         <div class="calendar-card">
-          <div class="calendar-snow"></div>
-
           <div class="calendar-header">
             <div>
               <div class="calendar-header-main">Christmas Calendar · Week view</div>
@@ -1544,10 +1352,16 @@
         </div>
 
         <div class="voucher-actions">
-          <button class="btn-primary" id="voucherCopyBtn">
-            <span>📋</span>
-            <span>Copy code & redeem</span>
-          </button>
+          <div style="display:flex; gap:8px; flex-wrap:wrap;">
+            <button class="btn-primary" id="voucherCopyBtn">
+              <span>📋</span>
+              <span>Copy code</span>
+            </button>
+            <button class="btn-secondary" id="voucherClaimBtn">
+              <span>🎁</span>
+              <span>Claim now</span>
+            </button>
+          </div>
           <span id="voucherStatusHint">
             Voucher is active for today only. Copy & redeem before the day ends.
           </span>
@@ -1588,33 +1402,21 @@
 <div id="toast" class="toast">Voucher code copied!</div>
 
 <script>
-  /* Snow: softer, not over-floating */
-  function createSnowflake() {
-    const el = document.createElement("div");
-    el.className = "snowflake";
-    el.textContent = "•";
-
-    const left = Math.random() * 100;
-    const duration = 10 + Math.random() * 10;
-    const delay = Math.random() * -duration;
-    const size = 4 + Math.random() * 6;
-
-    el.style.left = left + "vw";
-    el.style.fontSize = size + "px";
-    el.style.animationDuration = duration + "s";
-    el.style.animationDelay = delay + "s";
-
-    el.addEventListener("animationend", () => {
-      el.remove();
-      setTimeout(createSnowflake, Math.random() * 4000);
-    });
-
-    document.body.appendChild(el);
-  }
-
-  function createSnowflakes(count = 26) {
+  /* Snow */
+  function createSnowflakes(count = 40) {
     for (let i = 0; i < count; i++) {
-      setTimeout(createSnowflake, Math.random() * 4000);
+      const el = document.createElement("div");
+      el.className = "snowflake";
+      el.textContent = "✻";
+      const left = Math.random() * 100;
+      const duration = 8 + Math.random() * 8;
+      const delay = Math.random() * -duration;
+      const size = 6 + Math.random() * 6;
+      el.style.left = left + "vw";
+      el.style.fontSize = size + "px";
+      el.style.animationDuration = duration + "s";
+      el.style.animationDelay = delay + "s";
+      document.body.appendChild(el);
     }
   }
   createSnowflakes();
@@ -1792,6 +1594,7 @@
   const voucherCodeText = document.getElementById("voucherCodeText");
   const voucherCopyBtn = document.getElementById("voucherCopyBtn");
   const voucherStatusHint = document.getElementById("voucherStatusHint");
+  const voucherClaimBtn = document.getElementById("voucherClaimBtn");
 
   function openVoucher(day) {
     const reward = getReward(day);
@@ -1820,6 +1623,13 @@
       closeVoucher();
     }
   });
+
+  /* Claim now button */
+  if (voucherClaimBtn) {
+    voucherClaimBtn.addEventListener("click", () => {
+      window.location.href = "https://www.rico.bet/myprofile";
+    });
+  }
 
   /* Copy code */
   const toastEl = document.getElementById("toast");
@@ -2020,7 +1830,7 @@
       const isActive = btn.dataset.tabTarget === target;
       btn.classList.toggle("active", isActive);
     });
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    // no scroll jump – bottom nav stays fixed like an app
   }
 
   navButtons.forEach(btn => {
