@@ -1,0 +1,1899 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Christmas Month Event – App Style</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg-red: #f04a4c;
+      --bg-deep: #1b1f3b;
+      --card: #ffffff;
+      --muted: #9ca3af;
+      --text-dark: #111827;
+      --accent: #f9735b;
+      --accent-soft: #fee2e2;
+      --accent-green: #22c55e;
+      --accent-blue: #0ea5e9;
+      --nav-height: 72px;
+      --shadow-soft: 0 12px 30px rgba(15, 23, 42, 0.25);
+      --shadow-strong: 0 18px 40px rgba(15, 23, 42, 0.35);
+      --radius-lg: 24px;
+      --radius-md: 18px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Baloo 2", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 15px;
+      background:
+        radial-gradient(circle at 0 0, #fecaca, transparent 60%),
+        radial-gradient(circle at 100% 100%, #bfdbfe, transparent 70%),
+        linear-gradient(180deg, #111827 0%, #020617 60%, #0b1120 100%);
+      color: #f9fafb;
+      display: flex;
+      justify-content: center;
+      padding: 20px 10px calc(26px + var(--nav-height));
+    }
+
+    .page {
+      width: 100%;
+      max-width: 1100px;
+      background:
+        radial-gradient(circle at 0 -20%, rgba(255, 255, 255, 0.16), transparent 60%),
+        linear-gradient(180deg, #020617 0%, #020617 100%);
+      border-radius: 28px;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      box-shadow: var(--shadow-strong);
+      padding: 18px 16px 20px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .page::before {
+      content: "";
+      position: absolute;
+      width: 220px;
+      height: 220px;
+      border-radius: 999px;
+      background: radial-gradient(circle, #fecaca, transparent 60%);
+      filter: blur(32px);
+      top: -80px;
+      left: -80px;
+      opacity: 0.8;
+      pointer-events: none;
+    }
+    .page::after {
+      content: "";
+      position: absolute;
+      width: 260px;
+      height: 260px;
+      border-radius: 999px;
+      background: radial-gradient(circle, #bfdbfe, transparent 60%);
+      filter: blur(32px);
+      bottom: -140px;
+      right: -100px;
+      opacity: 0.8;
+      pointer-events: none;
+    }
+
+    .inner { position: relative; z-index: 1; }
+
+    /* 顶部 Video 区块 */
+    .promo-video-wrap {
+      border-radius: 24px;
+      overflow: hidden;
+      box-shadow: var(--shadow-soft);
+      background: #020617;
+      margin-bottom: 14px;
+    }
+    .promo-video {
+      width: 100%;
+      height: 100%;
+      max-height: 320px;
+      display: block;
+      object-fit: cover;
+    }
+    @media (max-width: 768px) {
+      .promo-video-wrap {
+        max-height: 230px;
+      }
+      .promo-video {
+        max-height: 230px;
+      }
+    }
+
+    /* SNOW */
+    .snowflake {
+      position: fixed;
+      top: -10px;
+      color: #e5f0ff;
+      font-size: 9px;
+      opacity: 0.7;
+      pointer-events: none;
+      z-index: 5;
+      animation-name: snowFall;
+      animation-timing-function: linear;
+      animation-iteration-count: infinite;
+    }
+    @keyframes snowFall {
+      0% { transform: translateY(-10px); opacity: 0; }
+      10% { opacity: 0.9; }
+      100% { transform: translateY(110vh); opacity: 0; }
+    }
+
+    /* HEADER */
+    .header {
+      margin-bottom: 16px;
+      display: grid;
+      grid-template-columns: minmax(0, 1.8fr) minmax(0, 1.2fr);
+      gap: 12px;
+      align-items: stretch;
+    }
+    @media (max-width: 800px) {
+      .header { grid-template-columns: minmax(0, 1fr); }
+    }
+
+    .hero-card {
+      border-radius: 26px;
+      padding: 14px 16px;
+      background: linear-gradient(145deg, #0b1120, #020617);
+      color: #f9fafb;
+      box-shadow: var(--shadow-soft);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-card::after {
+      content: "";
+      position: absolute;
+      width: 220px;
+      height: 220px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(248, 250, 252, 0.22), transparent 65%);
+      right: -60px;
+      bottom: -80px;
+    }
+
+    .hero-greeting {
+      font-size: 14px;
+      opacity: 0.9;
+    }
+    .hero-title {
+      margin-top: 6px;
+      font-size: 24px;
+      line-height: 1.15;
+    }
+    .hero-title span {
+      display: block;
+      font-weight: 700;
+    }
+
+    .hero-sub {
+      margin-top: 6px;
+      font-size: 13px;
+      opacity: 0.9;
+      max-width: 360px;
+    }
+
+    .hero-tag {
+      margin-top: 10px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(15,23,42,0.9);
+      color: #fbbf24;
+      padding: 5px 12px;
+      border-radius: 999px;
+      font-size: 11px;
+      box-shadow: 0 8px 16px rgba(15,23,42,0.45);
+    }
+
+    .countdown-card {
+      border-radius: 24px;
+      padding: 12px 14px;
+      background: radial-gradient(circle at 0 0, rgba(255,255,255,0.1), transparent 55%),
+                  linear-gradient(160deg, #020617, #020617);
+      border: 1px solid rgba(148,163,184,0.7);
+      font-size: 13px;
+      color: #e5e7eb;
+      box-shadow: var(--shadow-soft);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .countdown-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: #9ca3af;
+    }
+    .countdown-time {
+      font-size: 22px;
+      font-weight: 700;
+      color: #4ade80;
+    }
+    .countdown-meta {
+      font-size: 12px;
+      color: #9ca3af;
+    }
+
+    /* TABS */
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    /* HOME TAB */
+    .home-section {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .section-title {
+      font-size: 17px;
+      margin-bottom: 4px;
+    }
+    .section-sub {
+      font-size: 13px;
+      color: #9ca3af;
+      margin-bottom: 8px;
+    }
+
+    .home-banners {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: 12px;
+    }
+    @media (max-width: 800px) {
+      .home-banners { grid-template-columns: minmax(0, 1fr); }
+    }
+
+    .event-banner {
+      background: var(--card);
+      color: var(--text-dark);
+      border-radius: 24px;
+      padding: 12px 12px 13px;
+      box-shadow: var(--shadow-soft);
+      position: relative;
+      overflow: hidden;
+    }
+    .event-banner::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 100% 0, rgba(248, 113, 113, 0.14), transparent 55%);
+      pointer-events: none;
+    }
+    .event-tag {
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      font-size: 10px;
+      color: #fb7185;
+      margin-bottom: 4px;
+    }
+    .event-title {
+      font-size: 18px;
+      font-weight: 700;
+    }
+    .event-meta {
+      margin-top: 6px;
+      font-size: 13px;
+      color: #6b7280;
+    }
+    .event-cta-row {
+      margin-top: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      font-size: 11px;
+      color: #6b7280;
+      flex-wrap: wrap;
+    }
+    .event-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      border-radius: 999px;
+      padding: 7px 13px;
+      border: 0;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 600;
+      font-family: inherit;
+      background: linear-gradient(135deg, #f9735b, #fb7185);
+      color: white;
+      box-shadow: 0 10px 20px rgba(248,113,113,0.65);
+      white-space: nowrap;
+    }
+    .event-pill.secondary {
+      background: linear-gradient(135deg, #22c55e, #16a34a);
+      box-shadow: 0 10px 20px rgba(34,197,94,0.65);
+    }
+    .event-pill span.dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: rgba(15,23,42,0.9);
+    }
+
+    /* Trending events */
+    .trending-wrap {
+      margin-top: 4px;
+    }
+    .trending-row {
+      display: grid;
+      grid-auto-flow: column;
+      grid-auto-columns: minmax(190px, 1fr);
+      gap: 10px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+    }
+    .trending-card {
+      background: var(--card);
+      color: var(--text-dark);
+      border-radius: 22px;
+      padding: 9px 9px 10px;
+      box-shadow: var(--shadow-soft);
+      min-width: 190px;
+      position: relative;
+    }
+    .trend-date {
+      position: absolute;
+      top: 7px;
+      left: 8px;
+      border-radius: 999px;
+      background: rgba(248, 250, 252, 0.95);
+      padding: 3px 8px;
+      font-size: 10px;
+      font-weight: 600;
+    }
+    .trend-image {
+      height: 90px;
+      border-radius: 16px;
+      overflow: hidden;
+      margin-bottom: 6px;
+      background: #020617;
+    }
+    .trend-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .trend-title {
+      font-size: 13px;
+      margin-bottom: 2px;
+      font-weight: 600;
+    }
+    .trend-meta {
+      font-size: 11px;
+      color: #6b7280;
+    }
+
+    /* CALENDAR TAB */
+    .calendar-section {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .calendar-card {
+      background: linear-gradient(180deg, #f87171, #ef4444);
+      border-radius: 26px;
+      padding: 12px;
+      box-shadow: var(--shadow-strong);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .calendar-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at 0 0, rgba(254, 249, 195, 0.18), transparent 55%),
+        radial-gradient(circle at 100% 100%, rgba(254, 249, 195, 0.18), transparent 55%);
+      pointer-events: none;
+    }
+
+    .calendar-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 10px;
+      color: #fee2e2;
+    }
+    .calendar-header-main {
+      font-size: 16px;
+      font-weight: 600;
+    }
+    .calendar-header-sub {
+      font-size: 11px;
+      opacity: 0.9;
+    }
+
+    .week-selector {
+      margin-top: 4px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .week-chip {
+      border-radius: 999px;
+      border: 0;
+      padding: 6px 11px;
+      font-size: 12px;
+      background: rgba(248, 113, 113, 0.9);
+      color: #fee2e2;
+      cursor: pointer;
+      display: inline-flex;
+      flex-wrap: nowrap;
+      align-items: center;
+      gap: 4px;
+      box-shadow: 0 6px 12px rgba(185, 28, 28, 0.5);
+    }
+    .week-chip span.range {
+      font-size: 10px;
+      opacity: 0.9;
+    }
+    .week-chip.active {
+      background: #ffffff;
+      color: #b91c1c;
+    }
+
+    .calendar-inner-wrap {
+      margin-top: 10px;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      gap: 10px;
+    }
+
+    .mini-legend {
+      font-size: 10px;
+      color: #fee2e2;
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 4px;
+    }
+    .mini-legend span.dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      display: inline-block;
+      margin-right: 3px;
+    }
+    .dot-past { background: rgba(248,250,252,0.65); }
+    .dot-today { background: #facc15; box-shadow: 0 0 8px rgba(251,191,36,0.85); }
+    .dot-future { background: #fecaca; }
+
+    /* 7-day grid */
+    .day-grid {
+      display: grid;
+      grid-template-columns: repeat(7, minmax(0, 1fr));
+      gap: 8px;
+    }
+    @media (max-width: 820px) {
+      .day-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    }
+    @media (max-width: 520px) {
+      .day-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    }
+
+    .day-tile {
+      border: 0;
+      padding: 0;
+      background: transparent;
+      cursor: pointer;
+      position: relative;
+    }
+    .day-tile.hidden-week { display: none; }
+
+    .tile-inner {
+      border-radius: 22px;
+      background: #f9735b;
+      box-shadow: 0 8px 18px rgba(185,28,28,0.7);
+      padding: 7px 4px 8px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      color: #fef2f2;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+    .tile-inner::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 0 0, rgba(254,249,195,0.3), transparent 60%);
+      pointer-events: none;
+    }
+
+    .day-label {
+      font-size: 12px;
+      z-index: 1;
+    }
+    .day-number {
+      font-size: 17px;
+      font-weight: 700;
+      z-index: 1;
+    }
+    .tile-state {
+      font-size: 11px;
+      z-index: 1;
+    }
+
+    .tile-info-row {
+      position: absolute;
+      top: 4px;
+      right: 4px;
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      z-index: 2;
+    }
+    .info-badge {
+      width: 16px;
+      height: 16px;
+      border-radius: 999px;
+      background: rgba(248,250,252,0.9);
+      color: #b91c1c;
+      font-size: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.35);
+    }
+    .lock-icon {
+      font-size: 13px;
+      color: #fecaca;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.6);
+    }
+
+    .day-tile.past .tile-inner {
+      background: #fed7d7;
+      color: #7f1d1d;
+      box-shadow: 0 6px 14px rgba(185,28,28,0.5);
+    }
+    .day-tile.future .tile-inner {
+      background: #fb7185;
+    }
+    .day-tile.today .tile-inner {
+      background: #fef9c3;
+      color: #7f1d1d;
+      box-shadow:
+        0 0 0 2px #fde68a,
+        0 0 14px rgba(250, 204, 21, 0.9),
+        0 10px 22px rgba(185,28,28,0.85);
+      transform: translateY(-2px);
+      animation: wobble 1.6s ease-in-out infinite;
+    }
+    @keyframes wobble {
+      0%, 100% { transform: translateY(-2px) rotate(0deg); }
+      25% { transform: translateY(-1px) rotate(-1deg); }
+      50% { transform: translateY(-2px) rotate(1deg); }
+      75% { transform: translateY(-1px) rotate(-0.7deg); }
+    }
+
+    .day-tile:hover .tile-inner {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 22px rgba(185,28,28,0.8);
+    }
+
+    /* Tooltip for "i" */
+    .tooltip {
+      position: absolute;
+      inset: auto 0 110% auto;
+      transform: translateY(6px);
+      max-width: 240px;
+      padding: 7px 9px;
+      border-radius: 10px;
+      background: rgba(15,23,42,0.98);
+      border: 1px solid rgba(148,163,184,0.85);
+      color: #e5e7eb;
+      font-size: 11px;
+      line-height: 1.45;
+      box-shadow: 0 10px 24px rgba(0,0,0,0.9);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.15s ease, transform 0.15s ease;
+      z-index: 10;
+    }
+    .tooltip::after {
+      content: "";
+      position: absolute;
+      top: 100%;
+      right: 12px;
+      width: 8px;
+      height: 8px;
+      background: inherit;
+      border-bottom: inherit;
+      border-right: inherit;
+      transform: rotate(45deg);
+    }
+
+    .day-tile:hover .tooltip,
+    .day-tile:focus-within .tooltip {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* VOUCHER MODAL (POPUP) */
+    .voucher-panel {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.82);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 40;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+    }
+    .voucher-panel.show {
+      pointer-events: auto;
+      opacity: 1;
+    }
+
+    .voucher-inner {
+      max-width: 380px;
+      width: 90%;
+      background: #fef2f2;
+      border-radius: 26px;
+      padding: 16px 16px 18px;
+      color: #7f1d1d;
+      box-shadow: var(--shadow-strong);
+      position: relative;
+      overflow: hidden;
+      transform: translateY(12px);
+      transition: transform 0.2s ease;
+    }
+    .voucher-panel.show .voucher-inner {
+      transform: translateY(0);
+    }
+
+    .voucher-inner::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at 0 0, rgba(248, 250, 252, 0.7), transparent 55%),
+        radial-gradient(circle at 100% 100%, rgba(248, 250, 252, 0.5), transparent 60%);
+      opacity: 0.8;
+      pointer-events: none;
+    }
+
+    .voucher-main-wrap {
+      position: relative;
+      z-index: 1;
+    }
+
+    .voucher-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 14px;
+      margin-bottom: 10px;
+      gap: 6px;
+    }
+
+    .voucher-back {
+      border-radius: 999px;
+      border: 0;
+      padding: 5px 10px;
+      background: rgba(248, 250, 252, 0.9);
+      cursor: pointer;
+      font-size: 12px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      box-shadow: 0 6px 12px rgba(148,163,184,0.7);
+      white-space: nowrap;
+    }
+
+    .voucher-main {
+      background: #ffffff;
+      border-radius: 22px;
+      padding: 13px 13px 15px;
+      box-shadow: 0 12px 24px rgba(248,113,113,0.4);
+    }
+
+    .voucher-day {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 3px;
+    }
+    .voucher-sub {
+      font-size: 12px;
+      color: #6b7280;
+      margin-bottom: 10px;
+    }
+
+    .coupon-card {
+      border-radius: 18px;
+      border: 2px dashed #fecaca;
+      padding: 10px 12px;
+      display: grid;
+      grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+      gap: 8px;
+      align-items: center;
+      background: linear-gradient(135deg, #fef2f2, #fee2e2);
+      margin-bottom: 8px;
+    }
+    @media (max-width: 520px) {
+      .coupon-card { grid-template-columns: minmax(0, 1fr); }
+    }
+
+    .coupon-value {
+      font-size: 24px;
+      font-weight: 800;
+      color: #b91c1c;
+    }
+    .coupon-label {
+      font-size: 12px;
+      color: #b91c1c;
+    }
+    .coupon-code-box {
+      text-align: center;
+      border-radius: 16px;
+      background: #b91c1c;
+      color: #fee2e2;
+      padding: 8px 10px;
+      font-size: 13px;
+      font-weight: 700;
+    }
+    .coupon-note {
+      font-size: 11px;
+      color: #6b7280;
+    }
+
+    .voucher-actions {
+      margin-top: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      align-items: flex-start;
+      font-size: 11px;
+      color: #6b7280;
+    }
+    .voucher-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .btn-primary,
+    .btn-secondary {
+      border-radius: 999px;
+      border: 0;
+      padding: 7px 14px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, #f9735b, #b91c1c);
+      color: #fef2f2;
+      box-shadow: 0 10px 20px rgba(185,28,28,0.7);
+    }
+    .btn-primary[disabled] {
+      opacity: 0.5;
+      cursor: default;
+      box-shadow: none;
+    }
+    .btn-secondary {
+      background: #fef2f2;
+      color: #b91c1c;
+      border: 1px solid #fecaca;
+      box-shadow: 0 6px 14px rgba(248,113,113,0.4);
+    }
+
+    /* TURNOVER TAB  */
+    .ranking-header {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      align-items: flex-start;
+      margin-bottom: 10px;
+    }
+    .ranking-title {
+      font-size: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+    .ranking-title span.topline {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .ranking-title span.topline .icon { font-size: 20px; }
+    .ranking-title .sub {
+      font-size: 12px;
+      color: #9ca3af;
+    }
+    .ranking-updated {
+      font-size: 11px;
+      color: #9ca3af;
+      padding: 4px 9px;
+      border-radius: 999px;
+      background: #020617;
+      border: 1px solid rgba(148,163,184,0.7);
+      white-space: nowrap;
+    }
+
+    .ranking-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+      gap: 10px;
+      align-items: start;
+    }
+    @media (max-width: 900px) {
+      .ranking-layout { grid-template-columns: minmax(0, 1fr); }
+    }
+
+    .podium-panel {
+      border-radius: 20px;
+      background: radial-gradient(circle at 50% 0, rgba(248, 250, 252, 0.2), transparent 60%),
+                  linear-gradient(145deg, #111827, #020617);
+      border: 1px solid rgba(255,255,255,0.18);
+      padding: 9px 9px 11px;
+      box-shadow: var(--shadow-soft);
+    }
+    .podium-header {
+      font-size: 13px;
+      color: #9ca3af;
+      margin-bottom: 7px;
+      display: flex;
+      justify-content: space-between;
+      gap: 6px;
+    }
+    .podium-header strong { color: #f9fafb; }
+
+    .podium-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .podium-item {
+      border-radius: 18px;
+      background: linear-gradient(180deg, #111827, #020617);
+      border: 1px solid rgba(148,163,184,0.7);
+      padding: 8px 6px 10px;
+      text-align: center;
+      position: relative;
+      font-size: 12px;
+    }
+    .podium-item.rank-1 {
+      background: linear-gradient(180deg, #facc15, #fb7185);
+      color: #1e1307;
+      transform: translateY(-4px);
+      box-shadow: 0 12px 24px rgba(0,0,0,0.9);
+    }
+
+    .podium-rank {
+      position: absolute;
+      top: 4px;
+      left: 50%;
+      transform: translateX(-50%);
+      border-radius: 999px;
+      padding: 2px 8px;
+      font-size: 11px;
+      background: rgba(0,0,0,0.72);
+      color: #fef9c3;
+      border: 1px solid rgba(255,255,255,0.8);
+    }
+
+    .podium-avatar {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      margin: 16px auto 5px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 2px solid rgba(255,255,255,0.9);
+      background: radial-gradient(circle, rgba(255,255,255,0.3), transparent 60%);
+      font-size: 16px;
+    }
+
+    .podium-name {
+      font-size: 13px;
+      font-weight: 700;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .podium-turnover {
+      font-size: 12px;
+      margin-top: 2px;
+    }
+
+    .table-panel {
+      border-radius: 20px;
+      background: #020617;
+      border: 1px solid rgba(55,65,81,0.9);
+      padding: 9px 9px 11px;
+      box-shadow: var(--shadow-soft);
+    }
+
+    .search-row {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 4px;
+    }
+    .search-row input {
+      flex: 1;
+      border-radius: 999px;
+      border: 1px solid rgba(191,219,254,0.9);
+      background: #020617;
+      color: #f9fafb;
+      font-family: inherit;
+      font-size: 12px;
+      padding: 7px 11px;
+      outline: none;
+    }
+    .search-row input::placeholder { color: #6b7280; }
+    .search-row button {
+      border-radius: 999px;
+      border: 0;
+      padding: 7px 11px;
+      font-size: 12px;
+      font-weight: 700;
+      background: linear-gradient(135deg, #22c55e, #4ade80);
+      color: #022c22;
+      cursor: pointer;
+      box-shadow: 0 10px 18px rgba(34,197,94,0.75);
+      white-space: nowrap;
+    }
+
+    .search-result {
+      font-size: 11px;
+      color: #9ca3af;
+      min-height: 16px;
+    }
+    .search-result strong { color: #bae6fd; }
+
+    .list-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+      color: #9ca3af;
+      margin: 6px 0;
+    }
+
+    .ranking-list {
+      max-height: 230px;
+      overflow-y: auto;
+      border-radius: 16px;
+    }
+
+    .ranking-row {
+      display: grid;
+      grid-template-columns: 32px minmax(0, 1fr) minmax(0, 80px);
+      gap: 6px;
+      align-items: center;
+      padding: 6px 7px;
+      font-size: 11px;
+      background: #020617;
+    }
+    .ranking-row:nth-child(even) { background: #040716; }
+
+    .ranking-row.highlight {
+      border: 1px solid #38bdf8;
+      box-shadow: 0 0 0 1px rgba(15,23,42,0.9), 0 10px 24px rgba(56,189,248,0.9);
+      position: relative;
+      z-index: 1;
+    }
+
+    .rank-badge {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid rgba(148,163,184,0.8);
+      background: radial-gradient(circle, rgba(255,255,255,0.15), transparent 60%);
+    }
+
+    .rank-main {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      overflow: hidden;
+    }
+    .rank-avatar {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid rgba(148,163,184,0.9);
+      background: radial-gradient(circle, rgba(255,255,255,0.25), transparent 60%);
+      font-size: 12px;
+    }
+    .rank-name {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      font-weight: 600;
+    }
+    .rank-turnover {
+      text-align: right;
+      font-weight: 600;
+    }
+    .rank-turnover span.label {
+      display: block;
+      font-size: 9px;
+      color: #9ca3af;
+      font-weight: 400;
+    }
+
+    /* BOTTOM NAV */
+    .bottom-nav {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: var(--nav-height);
+      display: flex;
+      justify-content: center;
+      z-index: 20;
+      pointer-events: none;
+    }
+    .bottom-nav-inner {
+      pointer-events: auto;
+      width: 100%;
+      max-width: 1100px;
+      padding: 0 12px 0;
+    }
+
+    .nav-bar {
+      background: rgba(3,7,18,0.98);
+      border-radius: 18px 18px 0 0;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      padding: 8px 8px 10px;
+      border: 1px solid rgba(31,41,55,0.9);
+      box-shadow: 0 -6px 22px rgba(0,0,0,0.9);
+    }
+
+    .nav-btn {
+      flex: 1;
+      border: 0;
+      background: transparent;
+      color: #9ca3af;
+      font-family: inherit;
+      font-size: 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      cursor: pointer;
+      transition: color 0.12s ease;
+    }
+
+    .nav-icon {
+      width: 20px;
+      height: 20px;
+      stroke: currentColor;
+      stroke-width: 1.8;
+      fill: none;
+    }
+
+    .nav-btn.active {
+      color: #f9fafb;
+    }
+    .nav-btn.active .nav-icon {
+      color: #f9735b;
+    }
+
+    /* TOAST */
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: calc(var(--nav-height) + 16px);
+      transform: translateX(-50%) translateY(10px);
+      background: radial-gradient(circle at 0 0, rgba(255,255,255,0.15), transparent 55%),
+                  linear-gradient(135deg, #22c55e, #16a34a);
+      color: #022c22;
+      padding: 8px 14px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      box-shadow: 0 10px 22px rgba(0,0,0,0.7);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.15s ease, transform 0.15s ease;
+      z-index: 50;
+    }
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    /* Scrollbars */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #020617; }
+    ::-webkit-scrollbar-thumb { background: #4b5563; border-radius: 999px; }
+    ::-webkit-scrollbar-thumb:hover { background: #9ca3af; }
+  </style>
+</head>
+<body>
+<div class="page">
+  <div class="inner">
+
+    <!-- 顶部 Video：桌机 & 手机都会看到 -->
+    <div class="promo-video-wrap">
+      <!-- 把 src 换成你自己的影片 URL，例如 CDN / S3 链接 -->
+      <video class="promo-video" src="https://ricobr.ft-crm.com/media-api/serve/c2441426-42f9-43a9-b9c5-5675d093a24b_TrustPilot.mp4" autoplay muted loop playsinline></video>
+    </div>
+
+    <!-- HEADER -->
+    <header class="header">
+      <div class="hero-card">
+        <div class="hero-greeting">Happy holidays, Rico! 🎄</div>
+        <div class="hero-title">
+          <span>Christmas Month</span>
+          <span>Reward Calendar</span>
+        </div>
+        <div class="hero-sub">
+          Check in every day, collect your voucher, and climb the Turnover Challenge leaderboard.
+        </div>
+        <div class="hero-tag">
+          <span>⭐</span>
+          <span>Week 1 is live – don’t miss today’s drop.</span>
+        </div>
+      </div>
+
+      <div class="countdown-card">
+        <div>
+          <div class="countdown-label">Next reward refresh in</div>
+          <div class="countdown-time" id="nextRewardTime">--:--:--</div>
+        </div>
+        <div class="countdown-meta">
+          New voucher unlocks every day at 00:00 (server time). Keep your streak for bigger weekly prizes.
+        </div>
+      </div>
+    </header>
+
+    <!-- TAB: HOME -->
+    <section id="tab-home" class="tab-panel active">
+      <section class="home-section">
+        <div>
+          <div class="section-title">Featured missions</div>
+          <div class="section-sub">
+            Complete both missions to maximise your Christmas rewards.
+          </div>
+          <div class="home-banners">
+            <!-- Daily Check-in banner -->
+            <article class="event-banner">
+              <div class="event-tag">Mission 01 · Daily</div>
+              <div class="event-title">Daily Check-in Rewards</div>
+              <div class="event-meta">
+                Open the Christmas calendar, collect today’s voucher, and keep your streak for weekly bonuses.
+              </div>
+              <div class="event-cta-row">
+                <span>Tap the calendar to grab today’s code.</span>
+                <button class="event-pill secondary" data-goto-tab="calendar">
+                  <span class="dot"></span>
+                  <span>Go to calendar</span>
+                </button>
+              </div>
+            </article>
+
+            <!-- Daily Turnover banner -->
+            <article class="event-banner">
+              <div class="event-tag">Mission 02 · Turnover</div>
+              <div class="event-title">Daily Turnover Challenge</div>
+              <div class="event-meta">
+                Play your favourite games, push your turnover, and climb the daily leaderboard for extra prizes.
+              </div>
+              <div class="event-cta-row">
+                <span>Top 20 appear on the Turnover board.</span>
+                <button class="event-pill" data-goto-tab="turnover">
+                  <span class="dot"></span>
+                  <span>View Turnover board</span>
+                </button>
+              </div>
+            </article>
+          </div>
+        </div>
+
+        <!-- Trending events -->
+        <div class="trending-wrap">
+          <div class="section-title">Trending events</div>
+          <div class="section-sub">
+            Add your own banner images via permalink for each event.
+          </div>
+          <div class="trending-row">
+            <!-- Example: Referral Rush -->
+            <article class="trending-card">
+              <div class="trend-date">Weekly · Social</div>
+              <div class="trend-image">
+                <!-- 换成 Referral Rush 图的 permalink -->
+                <img src="https://ricobr.ft-crm.com/media-api/serve/71480533-ea26-4b14-8fc3-6298882cc281_TrustPilot.png" alt="Referral Rush" />
+              </div>
+              <div class="trend-title">Referral Rush</div>
+              <div class="trend-meta">Invite friends and collect extra turnover & free spins based on your referrals.</div>
+            </article>
+
+            <!-- Example: Mr. Rico Mart -->
+            <article class="trending-card">
+              <div class="trend-date">Daily · Shopping</div>
+              <div class="trend-image">
+                <!-- 换成 Mr. Rico Mart 图的 permalink -->
+                <img src="https://ricobr.ft-crm.com/media-api/serve/941fbccc-a16f-4b63-ae14-c7c3716e7aa9_Mr_Rico.png" alt="Mr. Rico Mart" />
+              </div>
+              <div class="trend-title">Mr. Rico Mart</div>
+              <div class="trend-meta">Use collected voucher codes to redeem spins, coins & gifts in the Mart.</div>
+            </article>
+
+            <!-- 其他示例：自行换 src 即可 -->
+            <article class="trending-card">
+              <div class="trend-date">16 Dec · 2 hrs left</div>
+              <div class="trend-image">
+                <img src="https://your-knitting-session-image-url.com/banner.jpg" alt="Knitting Session" />
+              </div>
+              <div class="trend-title">Knitting Session</div>
+              <div class="trend-meta">Cosy spins with extra warm multipliers.</div>
+            </article>
+
+            <article class="trending-card">
+              <div class="trend-date">24 Dec</div>
+              <div class="trend-image">
+                <img src="https://your-christmas-eve-wheel-image-url.com/banner.jpg" alt="Christmas Eve Wheel" />
+              </div>
+              <div class="trend-title">Christmas Eve Wheel</div>
+              <div class="trend-meta">One spin, massive surprise jackpot.</div>
+            </article>
+
+            <article class="trending-card">
+              <div class="trend-date">31 Dec</div>
+              <div class="trend-image">
+                <img src="https://your-new-year-finale-image-url.com/banner.jpg" alt="New Year Finale" />
+              </div>
+              <div class="trend-title">New Year Finale</div>
+              <div class="trend-meta">Blowout rewards for top turnover players.</div>
+            </article>
+          </div>
+        </div>
+      </section>
+    </section>
+
+    <!-- TAB: CALENDAR -->
+    <section id="tab-calendar" class="tab-panel">
+      <section class="calendar-section">
+        <div class="calendar-card">
+          <div class="calendar-header">
+            <div>
+              <div class="calendar-header-main">Christmas Calendar · Week view</div>
+              <div class="calendar-header-sub">
+                Tap a day to preview its reward. Tap <strong>today’s tile</strong> to open the voucher page.
+              </div>
+            </div>
+          </div>
+
+          <div class="week-selector">
+            <button class="week-chip" data-week="0">Week 1 <span class="range">1–7 Dec</span></button>
+            <button class="week-chip" data-week="1">Week 2 <span class="range">8–14 Dec</span></button>
+            <button class="week-chip" data-week="2">Week 3 <span class="range">15–21 Dec</span></button>
+            <button class="week-chip" data-week="3">Week 4 <span class="range">22–28 Dec</span></button>
+            <button class="week-chip" data-week="4">Week 5 <span class="range">29–31 Dec</span></button>
+          </div>
+
+          <div class="mini-legend">
+            <span><span class="dot dot-past"></span> Past (already opened)</span>
+            <span><span class="dot dot-today"></span> Today (tap to see voucher)</span>
+            <span><span class="dot dot-future"></span> Locked (coming soon)</span>
+          </div>
+
+          <div class="calendar-inner-wrap">
+            <div class="day-grid" id="dayGrid"></div>
+          </div>
+        </div>
+      </section>
+    </section>
+
+    <!-- TAB: TURNOVER -->
+    <section id="tab-turnover" class="tab-panel">
+      <section>
+        <header class="ranking-header">
+          <div class="ranking-title">
+            <span class="topline">
+              <span class="icon">🏁</span>
+              <span>Turnover Challenge</span>
+            </span>
+            <span class="sub">
+              Spin, raid, and play to boost your turnover. Top 20 appear here; full list is managed in Google Sheet.
+            </span>
+          </div>
+          <div class="ranking-updated" id="updatedAt">Updated –</div>
+        </header>
+
+        <div class="ranking-layout">
+          <div class="podium-panel">
+            <div class="podium-header">
+              <strong>Today’s podium</strong>
+              <span>Extra bonus for #1–3</span>
+            </div>
+            <div class="podium-grid" id="podiumGrid"></div>
+          </div>
+
+          <div class="table-panel">
+            <div class="search-row">
+              <input id="searchInput" placeholder="Search your GitHub / in-game username…" />
+              <button id="searchBtn">Find</button>
+            </div>
+            <div class="search-result" id="searchResult"></div>
+
+            <div class="list-header">
+              <span>Top 20 Turnover board</span>
+              <span>Full list & prizes in Google Sheet</span>
+            </div>
+
+            <div class="ranking-list" id="rankingList"></div>
+          </div>
+        </div>
+      </section>
+    </section>
+  </div>
+</div>
+
+<!-- Voucher popup -->
+<div class="voucher-panel" id="voucherPanel">
+  <div class="voucher-inner">
+    <div class="voucher-main-wrap">
+      <div class="voucher-header">
+        <div>
+          <div style="font-size:13px; text-transform:uppercase; letter-spacing:0.1em;">Voucher page</div>
+          <div style="font-size:11px; color:#9ca3af;">This is your reward for today’s calendar tile.</div>
+        </div>
+        <button class="voucher-back" id="voucherBackBtn">
+          ← Back to calendar
+        </button>
+      </div>
+
+      <div class="voucher-main">
+        <div class="voucher-day" id="voucherDayLabel">Day 2</div>
+        <div class="voucher-sub" id="voucherRewardText">
+          You have received: 50% OFF coupon from Mr. Rico Mart.
+        </div>
+
+        <div class="coupon-card">
+          <div>
+            <div class="coupon-value" id="voucherBigText">50% OFF</div>
+            <div class="coupon-label" id="voucherSmallText">
+              Discount on selected Mr. Rico Mart bundles.
+            </div>
+          </div>
+          <div class="coupon-code-box">
+            <div style="font-size:11px; text-transform:uppercase; letter-spacing:0.2em;">Voucher code</div>
+            <div id="voucherCodeText">DEC02-VOUCHER</div>
+          </div>
+        </div>
+
+        <div class="coupon-note">
+          Paste this code inside the promo section before the end of the day. Each code is valid for a single account only.
+        </div>
+
+        <div class="voucher-actions">
+          <div class="voucher-buttons">
+            <button class="btn-primary" id="voucherCopyBtn">
+              <span>📋</span>
+              <span>Copy code</span>
+            </button>
+            <button class="btn-secondary" id="voucherClaimBtn">
+              <span>🎁</span>
+              <span>Claim now</span>
+            </button>
+          </div>
+          <span id="voucherStatusHint">
+            Voucher is active for today only. Copy & redeem before the day ends.
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Bottom nav -->
+<nav class="bottom-nav">
+  <div class="bottom-nav-inner">
+    <div class="nav-bar">
+      <button class="nav-btn active" data-tab-target="home">
+        <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M4 10.5L12 4l8 6.5V20a1 1 0 0 1-1 1h-4.5a.5.5 0 0 1-.5-.5V15a2 2 0 0 0-2-2h-1a2 2 0 0 0-2 2v5.5a.5.5 0 0 1-.5.5H5a1 1 0 0 1-1-1v-9.5z" />
+        </svg>
+        <span>Home</span>
+      </button>
+      <button class="nav-btn" data-tab-target="calendar">
+        <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true">
+          <rect x="3.5" y="5" width="17" height="15.5" rx="2" />
+          <path d="M8 3.5v3M16 3.5v3M3.5 9h17" />
+        </svg>
+        <span>Calendar</span>
+      </button>
+      <button class="nav-btn" data-tab-target="turnover">
+        <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M8 21v-6.5M12 21V5M16 21v-9" />
+          <path d="M7 9h10l-1.2-5H8.2z" />
+        </svg>
+        <span>Turnover</span>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<div id="toast" class="toast">Voucher code copied!</div>
+
+<script>
+  /* Snow */
+  function createSnowflakes(count = 40) {
+    for (let i = 0; i < count; i++) {
+      const el = document.createElement("div");
+      el.className = "snowflake";
+      el.textContent = "✻";
+      const left = Math.random() * 100;
+      const duration = 8 + Math.random() * 8;
+      const delay = Math.random() * -duration;
+      const size = 7 + Math.random() * 6;
+      el.style.left = left + "vw";
+      el.style.fontSize = size + "px";
+      el.style.animationDuration = duration + "s";
+      el.style.animationDelay = delay + "s";
+      document.body.appendChild(el);
+    }
+  }
+  createSnowflakes();
+
+  /* Date + countdown */
+  const DECEMBER_MONTH = 11; // 0-based
+  const nowDate = new Date();
+  const isDecember = nowDate.getMonth() === DECEMBER_MONTH;
+  const demoDay = 2;         // for testing when it's not December
+  const todayDay = isDecember ? nowDate.getDate() : demoDay;
+  const todayInDecember = Math.min(Math.max(todayDay, 1), 31);
+
+  const nextRewardTimeEl = document.getElementById("nextRewardTime");
+  function updateCountdown() {
+    const now = new Date();
+    const next = new Date();
+    next.setHours(24, 0, 0, 0);
+    const diff = next - now;
+    if (diff <= 0) {
+      nextRewardTimeEl.textContent = "00:00:00";
+      return;
+    }
+    const h = String(Math.floor(diff / (1000 * 60 * 60))).padStart(2, "0");
+    const m = String(Math.floor((diff / (1000 * 60)) % 60)).padStart(2, "0");
+    const s = String(Math.floor((diff / 1000) % 60)).padStart(2, "0");
+    nextRewardTimeEl.textContent = `${h}:${m}:${s}`;
+  }
+  updateCountdown();
+  setInterval(updateCountdown, 1000);
+
+  /* Voucher + rewards config */
+  const voucherCodes = {};
+  for (let d = 1; d <= 31; d++) {
+    voucherCodes[d] = `DEC${String(d).padStart(2, "0")}-VOUCHER`;
+  }
+
+  const rewardsConfig = {
+    1: {
+      title: "Starter Coins",
+      desc: "Up to 350M extra coins based on your VIP tier.",
+      infoHtml: `
+        <strong>Day 1 · Coin Pack</strong>
+        <ul>
+          <li>Up to <b>350M</b> bonus coins</li>
+          <li>VIP 01–03: 50M</li>
+          <li>VIP 04–05: 150M</li>
+          <li>VIP 06+: 350M</li>
+        </ul>`,
+      bigText: "350M COINS"
+    },
+    2: {
+      title: "Christmas Coupon",
+      desc: "50% OFF selected Mr. Rico Mart bundles.",
+      infoHtml: `
+        <strong>Day 2 · 50% Coupon</strong>
+        <ul>
+          <li>50% OFF one selected Mr. Rico Mart pack</li>
+          <li>1-time use per player</li>
+        </ul>`,
+      bigText: "50% OFF"
+    },
+    3: {
+      title: "Epic Loot Crate",
+      desc: "Up to 3x epic items & bonus coins.",
+      infoHtml: `
+        <strong>Day 3 · Epic Loot</strong>
+        <ul>
+          <li>Up to <b>3x Epic items</b></li>
+          <li>Higher VIP = more items & coins</li>
+        </ul>`,
+      bigText: "EPIC LOOT"
+    }
+    // 4–31 可按需要继续填
+  };
+
+  function getReward(day) {
+    return rewardsConfig[day] || {
+      title: `Mystery Reward`,
+      desc: `Reward details for Day ${day} will be announced soon.`,
+      infoHtml: `
+        <strong>Day ${day} · Mystery</strong>
+        <ul>
+          <li>Stay tuned – this day will be revealed later.</li>
+        </ul>`,
+      bigText: "MYSTERY"
+    };
+  }
+
+  /* Calendar rendering */
+  const dayGrid = document.getElementById("dayGrid");
+  const weekChips = document.querySelectorAll(".week-chip");
+  const totalDays = 31;
+
+  function createTile(day) {
+    const tile = document.createElement("button");
+    tile.className = "day-tile";
+    const weekIndex = Math.floor((day - 1) / 7); // 0–4
+    tile.dataset.week = weekIndex;
+
+    const state =
+      day < todayInDecember ? "past" :
+      day === todayInDecember ? "today" :
+      "future";
+    tile.classList.add(state);
+
+    const stateText =
+      state === "past" ? "Opened" :
+      state === "today" ? "Today" :
+      "Locked";
+
+    const reward = getReward(day);
+
+    tile.innerHTML = `
+      <div class="tile-inner">
+        <div class="day-label">Day</div>
+        <div class="day-number">${day}</div>
+        <div class="tile-state">${stateText}</div>
+        <div class="tile-info-row">
+          <div class="info-badge">i</div>
+          ${state === "future" ? '<div class="lock-icon">🔒</div>' : ""}
+        </div>
+      </div>
+      <div class="tooltip">
+        ${reward.infoHtml}
+      </div>
+    `;
+
+    tile.addEventListener("click", () => {
+      if (day === todayInDecember) {
+        openVoucher(day);
+      }
+    });
+
+    return tile;
+  }
+
+  function renderCalendar() {
+    dayGrid.innerHTML = "";
+    for (let d = 1; d <= totalDays; d++) {
+      dayGrid.appendChild(createTile(d));
+    }
+  }
+  renderCalendar();
+
+  function setActiveWeek(weekIndex) {
+    weekChips.forEach(chip => {
+      chip.classList.toggle("active", Number(chip.dataset.week) === weekIndex);
+    });
+    const tiles = document.querySelectorAll(".day-tile");
+    tiles.forEach(tile => {
+      tile.classList.toggle(
+        "hidden-week",
+        Number(tile.dataset.week) !== weekIndex
+      );
+    });
+  }
+
+  const currentWeek = Math.floor((todayInDecember - 1) / 7);
+  setActiveWeek(currentWeek);
+
+  weekChips.forEach(chip => {
+    chip.addEventListener("click", () => {
+      const w = Number(chip.dataset.week);
+      setActiveWeek(w);
+    });
+  });
+
+  /* Voucher modal logic */
+  const voucherPanel = document.getElementById("voucherPanel");
+  const voucherBackBtn = document.getElementById("voucherBackBtn");
+  const voucherDayLabel = document.getElementById("voucherDayLabel");
+  const voucherRewardText = document.getElementById("voucherRewardText");
+  const voucherBigText = document.getElementById("voucherBigText");
+  const voucherSmallText = document.getElementById("voucherSmallText");
+  const voucherCodeText = document.getElementById("voucherCodeText");
+  const voucherCopyBtn = document.getElementById("voucherCopyBtn");
+  const voucherStatusHint = document.getElementById("voucherStatusHint");
+  const voucherClaimBtn = document.getElementById("voucherClaimBtn");
+
+  function openVoucher(day) {
+    const reward = getReward(day);
+    const code = voucherCodes[day];
+
+    voucherDayLabel.textContent = `Day ${day}`;
+    voucherRewardText.textContent = `You have received: ${reward.title}.`;
+    voucherBigText.textContent = reward.bigText;
+    voucherSmallText.textContent = reward.desc;
+    voucherCodeText.textContent = code;
+    voucherStatusHint.textContent = "Voucher is active for today only. Copy & redeem before the day ends.";
+    voucherCopyBtn.disabled = false;
+
+    voucherPanel.classList.add("show");
+  }
+
+  function closeVoucher() {
+    voucherPanel.classList.remove("show");
+  }
+
+  voucherBackBtn.addEventListener("click", closeVoucher);
+
+  // close when clicking outside the card
+  voucherPanel.addEventListener("click", (e) => {
+    if (e.target === voucherPanel) {
+      closeVoucher();
+    }
+  });
+
+  /* Copy code */
+  const toastEl = document.getElementById("toast");
+  function showToast(msg) {
+    toastEl.textContent = msg;
+    toastEl.classList.add("show");
+    setTimeout(() => toastEl.classList.remove("show"), 1800);
+  }
+
+  voucherCopyBtn.addEventListener("click", () => {
+    const code = voucherCodeText.textContent.trim();
+    if (!code) return;
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(code)
+        .then(() => showToast("Voucher code copied!"))
+        .catch(() => fallbackCopy(code));
+    } else {
+      fallbackCopy(code);
+    }
+  });
+
+  function fallbackCopy(text) {
+    const ta = document.createElement("textarea");
+    ta.value = text;
+    document.body.appendChild(ta);
+    ta.select();
+    try {
+      document.execCommand("copy");
+      showToast("Voucher code copied!");
+    } catch(e) {
+      showToast("Unable to copy – please copy manually.");
+    }
+    document.body.removeChild(ta);
+  }
+
+  /* Claim now -> redeem page */
+  if (voucherClaimBtn) {
+    voucherClaimBtn.addEventListener("click", () => {
+      window.open("https://www.rico.bet/myprofile", "_blank");
+    });
+  }
+
+  /* Turnover data & rendering */
+  const rankingData = [
+    { username: "SnowLegend", turnover: 98500 },
+    { username: "WinterWhale", turnover: 95600 },
+    { username: "CodeElf", turnover: 93200 },
+    { username: "DecemberDev", turnover: 91000 },
+    { username: "HolidayHero", turnover: 88750 },
+    { username: "FestiveFox", turnover: 86500 },
+    { username: "SantaScript", turnover: 84250 },
+    { username: "GitGifts", turnover: 82900 },
+    { username: "CandyCane", turnover: 81200 },
+    { username: "FrostyBug", turnover: 79800 },
+    { username: "ReindeerRun", turnover: 78200 },
+    { username: "PullRequest", turnover: 76900 },
+    { username: "YuleLog", turnover: 75400 },
+    { username: "MergeWizard", turnover: 74000 },
+    { username: "Snowflake", turnover: 72950 },
+    { username: "HolidayCommit", turnover: 71500 },
+    { username: "NorthStar", turnover: 70600 },
+    { username: "BlizzardByte", turnover: 69100 },
+    { username: "PineTree", turnover: 67800 },
+    { username: "FuzzyPenguin", turnover: 66400 }
+  ];
+
+  const extraRanks = [
+    { username: "You", turnover: 43210, rank: 54 },
+    { username: "ExampleUser", turnover: 51000, rank: 26 }
+  ];
+
+  function shortNum(n) {
+    if (n >= 1_000_000) return (n / 1_000_000).toFixed(1) + "M";
+    if (n >= 1_000) return (n / 1_000).toFixed(1) + "K";
+    return n.toString();
+  }
+  function initials(name) {
+    return name
+      .split(/[^A-Za-z0-9]+/)
+      .filter(Boolean)
+      .slice(0, 2)
+      .map(p => p[0].toUpperCase())
+      .join("");
+  }
+
+  const podiumGrid = document.getElementById("podiumGrid");
+  const rankingList = document.getElementById("rankingList");
+  const updatedAt = document.getElementById("updatedAt");
+
+  const now = new Date();
+  if (updatedAt) {
+    updatedAt.textContent =
+      "Updated " +
+      now.toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit" });
+  }
+
+  if (podiumGrid) {
+    rankingData.slice(0, 3).forEach((player, index) => {
+      const rank = index + 1;
+      const card = document.createElement("div");
+      card.className = "podium-item rank-" + rank;
+      card.innerHTML = `
+        <div class="podium-rank">#${rank}</div>
+        <div class="podium-avatar">${initials(player.username)}</div>
+        <div class="podium-name">${player.username}</div>
+        <div class="podium-turnover">${shortNum(player.turnover)} TO</div>
+      `;
+      podiumGrid.appendChild(card);
+    });
+  }
+
+  if (rankingList) {
+    rankingData.forEach((player, index) => {
+      const rank = index + 1;
+      const row = document.createElement("div");
+      row.className = "ranking-row";
+      if (rank <= 3) row.classList.add("highlight");
+      row.innerHTML = `
+        <div class="rank-badge">#${rank}</div>
+        <div class="rank-main">
+          <div class="rank-avatar">${initials(player.username)}</div>
+          <div class="rank-name">${player.username}</div>
+        </div>
+        <div class="rank-turnover">
+          ${shortNum(player.turnover)}
+          <span class="label">Turnover</span>
+        </div>
+      `;
+      rankingList.appendChild(row);
+    });
+  }
+
+  const searchInput = document.getElementById("searchInput");
+  const searchBtn = document.getElementById("searchBtn");
+  const searchResult = document.getElementById("searchResult");
+
+  function findRank(usernameRaw) {
+    const username = usernameRaw.trim().toLowerCase();
+    if (!username) return null;
+    const index = rankingData.findIndex(
+      p => p.username.toLowerCase() === username
+    );
+    if (index >= 0) {
+      return { ...rankingData[index], rank: index + 1, inTop20: true };
+    }
+    const extra = extraRanks.find(
+      p => p.username.toLowerCase() === username
+    );
+    if (extra) return { ...extra, inTop20: false };
+    return null;
+  }
+
+  function handleSearch() {
+    if (!searchInput || !searchResult) return;
+    const q = searchInput.value;
+    if (!q.trim()) {
+      searchResult.textContent = "";
+      return;
+    }
+    const result = findRank(q);
+    if (!result) {
+      searchResult.innerHTML =
+        `No ranking found for <strong>${q}</strong> yet. ` +
+        `Add your username to the Google Sheet to join the board.`;
+      return;
+    }
+
+    if (result.inTop20) {
+      searchResult.innerHTML =
+        `<strong>${result.username}</strong> is currently <strong>#${result.rank}</strong> ` +
+        `with <strong>${shortNum(result.turnover)}</strong> turnover.`;
+      const row = rankingList.children[result.rank - 1];
+      if (row) {
+        row.classList.add("highlight");
+        row.scrollIntoView({ behavior: "smooth", block: "center" });
+      }
+    } else {
+      searchResult.innerHTML =
+        `<strong>${result.username}</strong> is currently <strong>#${result.rank}</strong> ` +
+        `with <strong>${shortNum(result.turnover)}</strong> turnover (outside Top 20 list).`;
+    }
+  }
+
+  if (searchBtn && searchInput) {
+    searchBtn.addEventListener("click", handleSearch);
+    searchInput.addEventListener("keydown", e => {
+      if (e.key === "Enter") handleSearch();
+    });
+  }
+
+  /* Bottom nav + home CTAs */
+  const navButtons = document.querySelectorAll(".nav-btn");
+  const tabPanels = {
+    home: document.getElementById("tab-home"),
+    calendar: document.getElementById("tab-calendar"),
+    turnover: document.getElementById("tab-turnover")
+  };
+
+  function setActiveTab(target) {
+    Object.entries(tabPanels).forEach(([key, panel]) => {
+      if (!panel) return;
+      panel.classList.toggle("active", key === target);
+    });
+    navButtons.forEach(btn => {
+      const isActive = btn.dataset.tabTarget === target;
+      btn.classList.toggle("active", isActive);
+    });
+  }
+
+  navButtons.forEach(btn => {
+    btn.addEventListener("click", () => {
+      const target = btn.dataset.tabTarget;
+      if (!target) return;
+      setActiveTab(target);
+    });
+  });
+
+  document.querySelectorAll("[data-goto-tab]").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const target = btn.dataset.gotoTab;
+      if (!target) return;
+      setActiveTab(target);
+    });
+  });
+</script>
+</body>
+</html>
