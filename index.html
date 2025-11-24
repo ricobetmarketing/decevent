@@ -49,7 +49,7 @@
       border-radius: 28px;
       border: 1px solid rgba(255, 255, 255, 0.14);
       box-shadow: var(--shadow-strong);
-      padding: 16px 14px 18px;
+      padding: 18px 16px 20px;
       position: relative;
       overflow: hidden;
     }
@@ -88,8 +88,8 @@
       position: fixed;
       top: -10px;
       color: #e5f0ff;
-      font-size: 8px;
-      opacity: 0.65;
+      font-size: 9px;
+      opacity: 0.7;
       pointer-events: none;
       z-index: 5;
       animation-name: snowFall;
@@ -104,59 +104,45 @@
 
     /* HEADER */
     .header {
-      margin-bottom: 14px;
+      margin-bottom: 16px;
       display: grid;
       grid-template-columns: minmax(0, 1.8fr) minmax(0, 1.2fr);
-      gap: 10px;
+      gap: 12px;
       align-items: stretch;
     }
     @media (max-width: 800px) {
       .header { grid-template-columns: minmax(0, 1fr); }
     }
 
-    /* HERO WITH VIDEO */
     .hero-card {
       border-radius: 26px;
+      padding: 14px 16px;
+      background: linear-gradient(145deg, #0b1120, #020617);
+      color: #f9fafb;
       box-shadow: var(--shadow-soft);
-    }
-
-    .hero-card.hero-with-video {
       position: relative;
-      padding: 0;
       overflow: hidden;
-      background: #020617;
     }
 
-    .hero-video {
+    .hero-card::after {
+      content: "";
       position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      filter: saturate(1.1) contrast(1.05);
-    }
-
-    .hero-overlay {
-      position: absolute;
-      inset: 0;
-      background:
-        radial-gradient(circle at 0 0, rgba(248, 250, 252, 0.35), transparent 55%),
-        linear-gradient(135deg, rgba(15,23,42,0.85), rgba(15,23,42,0.55));
-    }
-
-    .hero-content {
-      position: relative;
-      padding: 16px 18px 18px;
+      width: 220px;
+      height: 220px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(248, 250, 252, 0.22), transparent 65%);
+      right: -60px;
+      bottom: -80px;
     }
 
     .hero-greeting {
-      font-size: 16px;
-      opacity: 0.95;
+      font-size: 14px;
+      opacity: 0.9;
     }
     .hero-title {
       margin-top: 6px;
-      font-size: 26px;
-      line-height: 1.1;
+      font-size: 24px;
+      line-height: 1.15;
     }
     .hero-title span {
       display: block;
@@ -164,10 +150,10 @@
     }
 
     .hero-sub {
-      margin-top: 8px;
+      margin-top: 6px;
       font-size: 13px;
-      opacity: 0.95;
-      max-width: 380px;
+      opacity: 0.9;
+      max-width: 360px;
     }
 
     .hero-tag {
@@ -175,45 +161,19 @@
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      background: rgba(15,23,42,0.94);
+      background: rgba(15,23,42,0.9);
       color: #fbbf24;
       padding: 5px 12px;
       border-radius: 999px;
-      font-size: 12px;
-      box-shadow: 0 8px 18px rgba(15,23,42,0.6);
-    }
-
-    @media (max-width: 640px) {
-      .hero-card.hero-with-video {
-        padding: 12px 14px;
-        background: linear-gradient(145deg, #f9735b, #fb7185, #facc15);
-      }
-      .hero-card.hero-with-video .hero-video,
-      .hero-card.hero-with-video .hero-overlay {
-        display: none;
-      }
-      .hero-content {
-        padding: 0;
-      }
-      .hero-title {
-        font-size: 23px;
-      }
-      .hero-sub {
-        font-size: 12px;
-      }
-      .hero-greeting {
-        font-size: 15px;
-      }
-      .hero-tag {
-        font-size: 11px;
-      }
+      font-size: 11px;
+      box-shadow: 0 8px 16px rgba(15,23,42,0.45);
     }
 
     .countdown-card {
       border-radius: 24px;
       padding: 12px 14px;
       background: radial-gradient(circle at 0 0, rgba(255,255,255,0.1), transparent 55%),
-                  linear-gradient(160deg, #020617, #111827);
+                  linear-gradient(160deg, #020617, #020617);
       border: 1px solid rgba(148,163,184,0.7);
       font-size: 13px;
       color: #e5e7eb;
@@ -231,7 +191,7 @@
       color: #9ca3af;
     }
     .countdown-time {
-      font-size: 20px;
+      font-size: 22px;
       font-weight: 700;
       color: #4ade80;
     }
@@ -274,7 +234,7 @@
       background: var(--card);
       color: var(--text-dark);
       border-radius: 24px;
-      padding: 12px;
+      padding: 12px 12px 13px;
       box-shadow: var(--shadow-soft);
       position: relative;
       overflow: hidden;
@@ -295,6 +255,7 @@
     }
     .event-title {
       font-size: 18px;
+      font-weight: 700;
     }
     .event-meta {
       margin-top: 6px;
@@ -306,24 +267,26 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      gap: 6px;
-      font-size: 12px;
+      gap: 8px;
+      font-size: 11px;
       color: #6b7280;
+      flex-wrap: wrap;
     }
     .event-pill {
       display: inline-flex;
       align-items: center;
       gap: 6px;
       border-radius: 999px;
-      padding: 7px 14px;
+      padding: 7px 13px;
       border: 0;
       cursor: pointer;
-      font-size: 13px;
+      font-size: 12px;
       font-weight: 600;
       font-family: inherit;
       background: linear-gradient(135deg, #f9735b, #fb7185);
       color: white;
       box-shadow: 0 10px 20px rgba(248,113,113,0.65);
+      white-space: nowrap;
     }
     .event-pill.secondary {
       background: linear-gradient(135deg, #22c55e, #16a34a);
@@ -343,10 +306,10 @@
     .trending-row {
       display: grid;
       grid-auto-flow: column;
-      grid-auto-columns: minmax(220px, 1fr);
-      gap: 12px;
+      grid-auto-columns: minmax(190px, 1fr);
+      gap: 10px;
       overflow-x: auto;
-      padding-bottom: 6px;
+      padding-bottom: 4px;
     }
     .trending-card {
       background: var(--card);
@@ -354,41 +317,39 @@
       border-radius: 22px;
       padding: 9px 9px 10px;
       box-shadow: var(--shadow-soft);
-      min-width: 220px;
+      min-width: 190px;
       position: relative;
-      display: flex;
-      flex-direction: column;
     }
     .trend-date {
       position: absolute;
-      top: 6px;
-      left: 6px;
+      top: 7px;
+      left: 8px;
       border-radius: 999px;
-      background: rgba(248, 250, 252, 0.9);
-      padding: 4px 8px;
+      background: rgba(248, 250, 252, 0.95);
+      padding: 3px 8px;
       font-size: 10px;
       font-weight: 600;
     }
     .trend-image {
-      height: 78px;
-      border-radius: 18px;
-      background: linear-gradient(120deg, #0ea5e9, #22c55e);
-      margin-bottom: 8px;
+      height: 90px;
+      border-radius: 16px;
+      overflow: hidden;
+      margin-bottom: 6px;
+      background: #020617;
     }
-    .trend-tag {
-      font-size: 10px;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      color: #fb7185;
-      margin-bottom: 4px;
+    .trend-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
     }
     .trend-title {
-      font-size: 14px;
-      margin-bottom: 4px;
-      font-weight: 700;
+      font-size: 13px;
+      margin-bottom: 2px;
+      font-weight: 600;
     }
     .trend-meta {
-      font-size: 12px;
+      font-size: 11px;
       color: #6b7280;
     }
 
@@ -396,7 +357,7 @@
     .calendar-section {
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 12px;
     }
 
     .calendar-card {
@@ -423,14 +384,15 @@
       justify-content: space-between;
       align-items: center;
       gap: 6px;
-      margin-bottom: 8px;
+      margin-bottom: 10px;
       color: #fee2e2;
     }
     .calendar-header-main {
       font-size: 16px;
+      font-weight: 600;
     }
     .calendar-header-sub {
-      font-size: 12px;
+      font-size: 11px;
       opacity: 0.9;
     }
 
@@ -515,11 +477,11 @@
       border-radius: 22px;
       background: #f9735b;
       box-shadow: 0 8px 18px rgba(185,28,28,0.7);
-      padding: 6px 4px 7px;
+      padding: 7px 4px 8px;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 2px;
+      gap: 3px;
       color: #fef2f2;
       position: relative;
       overflow: hidden;
@@ -609,14 +571,14 @@
       position: absolute;
       inset: auto 0 110% auto;
       transform: translateY(6px);
-      max-width: 220px;
-      padding: 6px 8px;
+      max-width: 240px;
+      padding: 7px 9px;
       border-radius: 10px;
       background: rgba(15,23,42,0.98);
       border: 1px solid rgba(148,163,184,0.85);
       color: #e5e7eb;
-      font-size: 10px;
-      line-height: 1.4;
+      font-size: 11px;
+      line-height: 1.45;
       box-shadow: 0 10px 24px rgba(0,0,0,0.9);
       opacity: 0;
       pointer-events: none;
@@ -665,7 +627,7 @@
       width: 90%;
       background: #fef2f2;
       border-radius: 26px;
-      padding: 14px 14px 16px;
+      padding: 16px 16px 18px;
       color: #7f1d1d;
       box-shadow: var(--shadow-strong);
       position: relative;
@@ -698,13 +660,14 @@
       justify-content: space-between;
       align-items: center;
       font-size: 14px;
-      margin-bottom: 8px;
+      margin-bottom: 10px;
+      gap: 6px;
     }
 
     .voucher-back {
       border-radius: 999px;
       border: 0;
-      padding: 4px 9px;
+      padding: 5px 10px;
       background: rgba(248, 250, 252, 0.9);
       cursor: pointer;
       font-size: 12px;
@@ -712,19 +675,20 @@
       align-items: center;
       gap: 4px;
       box-shadow: 0 6px 12px rgba(148,163,184,0.7);
+      white-space: nowrap;
     }
 
     .voucher-main {
       background: #ffffff;
       border-radius: 22px;
-      padding: 12px 12px 14px;
+      padding: 13px 13px 15px;
       box-shadow: 0 12px 24px rgba(248,113,113,0.4);
     }
 
     .voucher-day {
       font-size: 16px;
       font-weight: 700;
-      margin-bottom: 4px;
+      margin-bottom: 3px;
     }
     .voucher-sub {
       font-size: 12px;
@@ -773,15 +737,13 @@
     .voucher-actions {
       margin-top: 8px;
       display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      align-items: center;
-      justify-content: space-between;
+      flex-direction: column;
+      gap: 6px;
+      align-items: flex-start;
       font-size: 11px;
       color: #6b7280;
     }
-
-    .voucher-actions-main {
+    .voucher-buttons {
       display: flex;
       flex-wrap: wrap;
       gap: 8px;
@@ -799,10 +761,8 @@
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      text-decoration: none;
       white-space: nowrap;
     }
-
     .btn-primary {
       background: linear-gradient(135deg, #f9735b, #b91c1c);
       color: #fef2f2;
@@ -813,11 +773,11 @@
       cursor: default;
       box-shadow: none;
     }
-
     .btn-secondary {
-      background: linear-gradient(135deg, #22c55e, #16a34a);
-      color: #022c22;
-      box-shadow: 0 10px 20px rgba(22,163,74,0.7);
+      background: #fef2f2;
+      color: #b91c1c;
+      border: 1px solid #fecaca;
+      box-shadow: 0 6px 14px rgba(248,113,113,0.4);
     }
 
     /* TURNOVER TAB  */
@@ -826,20 +786,20 @@
       justify-content: space-between;
       gap: 8px;
       align-items: flex-start;
-      margin-bottom: 8px;
+      margin-bottom: 10px;
     }
     .ranking-title {
-      font-size: 17px;
+      font-size: 16px;
       display: flex;
       flex-direction: column;
-      gap: 4px;
+      gap: 3px;
     }
     .ranking-title span.topline {
       display: flex;
       align-items: center;
       gap: 6px;
     }
-    .ranking-title span.topline .icon { font-size: 22px; }
+    .ranking-title span.topline .icon { font-size: 20px; }
     .ranking-title .sub {
       font-size: 12px;
       color: #9ca3af;
@@ -869,13 +829,13 @@
       background: radial-gradient(circle at 50% 0, rgba(248, 250, 252, 0.2), transparent 60%),
                   linear-gradient(145deg, #111827, #020617);
       border: 1px solid rgba(255,255,255,0.18);
-      padding: 8px 8px 10px;
+      padding: 9px 9px 11px;
       box-shadow: var(--shadow-soft);
     }
     .podium-header {
       font-size: 13px;
       color: #9ca3af;
-      margin-bottom: 6px;
+      margin-bottom: 7px;
       display: flex;
       justify-content: space-between;
       gap: 6px;
@@ -895,6 +855,7 @@
       padding: 8px 6px 10px;
       text-align: center;
       position: relative;
+      font-size: 12px;
     }
     .podium-item.rank-1 {
       background: linear-gradient(180deg, #facc15, #fb7185);
@@ -920,7 +881,7 @@
       width: 38px;
       height: 38px;
       border-radius: 50%;
-      margin: 16px auto 6px;
+      margin: 16px auto 5px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -945,7 +906,7 @@
       border-radius: 20px;
       background: #020617;
       border: 1px solid rgba(55,65,81,0.9);
-      padding: 8px 8px 10px;
+      padding: 9px 9px 11px;
       box-shadow: var(--shadow-soft);
     }
 
@@ -969,7 +930,7 @@
     .search-row button {
       border-radius: 999px;
       border: 0;
-      padding: 7px 12px;
+      padding: 7px 11px;
       font-size: 12px;
       font-weight: 700;
       background: linear-gradient(135deg, #22c55e, #4ade80);
@@ -1006,7 +967,7 @@
       grid-template-columns: 32px minmax(0, 1fr) minmax(0, 80px);
       gap: 6px;
       align-items: center;
-      padding: 6px 6px;
+      padding: 6px 7px;
       font-size: 11px;
       background: #020617;
     }
@@ -1045,7 +1006,7 @@
       justify-content: center;
       border: 1px solid rgba(148,163,184,0.9);
       background: radial-gradient(circle, rgba(255,255,255,0.25), transparent 60%);
-      font-size: 11px;
+      font-size: 12px;
     }
     .rank-name {
       white-space: nowrap;
@@ -1104,7 +1065,7 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 2px;
+      gap: 3px;
       cursor: pointer;
       transition: color 0.12s ease;
     }
@@ -1115,7 +1076,6 @@
       stroke: currentColor;
       stroke-width: 1.8;
       fill: none;
-      transition: transform 0.12s ease;
     }
 
     .nav-btn.active {
@@ -1123,7 +1083,6 @@
     }
     .nav-btn.active .nav-icon {
       color: #f9735b;
-      transform: scale(1.1);
     }
 
     /* TOAST */
@@ -1162,25 +1121,18 @@
   <div class="inner">
     <!-- HEADER -->
     <header class="header">
-      <div class="hero-card hero-with-video">
-        <video class="hero-video" autoplay muted loop playsinline>
-          <source src="TrustPilot.mp4" type="video/mp4" />
-        </video>
-        <div class="hero-overlay"></div>
-
-        <div class="hero-content">
-          <div class="hero-greeting">Happy holidays, Rico! 🎄</div>
-          <div class="hero-title">
-            <span>Christmas Month</span>
-            <span>Reward Calendar</span>
-          </div>
-          <div class="hero-sub">
-            Check in every day, collect your voucher, and climb the Turnover Challenge leaderboard.
-          </div>
-          <div class="hero-tag">
-            <span>⭐</span>
-            <span>Week 1 is live – don’t miss today’s drop.</span>
-          </div>
+      <div class="hero-card">
+        <div class="hero-greeting">Happy holidays, Rico! 🎄</div>
+        <div class="hero-title">
+          <span>Christmas Month</span>
+          <span>Reward Calendar</span>
+        </div>
+        <div class="hero-sub">
+          Check in every day, collect your voucher, and climb the Turnover Challenge leaderboard.
+        </div>
+        <div class="hero-tag">
+          <span>⭐</span>
+          <span>Week 1 is live – don’t miss today’s drop.</span>
         </div>
       </div>
 
@@ -1206,32 +1158,32 @@
           <div class="home-banners">
             <!-- Daily Check-in banner -->
             <article class="event-banner">
-              <div class="event-tag">Main 01 · Daily</div>
-              <div class="event-title">Daily Check-In Rewards</div>
+              <div class="event-tag">Mission 01 · Daily</div>
+              <div class="event-title">Daily Check-in Rewards</div>
               <div class="event-meta">
-                Open your Christmas calendar, tap today’s tile, and grab your daily voucher before it melts away.
+                Open the Christmas calendar, collect today’s voucher, and keep your streak for weekly bonuses.
               </div>
               <div class="event-cta-row">
-                <span>Daily vouchers · Streak-based surprises</span>
+                <span>Tap the calendar to grab today’s code.</span>
                 <button class="event-pill secondary" data-goto-tab="calendar">
                   <span class="dot"></span>
-                  <span>Open calendar</span>
+                  <span>Go to calendar</span>
                 </button>
               </div>
             </article>
 
-            <!-- Daily Turnover Challenge banner -->
+            <!-- Daily Turnover banner -->
             <article class="event-banner">
-              <div class="event-tag">Main 02 · Competition</div>
+              <div class="event-tag">Mission 02 · Turnover</div>
               <div class="event-title">Daily Turnover Challenge</div>
               <div class="event-meta">
-                Spin, raid, and play to climb the leaderboard. Top players unlock extra Christmas bonuses every day.
+                Play your favourite games, push your turnover, and climb the daily leaderboard for extra prizes.
               </div>
               <div class="event-cta-row">
-                <span>Live ranking · Extra podium prizes</span>
+                <span>Top 20 appear on the Turnover board.</span>
                 <button class="event-pill" data-goto-tab="turnover">
                   <span class="dot"></span>
-                  <span>View ranking</span>
+                  <span>View Turnover board</span>
                 </button>
               </div>
             </article>
@@ -1242,51 +1194,57 @@
         <div class="trending-wrap">
           <div class="section-title">Trending events</div>
           <div class="section-sub">
-            Side missions that boost your Christmas Month rewards.
+            Add your own banner images via permalink for each event.
           </div>
           <div class="trending-row">
-            <!-- Referral Rush -->
+            <!-- Example: Referral Rush -->
             <article class="trending-card">
-              <div class="trend-date">All month</div>
-              <div class="trend-image" style="background:linear-gradient(120deg,#fb7185,#f97316);"></div>
-              <div class="trend-tag">Mission · Social</div>
+              <div class="trend-date">Weekly · Social</div>
+              <div class="trend-image">
+                <!-- 把下面 src 改成你的 Referral Rush 图片 permalink -->
+                <img src="https://ricobr.ft-crm.com/media-api/serve/71480533-ea26-4b14-8fc3-6298882cc281_TrustPilot.png" alt="Referral Rush" />
+              </div>
               <div class="trend-title">Referral Rush</div>
-              <div class="trend-meta">
-                Invite friends, share your link, and collect bonus turnover &amp; free spins based on your referrals.
-              </div>
+              <div class="trend-meta">Invite friends and collect extra turnover & free spins based on your referrals.</div>
             </article>
 
-            <!-- Mr. Rico Mart -->
+            <!-- Example: Mr. Rico Mart -->
             <article class="trending-card">
-              <div class="trend-date">Stock refresh daily</div>
-              <div class="trend-image" style="background:linear-gradient(120deg,#0ea5e9,#22c55e);"></div>
-              <div class="trend-tag">Mission · Shopping</div>
+              <div class="trend-date">Daily · Shopping</div>
+              <div class="trend-image">
+                <!-- 把下面 src 改成你的 Mr. Rico Mart 图片 permalink -->
+                <img src="https://ricobr.ft-crm.com/media-api/serve/941fbccc-a16f-4b63-ae14-c7c3716e7aa9_Mr_Rico.png" alt="Mr. Rico Mart" />
+              </div>
               <div class="trend-title">Mr. Rico Mart</div>
-              <div class="trend-meta">
-                Use your collected vouchers to redeem spins, coins &amp; surprise gifts in Mr. Rico Mart.
-              </div>
+              <div class="trend-meta">Use collected voucher codes to redeem spins, coins & gifts in the Mart.</div>
             </article>
 
-            <!-- Snowman Festival -->
+            <!-- Other sample events – 同样把 src 换成你的图 -->
             <article class="trending-card">
-              <div class="trend-date">20 Dec · Today</div>
-              <div class="trend-image" style="background:linear-gradient(120deg,#0ea5e9,#facc15);"></div>
-              <div class="trend-tag">Event</div>
-              <div class="trend-title">Snowman Festival</div>
-              <div class="trend-meta">
-                Snowball battles &amp; boosted raid rewards for a limited time.
+              <div class="trend-date">16 Dec · 2 hrs left</div>
+              <div class="trend-image">
+                <img src="https://your-knitting-session-image-url.com/banner.jpg" alt="Knitting Session" />
               </div>
+              <div class="trend-title">Knitting Session</div>
+              <div class="trend-meta">Cosy spins with extra warm multipliers.</div>
             </article>
 
-            <!-- Christmas Eve Wheel -->
             <article class="trending-card">
               <div class="trend-date">24 Dec</div>
-              <div class="trend-image" style="background:linear-gradient(120deg,#22c55e,#16a34a);"></div>
-              <div class="trend-tag">Event</div>
-              <div class="trend-title">Christmas Eve Wheel</div>
-              <div class="trend-meta">
-                One spin, massive surprise jackpot for lucky players.
+              <div class="trend-image">
+                <img src="https://your-christmas-eve-wheel-image-url.com/banner.jpg" alt="Christmas Eve Wheel" />
               </div>
+              <div class="trend-title">Christmas Eve Wheel</div>
+              <div class="trend-meta">One spin, massive surprise jackpot.</div>
+            </article>
+
+            <article class="trending-card">
+              <div class="trend-date">31 Dec</div>
+              <div class="trend-image">
+                <img src="https://your-new-year-finale-image-url.com/banner.jpg" alt="New Year Finale" />
+              </div>
+              <div class="trend-title">New Year Finale</div>
+              <div class="trend-meta">Blowout rewards for top turnover players.</div>
             </article>
           </div>
         </div>
@@ -1361,7 +1319,7 @@
 
             <div class="list-header">
               <span>Top 20 Turnover board</span>
-              <span>Full list &amp; prizes in Google Sheet</span>
+              <span>Full list & prizes in Google Sheet</span>
             </div>
 
             <div class="ranking-list" id="rankingList"></div>
@@ -1410,17 +1368,18 @@
         </div>
 
         <div class="voucher-actions">
-          <div class="voucher-actions-main">
+          <div class="voucher-buttons">
             <button class="btn-primary" id="voucherCopyBtn">
               <span>📋</span>
               <span>Copy code</span>
             </button>
-            <a href="https://www.rico.bet/myprofile" target="_blank" class="btn-secondary" id="voucherClaimBtn">
-              🎁 Claim now
-            </a>
+            <button class="btn-secondary" id="voucherClaimBtn">
+              <span>🎁</span>
+              <span>Claim now</span>
+            </button>
           </div>
           <span id="voucherStatusHint">
-            Voucher is active for today only. Copy &amp; redeem before the day ends.
+            Voucher is active for today only. Copy & redeem before the day ends.
           </span>
         </div>
       </div>
@@ -1468,7 +1427,7 @@
       const left = Math.random() * 100;
       const duration = 8 + Math.random() * 8;
       const delay = Math.random() * -duration;
-      const size = 6 + Math.random() * 6;
+      const size = 7 + Math.random() * 6;
       el.style.left = left + "vw";
       el.style.fontSize = size + "px";
       el.style.animationDuration = duration + "s";
@@ -1651,6 +1610,7 @@
   const voucherCodeText = document.getElementById("voucherCodeText");
   const voucherCopyBtn = document.getElementById("voucherCopyBtn");
   const voucherStatusHint = document.getElementById("voucherStatusHint");
+  const voucherClaimBtn = document.getElementById("voucherClaimBtn");
 
   function openVoucher(day) {
     const reward = getReward(day);
@@ -1688,6 +1648,18 @@
     setTimeout(() => toastEl.classList.remove("show"), 1800);
   }
 
+  voucherCopyBtn.addEventListener("click", () => {
+    const code = voucherCodeText.textContent.trim();
+    if (!code) return;
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(code)
+        .then(() => showToast("Voucher code copied!"))
+        .catch(() => fallbackCopy(code));
+    } else {
+      fallbackCopy(code);
+    }
+  });
+
   function fallbackCopy(text) {
     const ta = document.createElement("textarea");
     ta.value = text;
@@ -1702,17 +1674,12 @@
     document.body.removeChild(ta);
   }
 
-  voucherCopyBtn.addEventListener("click", () => {
-    const code = voucherCodeText.textContent.trim();
-    if (!code) return;
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard.writeText(code)
-        .then(() => showToast("Voucher code copied!"))
-        .catch(() => fallbackCopy(code));
-    } else {
-      fallbackCopy(code);
-    }
-  });
+  /* Claim now -> redeem page */
+  if (voucherClaimBtn) {
+    voucherClaimBtn.addEventListener("click", () => {
+      window.open("https://www.rico.bet/myprofile", "_blank");
+    });
+  }
 
   /* Turnover data & rendering */
   const rankingData = [
@@ -1879,7 +1846,6 @@
       const isActive = btn.dataset.tabTarget === target;
       btn.classList.toggle("active", isActive);
     });
-    // 不再强制滚到顶部，让底部 TAB 看起来像固定在底部的 APP
   }
 
   navButtons.forEach(btn => {
