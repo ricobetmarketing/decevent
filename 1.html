@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Christmas Month Event – App Style</title>
+  <title>Christmas Turnover Challenge – App Style</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700&display=swap" rel="stylesheet" />
   <style>
@@ -29,6 +29,7 @@
       margin: 0;
       min-height: 100vh;
       font-family: "Baloo 2", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 15px;
       background:
         radial-gradient(circle at 0 0, #fecaca, transparent 60%),
         radial-gradient(circle at 100% 100%, #bfdbfe, transparent 70%),
@@ -48,7 +49,7 @@
       border-radius: 28px;
       border: 1px solid rgba(255, 255, 255, 0.14);
       box-shadow: var(--shadow-strong);
-      padding: 16px 14px 18px;
+      padding: 18px 16px 20px;
       position: relative;
       overflow: hidden;
     }
@@ -87,8 +88,8 @@
       position: fixed;
       top: -10px;
       color: #e5f0ff;
-      font-size: 8px;
-      opacity: 0.65;
+      font-size: 9px;
+      opacity: 0.7;
       pointer-events: none;
       z-index: 5;
       animation-name: snowFall;
@@ -103,10 +104,10 @@
 
     /* HEADER */
     .header {
-      margin-bottom: 12px;
+      margin-bottom: 16px;
       display: grid;
       grid-template-columns: minmax(0, 1.8fr) minmax(0, 1.2fr);
-      gap: 10px;
+      gap: 12px;
       align-items: stretch;
     }
     @media (max-width: 800px) {
@@ -115,9 +116,9 @@
 
     .hero-card {
       border-radius: 26px;
-      padding: 12px 14px;
-      background: linear-gradient(145deg, #f9735b, #fb7185, #facc15);
-      color: #111827;
+      padding: 14px 16px;
+      background: linear-gradient(145deg, #0b1120, #020617);
+      color: #f9fafb;
       box-shadow: var(--shadow-soft);
       position: relative;
       overflow: hidden;
@@ -126,23 +127,22 @@
     .hero-card::after {
       content: "";
       position: absolute;
-      width: 140px;
-      height: 140px;
-      border-radius: 40px;
-      background: rgba(253, 224, 71, 0.3);
-      right: -30px;
-      bottom: -40px;
-      transform: rotate(-12deg);
+      width: 220px;
+      height: 220px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(248, 250, 252, 0.22), transparent 65%);
+      right: -60px;
+      bottom: -80px;
     }
 
     .hero-greeting {
-      font-size: 13px;
+      font-size: 14px;
       opacity: 0.9;
     }
     .hero-title {
-      margin-top: 4px;
-      font-size: 22px;
-      line-height: 1.1;
+      margin-top: 6px;
+      font-size: 24px;
+      line-height: 1.15;
     }
     .hero-title span {
       display: block;
@@ -150,53 +150,53 @@
     }
 
     .hero-sub {
-      margin-top: 4px;
-      font-size: 11px;
+      margin-top: 6px;
+      font-size: 13px;
       opacity: 0.9;
-      max-width: 320px;
+      max-width: 360px;
     }
 
     .hero-tag {
-      margin-top: 8px;
+      margin-top: 10px;
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      background: rgba(15,23,42,0.88);
+      background: rgba(15,23,42,0.9);
       color: #fbbf24;
-      padding: 4px 10px;
+      padding: 5px 12px;
       border-radius: 999px;
-      font-size: 10px;
+      font-size: 11px;
       box-shadow: 0 8px 16px rgba(15,23,42,0.45);
     }
 
     .countdown-card {
       border-radius: 24px;
-      padding: 10px 12px;
+      padding: 12px 14px;
       background: radial-gradient(circle at 0 0, rgba(255,255,255,0.1), transparent 55%),
-                  linear-gradient(160deg, #020617, #111827);
+                  linear-gradient(160deg, #020617, #020617);
       border: 1px solid rgba(148,163,184,0.7);
-      font-size: 12px;
+      font-size: 13px;
       color: #e5e7eb;
       box-shadow: var(--shadow-soft);
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      gap: 6px;
+      gap: 8px;
     }
 
     .countdown-label {
-      font-size: 10px;
+      font-size: 11px;
       text-transform: uppercase;
       letter-spacing: 0.12em;
       color: #9ca3af;
     }
     .countdown-time {
-      font-size: 18px;
+      font-size: 22px;
       font-weight: 700;
       color: #4ade80;
     }
     .countdown-meta {
-      font-size: 11px;
+      font-size: 12px;
       color: #9ca3af;
     }
 
@@ -204,566 +204,20 @@
     .tab-panel { display: none; }
     .tab-panel.active { display: block; }
 
-    /* HOME TAB */
-    .home-section {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-
-    .section-title {
-      font-size: 15px;
-      margin-bottom: 4px;
-    }
-    .section-sub {
-      font-size: 11px;
-      color: #9ca3af;
-      margin-bottom: 6px;
-    }
-
-    .home-banners {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-      gap: 10px;
-    }
-    @media (max-width: 800px) {
-      .home-banners { grid-template-columns: minmax(0, 1fr); }
-    }
-
-    .event-banner {
-      background: var(--card);
-      color: var(--text-dark);
-      border-radius: 24px;
-      padding: 10px;
-      box-shadow: var(--shadow-soft);
-      position: relative;
-      overflow: hidden;
-    }
-    .event-banner::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: radial-gradient(circle at 100% 0, rgba(248, 113, 113, 0.14), transparent 55%);
-      pointer-events: none;
-    }
-    .event-tag {
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      font-size: 9px;
-      color: #fb7185;
-      margin-bottom: 2px;
-    }
-    .event-title {
-      font-size: 15px;
-    }
-    .event-meta {
-      margin-top: 4px;
-      font-size: 11px;
-      color: #6b7280;
-    }
-    .event-cta-row {
-      margin-top: 8px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 6px;
-      font-size: 10px;
-      color: #6b7280;
-    }
-    .event-pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      border-radius: 999px;
-      padding: 6px 11px;
-      border: 0;
-      cursor: pointer;
-      font-size: 11px;
-      font-weight: 600;
-      font-family: inherit;
-      background: linear-gradient(135deg, #f9735b, #fb7185);
-      color: white;
-      box-shadow: 0 10px 20px rgba(248,113,113,0.65);
-    }
-    .event-pill.secondary {
-      background: linear-gradient(135deg, #22c55e, #16a34a);
-      box-shadow: 0 10px 20px rgba(34,197,94,0.65);
-    }
-    .event-pill span.dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 999px;
-      background: rgba(15,23,42,0.9);
-    }
-
-    /* Trending events */
-    .trending-wrap {
-      margin-top: 2px;
-    }
-    .trending-row {
-      display: grid;
-      grid-auto-flow: column;
-      grid-auto-columns: minmax(170px, 1fr);
-      gap: 10px;
-      overflow-x: auto;
-      padding-bottom: 4px;
-    }
-    .trending-card {
-      background: var(--card);
-      color: var(--text-dark);
-      border-radius: 22px;
-      padding: 8px;
-      box-shadow: var(--shadow-soft);
-      min-width: 170px;
-      position: relative;
-    }
-    .trend-date {
-      position: absolute;
-      top: 6px;
-      left: 6px;
-      border-radius: 999px;
-      background: rgba(248, 250, 252, 0.9);
-      padding: 4px 8px;
-      font-size: 9px;
-      font-weight: 600;
-    }
-    .trend-image {
-      height: 70px;
-      border-radius: 18px;
-      background: linear-gradient(120deg, #0ea5e9, #22c55e);
-      margin-bottom: 6px;
-    }
-    .trend-title {
-      font-size: 12px;
-      margin-bottom: 2px;
-    }
-    .trend-meta {
-      font-size: 10px;
-      color: #6b7280;
-    }
-
-    /* CALENDAR TAB */
-    .calendar-section {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-
-    .calendar-card {
-      background: linear-gradient(180deg, #f87171, #ef4444);
-      border-radius: 26px;
-      padding: 10px;
-      box-shadow: var(--shadow-strong);
-      position: relative;
-      overflow: hidden;
-    }
-
-    .calendar-card::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background:
-        radial-gradient(circle at 0 0, rgba(254, 249, 195, 0.18), transparent 55%),
-        radial-gradient(circle at 100% 100%, rgba(254, 249, 195, 0.18), transparent 55%);
-      pointer-events: none;
-    }
-
-    .calendar-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 6px;
-      margin-bottom: 8px;
-      color: #fee2e2;
-    }
-    .calendar-header-main {
-      font-size: 14px;
-    }
-    .calendar-header-sub {
-      font-size: 10px;
-      opacity: 0.9;
-    }
-
-    .week-selector {
-      margin-top: 4px;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-    }
-    .week-chip {
-      border-radius: 999px;
-      border: 0;
-      padding: 5px 10px;
-      font-size: 11px;
-      background: rgba(248, 113, 113, 0.9);
-      color: #fee2e2;
-      cursor: pointer;
-      display: inline-flex;
-      flex-wrap: nowrap;
-      align-items: center;
-      gap: 4px;
-      box-shadow: 0 6px 12px rgba(185, 28, 28, 0.5);
-    }
-    .week-chip span.range {
-      font-size: 9px;
-      opacity: 0.9;
-    }
-    .week-chip.active {
-      background: #ffffff;
-      color: #b91c1c;
-    }
-
-    .calendar-inner-wrap {
-      margin-top: 10px;
-      display: grid;
-      grid-template-columns: minmax(0, 1fr);
-      gap: 10px;
-    }
-
-    .mini-legend {
-      font-size: 9px;
-      color: #fee2e2;
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-      margin-top: 4px;
-    }
-    .mini-legend span.dot {
-      width: 7px;
-      height: 7px;
-      border-radius: 999px;
-      display: inline-block;
-      margin-right: 3px;
-    }
-    .dot-past { background: rgba(248,250,252,0.65); }
-    .dot-today { background: #facc15; box-shadow: 0 0 8px rgba(251,191,36,0.85); }
-    .dot-future { background: #fecaca; }
-
-    /* 7-day grid */
-    .day-grid {
-      display: grid;
-      grid-template-columns: repeat(7, minmax(0, 1fr));
-      gap: 8px;
-    }
-    @media (max-width: 820px) {
-      .day-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
-    }
-    @media (max-width: 520px) {
-      .day-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-    }
-
-    .day-tile {
-      border: 0;
-      padding: 0;
-      background: transparent;
-      cursor: pointer;
-      position: relative;
-    }
-    .day-tile.hidden-week { display: none; }
-
-    .tile-inner {
-      border-radius: 22px;
-      background: #f9735b;
-      box-shadow: 0 8px 18px rgba(185,28,28,0.7);
-      padding: 6px 4px 7px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 2px;
-      color: #fef2f2;
-      position: relative;
-      overflow: hidden;
-      transition: transform 0.15s ease, box-shadow 0.15s ease;
-    }
-    .tile-inner::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: radial-gradient(circle at 0 0, rgba(254,249,195,0.3), transparent 60%);
-      pointer-events: none;
-    }
-
-    .day-label {
-      font-size: 11px;
-      z-index: 1;
-    }
-    .day-number {
-      font-size: 15px;
-      font-weight: 700;
-      z-index: 1;
-    }
-    .tile-state {
-      font-size: 10px;
-      z-index: 1;
-    }
-
-    .tile-info-row {
-      position: absolute;
-      top: 4px;
-      right: 4px;
-      display: flex;
-      align-items: center;
-      gap: 2px;
-      z-index: 2;
-    }
-    .info-badge {
-      width: 16px;
-      height: 16px;
-      border-radius: 999px;
-      background: rgba(248,250,252,0.9);
-      color: #b91c1c;
-      font-size: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.35);
-    }
-    .lock-icon {
-      font-size: 13px;
-      color: #fecaca;
-      text-shadow: 0 1px 2px rgba(0,0,0,0.6);
-    }
-
-    .day-tile.past .tile-inner {
-      background: #fed7d7;
-      color: #7f1d1d;
-      box-shadow: 0 6px 14px rgba(185,28,28,0.5);
-    }
-    .day-tile.future .tile-inner {
-      background: #fb7185;
-    }
-    .day-tile.today .tile-inner {
-      background: #fef9c3;
-      color: #7f1d1d;
-      box-shadow:
-        0 0 0 2px #fde68a,
-        0 0 14px rgba(250, 204, 21, 0.9),
-        0 10px 22px rgba(185,28,28,0.85);
-      transform: translateY(-2px);
-      animation: wobble 1.6s ease-in-out infinite;
-    }
-    @keyframes wobble {
-      0%, 100% { transform: translateY(-2px) rotate(0deg); }
-      25% { transform: translateY(-1px) rotate(-1deg); }
-      50% { transform: translateY(-2px) rotate(1deg); }
-      75% { transform: translateY(-1px) rotate(-0.7deg); }
-    }
-
-    .day-tile:hover .tile-inner {
-      transform: translateY(-2px);
-      box-shadow: 0 10px 22px rgba(185,28,28,0.8);
-    }
-
-    /* Tooltip for "i" */
-    .tooltip {
-      position: absolute;
-      inset: auto 0 110% auto;
-      transform: translateY(6px);
-      max-width: 220px;
-      padding: 6px 8px;
-      border-radius: 10px;
-      background: rgba(15,23,42,0.98);
-      border: 1px solid rgba(148,163,184,0.85);
-      color: #e5e7eb;
-      font-size: 10px;
-      line-height: 1.4;
-      box-shadow: 0 10px 24px rgba(0,0,0,0.9);
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.15s ease, transform 0.15s ease;
-      z-index: 10;
-    }
-    .tooltip::after {
-      content: "";
-      position: absolute;
-      top: 100%;
-      right: 12px;
-      width: 8px;
-      height: 8px;
-      background: inherit;
-      border-bottom: inherit;
-      border-right: inherit;
-      transform: rotate(45deg);
-    }
-
-    .day-tile:hover .tooltip,
-    .day-tile:focus-within .tooltip {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    /* VOUCHER MODAL (POPUP) */
-    .voucher-panel {
-      position: fixed;
-      inset: 0;
-      background: rgba(15, 23, 42, 0.82);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 40;
-      pointer-events: none;
-      opacity: 0;
-      transition: opacity 0.2s ease;
-    }
-    .voucher-panel.show {
-      pointer-events: auto;
-      opacity: 1;
-    }
-
-    .voucher-inner {
-      max-width: 380px;
-      width: 90%;
-      background: #fef2f2;
-      border-radius: 26px;
-      padding: 14px 14px 16px;
-      color: #7f1d1d;
-      box-shadow: var(--shadow-strong);
-      position: relative;
-      overflow: hidden;
-      transform: translateY(12px);
-      transition: transform 0.2s ease;
-    }
-    .voucher-panel.show .voucher-inner {
-      transform: translateY(0);
-    }
-
-    .voucher-inner::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background:
-        radial-gradient(circle at 0 0, rgba(248, 250, 252, 0.7), transparent 55%),
-        radial-gradient(circle at 100% 100%, rgba(248, 250, 252, 0.5), transparent 60%);
-      opacity: 0.8;
-      pointer-events: none;
-    }
-
-    .voucher-main-wrap {
-      position: relative;
-      z-index: 1;
-    }
-
-    .voucher-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 13px;
-      margin-bottom: 8px;
-    }
-
-    .voucher-back {
-      border-radius: 999px;
-      border: 0;
-      padding: 4px 9px;
-      background: rgba(248, 250, 252, 0.9);
-      cursor: pointer;
-      font-size: 11px;
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      box-shadow: 0 6px 12px rgba(148,163,184,0.7);
-    }
-
-    .voucher-main {
-      background: #ffffff;
-      border-radius: 22px;
-      padding: 12px 12px 14px;
-      box-shadow: 0 12px 24px rgba(248,113,113,0.4);
-    }
-
-    .voucher-day {
-      font-size: 14px;
-      font-weight: 700;
-      margin-bottom: 2px;
-    }
-    .voucher-sub {
-      font-size: 11px;
-      color: #6b7280;
-      margin-bottom: 10px;
-    }
-
-    .coupon-card {
-      border-radius: 18px;
-      border: 2px dashed #fecaca;
-      padding: 10px 12px;
-      display: grid;
-      grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
-      gap: 8px;
-      align-items: center;
-      background: linear-gradient(135deg, #fef2f2, #fee2e2);
-      margin-bottom: 8px;
-    }
-    @media (max-width: 520px) {
-      .coupon-card { grid-template-columns: minmax(0, 1fr); }
-    }
-
-    .coupon-value {
-      font-size: 22px;
-      font-weight: 800;
-      color: #b91c1c;
-    }
-    .coupon-label {
-      font-size: 11px;
-      color: #b91c1c;
-    }
-    .coupon-code-box {
-      text-align: center;
-      border-radius: 16px;
-      background: #b91c1c;
-      color: #fee2e2;
-      padding: 8px 10px;
-      font-size: 12px;
-      font-weight: 700;
-    }
-    .coupon-note {
-      font-size: 10px;
-      color: #6b7280;
-    }
-
-    .voucher-actions {
-      margin-top: 6px;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      align-items: center;
-      justify-content: space-between;
-      font-size: 10px;
-      color: #6b7280;
-    }
-
-    .btn-primary {
-      border-radius: 999px;
-      border: 0;
-      padding: 7px 14px;
-      background: linear-gradient(135deg, #f9735b, #b91c1c);
-      color: #fef2f2;
-      font-size: 11px;
-      font-weight: 700;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      box-shadow: 0 10px 20px rgba(185,28,28,0.7);
-    }
-    .btn-primary[disabled] {
-      opacity: 0.5;
-      cursor: default;
-      box-shadow: none;
-    }
-
     /* TURNOVER TAB  */
     .ranking-header {
       display: flex;
       justify-content: space-between;
       gap: 8px;
       align-items: flex-start;
-      margin-bottom: 8px;
+      margin-bottom: 10px;
+      margin-top: 6px;
     }
     .ranking-title {
-      font-size: 15px;
+      font-size: 16px;
       display: flex;
       flex-direction: column;
-      gap: 2px;
+      gap: 3px;
     }
     .ranking-title span.topline {
       display: flex;
@@ -772,24 +226,64 @@
     }
     .ranking-title span.topline .icon { font-size: 20px; }
     .ranking-title .sub {
-      font-size: 11px;
+      font-size: 12px;
       color: #9ca3af;
     }
     .ranking-updated {
-      font-size: 10px;
+      font-size: 11px;
       color: #9ca3af;
-      padding: 3px 8px;
+      padding: 4px 9px;
       border-radius: 999px;
       background: #020617;
       border: 1px solid rgba(148,163,184,0.7);
       white-space: nowrap;
     }
 
+    .turnover-countdowns {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    @media (max-width: 700px) {
+      .turnover-countdowns {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+    .mini-card {
+      border-radius: 18px;
+      padding: 10px 12px;
+      background: radial-gradient(circle at 0 0, rgba(255,255,255,0.08), transparent 55%),
+                  linear-gradient(145deg, #020617, #020617);
+      border: 1px solid rgba(55,65,81,0.9);
+      font-size: 12px;
+      color: #e5e7eb;
+      box-shadow: var(--shadow-soft);
+    }
+    .mini-card-title {
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #9ca3af;
+      margin-bottom: 4px;
+    }
+    .mini-card-time {
+      font-size: 20px;
+      font-weight: 700;
+      color: #38bdf8;
+    }
+    .mini-card-meta {
+      font-size: 11px;
+      color: #9ca3af;
+      margin-top: 2px;
+    }
+
     .ranking-layout {
       display: grid;
       grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
-      gap: 8px;
+      gap: 10px;
       align-items: start;
+      margin-top: 6px;
     }
     @media (max-width: 900px) {
       .ranking-layout { grid-template-columns: minmax(0, 1fr); }
@@ -800,13 +294,13 @@
       background: radial-gradient(circle at 50% 0, rgba(248, 250, 252, 0.2), transparent 60%),
                   linear-gradient(145deg, #111827, #020617);
       border: 1px solid rgba(255,255,255,0.18);
-      padding: 8px 8px 10px;
+      padding: 9px 9px 11px;
       box-shadow: var(--shadow-soft);
     }
     .podium-header {
-      font-size: 12px;
+      font-size: 13px;
       color: #9ca3af;
-      margin-bottom: 6px;
+      margin-bottom: 7px;
       display: flex;
       justify-content: space-between;
       gap: 6px;
@@ -826,6 +320,7 @@
       padding: 8px 6px 10px;
       text-align: center;
       position: relative;
+      font-size: 12px;
     }
     .podium-item.rank-1 {
       background: linear-gradient(180deg, #facc15, #fb7185);
@@ -841,42 +336,47 @@
       transform: translateX(-50%);
       border-radius: 999px;
       padding: 2px 8px;
-      font-size: 10px;
+      font-size: 11px;
       background: rgba(0,0,0,0.72);
       color: #fef9c3;
       border: 1px solid rgba(255,255,255,0.8);
     }
 
     .podium-avatar {
-      width: 36px;
-      height: 36px;
+      width: 38px;
+      height: 38px;
       border-radius: 50%;
-      margin: 14px auto 4px;
+      margin: 16px auto 5px;
       display: flex;
       align-items: center;
       justify-content: center;
       border: 2px solid rgba(255,255,255,0.9);
       background: radial-gradient(circle, rgba(255,255,255,0.3), transparent 60%);
-      font-size: 16px;
+      font-size: 20px;
     }
 
     .podium-name {
-      font-size: 12px;
+      font-size: 13px;
       font-weight: 700;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
     }
     .podium-turnover {
-      font-size: 11px;
+      font-size: 12px;
       margin-top: 2px;
+    }
+    .podium-country-label {
+      font-size: 11px;
+      color: #fecaca;
+      margin-top: 1px;
     }
 
     .table-panel {
       border-radius: 20px;
       background: #020617;
       border: 1px solid rgba(55,65,81,0.9);
-      padding: 8px 8px 10px;
+      padding: 9px 9px 11px;
       box-shadow: var(--shadow-soft);
     }
 
@@ -892,16 +392,16 @@
       background: #020617;
       color: #f9fafb;
       font-family: inherit;
-      font-size: 11px;
-      padding: 6px 10px;
+      font-size: 12px;
+      padding: 7px 11px;
       outline: none;
     }
     .search-row input::placeholder { color: #6b7280; }
     .search-row button {
       border-radius: 999px;
       border: 0;
-      padding: 6px 10px;
-      font-size: 11px;
+      padding: 7px 11px;
+      font-size: 12px;
       font-weight: 700;
       background: linear-gradient(135deg, #22c55e, #4ade80);
       color: #022c22;
@@ -911,9 +411,9 @@
     }
 
     .search-result {
-      font-size: 10px;
+      font-size: 11px;
       color: #9ca3af;
-      min-height: 14px;
+      min-height: 16px;
     }
     .search-result strong { color: #bae6fd; }
 
@@ -921,9 +421,9 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      font-size: 11px;
+      font-size: 12px;
       color: #9ca3af;
-      margin: 4px 0;
+      margin: 6px 0;
     }
 
     .ranking-list {
@@ -934,11 +434,11 @@
 
     .ranking-row {
       display: grid;
-      grid-template-columns: 30px minmax(0, 1fr) minmax(0, 70px);
+      grid-template-columns: 32px minmax(0, 1fr) minmax(0, 80px);
       gap: 6px;
       align-items: center;
-      padding: 5px 6px;
-      font-size: 10px;
+      padding: 6px 7px;
+      font-size: 11px;
       background: #020617;
     }
     .ranking-row:nth-child(even) { background: #040716; }
@@ -951,8 +451,8 @@
     }
 
     .rank-badge {
-      width: 24px;
-      height: 24px;
+      width: 26px;
+      height: 26px;
       border-radius: 50%;
       display: flex;
       align-items: center;
@@ -968,15 +468,15 @@
       overflow: hidden;
     }
     .rank-avatar {
-      width: 22px;
-      height: 22px;
+      width: 24px;
+      height: 24px;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
       border: 1px solid rgba(148,163,184,0.9);
       background: radial-gradient(circle, rgba(255,255,255,0.25), transparent 60%);
-      font-size: 11px;
+      font-size: 15px;
     }
     .rank-name {
       white-space: nowrap;
@@ -984,15 +484,140 @@
       text-overflow: ellipsis;
       font-weight: 600;
     }
+    .rank-country {
+      font-size: 10px;
+      color: #9ca3af;
+    }
     .rank-turnover {
       text-align: right;
       font-weight: 600;
     }
     .rank-turnover span.label {
       display: block;
-      font-size: 8px;
+      font-size: 9px;
       color: #9ca3af;
       font-weight: 400;
+    }
+
+    .turnover-ctas {
+      margin-top: 12px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: flex-end;
+    }
+    .turnover-ctas button,
+    .turnover-ctas a {
+      border-radius: 999px;
+      border: 0;
+      padding: 8px 15px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      text-decoration: none;
+      font-family: inherit;
+      white-space: nowrap;
+    }
+    .btn-play {
+      background: linear-gradient(135deg, #f9735b, #b91c1c);
+      color: #fef2f2;
+      box-shadow: 0 10px 20px rgba(185,28,28,0.7);
+    }
+    .btn-how {
+      background: #020617;
+      color: #e5e7eb;
+      border: 1px solid rgba(148,163,184,0.9);
+      box-shadow: 0 6px 14px rgba(15,23,42,0.8);
+    }
+
+    /* FAQ / T&C TAB */
+    .faq-section {
+      margin-top: 6px;
+    }
+    .section-title {
+      font-size: 17px;
+      margin-bottom: 4px;
+    }
+    .section-sub {
+      font-size: 13px;
+      color: #9ca3af;
+      margin-bottom: 8px;
+    }
+    .faq-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .faq-item {
+      border-radius: 16px;
+      background: #020617;
+      border: 1px solid rgba(55,65,81,0.9);
+      box-shadow: var(--shadow-soft);
+      overflow: hidden;
+    }
+    .faq-question {
+      width: 100%;
+      border: 0;
+      background: transparent;
+      color: #f9fafb;
+      padding: 9px 11px;
+      font-family: inherit;
+      font-size: 13px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+    }
+    .faq-question-text {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      text-align: left;
+    }
+    .faq-question-index {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 20px;
+      height: 20px;
+      border-radius: 999px;
+      background: rgba(248,113,113,0.15);
+      border: 1px solid rgba(248,113,113,0.5);
+      font-size: 11px;
+    }
+    .faq-icon {
+      font-size: 16px;
+      color: #9ca3af;
+      transition: transform 0.15s ease;
+    }
+    .faq-item.open .faq-icon {
+      transform: rotate(45deg);
+    }
+    .faq-answer {
+      max-height: 0;
+      overflow: hidden;
+      padding: 0 11px;
+      font-size: 12px;
+      color: #d1d5db;
+      transition: max-height 0.2s ease, padding-bottom 0.2s ease;
+    }
+    .faq-item.open .faq-answer {
+      padding-bottom: 9px;
+      max-height: 260px;
+    }
+    .faq-answer p {
+      margin: 6px 0;
+    }
+    .faq-answer ul {
+      margin: 4px 0 0;
+      padding-left: 18px;
+      font-size: 12px;
+    }
+    .faq-answer li {
+      margin: 2px 0;
     }
 
     /* BOTTOM NAV */
@@ -1011,7 +636,7 @@
       pointer-events: auto;
       width: 100%;
       max-width: 1100px;
-      padding: 8px 12px 0;
+      padding: 0 12px 0;
     }
 
     .nav-bar {
@@ -1020,7 +645,7 @@
       display: flex;
       justify-content: space-around;
       align-items: center;
-      padding: 6px 8px 8px;
+      padding: 8px 8px 10px;
       border: 1px solid rgba(31,41,55,0.9);
       box-shadow: 0 -6px 22px rgba(0,0,0,0.9);
     }
@@ -1031,31 +656,28 @@
       background: transparent;
       color: #9ca3af;
       font-family: inherit;
-      font-size: 11px;
+      font-size: 12px;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 2px;
+      gap: 3px;
       cursor: pointer;
-      transition: color 0.12s ease, transform 0.12s ease;
+      transition: color 0.12s ease;
     }
 
     .nav-icon {
-      width: 18px;
-      height: 18px;
+      width: 20px;
+      height: 20px;
       stroke: currentColor;
       stroke-width: 1.8;
       fill: none;
-      transition: transform 0.12s ease;
     }
 
     .nav-btn.active {
       color: #f9fafb;
-      transform: translateY(-1px);
     }
     .nav-btn.active .nav-icon {
       color: #f9735b;
-      transform: scale(1.15);
     }
 
     /* TOAST */
@@ -1069,7 +691,7 @@
       color: #022c22;
       padding: 8px 14px;
       border-radius: 999px;
-      font-size: 11px;
+      font-size: 12px;
       font-weight: 700;
       box-shadow: 0 10px 22px rgba(0,0,0,0.7);
       opacity: 0;
@@ -1095,240 +717,217 @@
     <!-- HEADER -->
     <header class="header">
       <div class="hero-card">
-        <div class="hero-greeting">Happy holidays, Rico! 🎄</div>
-        <div class="hero-title">
-          <span>Christmas Month</span>
-          <span>Reward Calendar</span>
+        <div class="hero-greeting" data-i18n="heroGreeting">
+          Happy holidays, Rico!
         </div>
-        <div class="hero-sub">
-          Check in every day, collect your voucher, and climb the Turnover Challenge leaderboard.
+        <div class="hero-title">
+          <span data-i18n="heroTitleLine1">Christmas Month</span>
+          <span data-i18n="heroTitleLine2">Turnover Challenge</span>
+        </div>
+        <div class="hero-sub" data-i18n="heroSub">
+          Play, climb the combined BR &amp; MX leaderboard (converted to USD), and watch for the next payout.
         </div>
         <div class="hero-tag">
           <span>⭐</span>
-          <span>Week 1 is live – don’t miss today’s drop.</span>
+          <span data-i18n="heroTag">Leaderboard combines Brazil &amp; Mexico players.</span>
         </div>
       </div>
 
+      <!-- 1st countdown: Next rewards payout (Mexico time, UTC-6) -->
       <div class="countdown-card">
         <div>
-          <div class="countdown-label">Next reward refresh in</div>
+          <div class="countdown-label" data-i18n="countdownLabel1">Next rewards payout in</div>
           <div class="countdown-time" id="nextRewardTime">--:--:--</div>
         </div>
-        <div class="countdown-meta">
-          New voucher unlocks every day at 00:00 (server time). Keep your streak for bigger weekly prizes.
+        <div class="countdown-meta" data-i18n="countdownMeta1">
+          Payout sent daily at 01:00 (Mexico, UTC-6). Timer is based on Mexico local time.
         </div>
       </div>
     </header>
 
-    <!-- TAB: HOME -->
-    <section id="tab-home" class="tab-panel active">
-      <section class="home-section">
-        <div>
-          <div class="section-title">Featured missions</div>
-          <div class="section-sub">
-            Complete both missions to maximise your Christmas rewards.
-          </div>
-          <div class="home-banners">
-            <!-- Referral Rush banner -->
-            <article class="event-banner">
-              <div class="event-tag">Mission 01 · Social</div>
-              <div class="event-title">Referral Rush</div>
-              <div class="event-meta">
-                Invite friends, share your link, and collect bonus turnover & free spins based on your referrals.
-              </div>
-              <div class="event-cta-row">
-                <span>Weekly prize pool · Live leaderboard</span>
-                <button class="event-pill" data-goto-tab="turnover">
-                  <span class="dot"></span>
-                  <span>View ranking</span>
-                </button>
-              </div>
-            </article>
-
-            <!-- Mr. Rico Mart banner -->
-            <article class="event-banner">
-              <div class="event-tag">Mission 02 · Shopping</div>
-              <div class="event-title">Mr. Rico Mart</div>
-              <div class="event-meta">
-                Collect voucher codes from the calendar and redeem them in Mr. Rico Mart for spins, coins & gifts.
-              </div>
-              <div class="event-cta-row">
-                <span>Daily vouchers · Limited-time stock</span>
-                <button class="event-pill secondary" data-goto-tab="calendar">
-                  <span class="dot"></span>
-                  <span>Open calendar</span>
-                </button>
-              </div>
-            </article>
-          </div>
-        </div>
-
-        <!-- Trending events -->
-        <div class="trending-wrap">
-          <div class="section-title">Trending events</div>
-          <div class="section-sub">
-            Quick look at what’s happening this week.
-          </div>
-          <div class="trending-row">
-            <article class="trending-card">
-              <div class="trend-date">16 Dec · 2 hrs left</div>
-              <div class="trend-image"></div>
-              <div class="trend-title">Knitting Session</div>
-              <div class="trend-meta">Cosy spins with extra warm multipliers.</div>
-            </article>
-
-            <article class="trending-card">
-              <div class="trend-date">20 Dec · Today</div>
-              <div class="trend-image" style="background:linear-gradient(120deg,#0ea5e9,#facc15);"></div>
-              <div class="trend-title">Snowman Festival</div>
-              <div class="trend-meta">Snowball battles & boosted raid rewards.</div>
-            </article>
-
-            <article class="trending-card">
-              <div class="trend-date">24 Dec</div>
-              <div class="trend-image" style="background:linear-gradient(120deg,#22c55e,#16a34a);"></div>
-              <div class="trend-title">Christmas Eve Wheel</div>
-              <div class="trend-meta">One spin, massive surprise jackpot.</div>
-            </article>
-
-            <article class="trending-card">
-              <div class="trend-date">31 Dec</div>
-              <div class="trend-image" style="background:linear-gradient(120deg,#fb7185,#f97316);"></div>
-              <div class="trend-title">New Year Finale</div>
-              <div class="trend-meta">Blowout rewards for top turnover players.</div>
-            </article>
-          </div>
-        </div>
-      </section>
-    </section>
-
-    <!-- TAB: CALENDAR -->
-    <section id="tab-calendar" class="tab-panel">
-      <section class="calendar-section">
-        <div class="calendar-card">
-          <div class="calendar-header">
-            <div>
-              <div class="calendar-header-main">Christmas Calendar · Week view</div>
-              <div class="calendar-header-sub">
-                Tap a day to preview its reward. Tap <strong>today’s tile</strong> to open the voucher page.
-              </div>
-            </div>
-          </div>
-
-          <div class="week-selector">
-            <button class="week-chip" data-week="0">Week 1 <span class="range">1–7 Dec</span></button>
-            <button class="week-chip" data-week="1">Week 2 <span class="range">8–14 Dec</span></button>
-            <button class="week-chip" data-week="2">Week 3 <span class="range">15–21 Dec</span></button>
-            <button class="week-chip" data-week="3">Week 4 <span class="range">22–28 Dec</span></button>
-            <button class="week-chip" data-week="4">Week 5 <span class="range">29–31 Dec</span></button>
-          </div>
-
-          <div class="mini-legend">
-            <span><span class="dot dot-past"></span> Past (already opened)</span>
-            <span><span class="dot dot-today"></span> Today (tap to see voucher)</span>
-            <span><span class="dot dot-future"></span> Locked (coming soon)</span>
-          </div>
-
-          <div class="calendar-inner-wrap">
-            <div class="day-grid" id="dayGrid"></div>
-          </div>
-        </div>
-      </section>
-    </section>
-
     <!-- TAB: TURNOVER -->
-    <section id="tab-turnover" class="tab-panel">
+    <section id="tab-turnover" class="tab-panel active">
       <section>
         <header class="ranking-header">
           <div class="ranking-title">
             <span class="topline">
               <span class="icon">🏁</span>
-              <span>Turnover Challenge</span>
+              <span data-i18n="rankingTitle">Turnover Challenge</span>
             </span>
-            <span class="sub">
-              Spin, raid, and play to boost your turnover. Top 20 appear here; full list is managed in Google Sheet.
+            <span class="sub" data-i18n="rankingSub">
+              Combined BR &amp; MX board. Turnover is converted to USD based on your Google Sheet.
             </span>
           </div>
           <div class="ranking-updated" id="updatedAt">Updated –</div>
         </header>
 
+        <!-- 2nd countdown: leaderboard update every 39 mins -->
+        <div class="turnover-countdowns">
+          <div class="mini-card">
+            <div class="mini-card-title" data-i18n="mini1Title">Leaderboard update in</div>
+            <div class="mini-card-time" id="lbCountdown">39:00</div>
+            <div class="mini-card-meta" data-i18n="mini1Meta">
+              Board refreshes every 39 minutes (based on your latest Google Sheet data).
+            </div>
+          </div>
+          <div class="mini-card">
+            <div class="mini-card-title" data-i18n="mini2Title">Country indicator</div>
+            <div class="mini-card-meta" data-i18n="mini2Meta">
+              🇧🇷 = Brazil player · 🇲🇽 = Mexico player<br />
+              USD turnover values are pulled from your Google Sheet.
+            </div>
+          </div>
+        </div>
+
         <div class="ranking-layout">
           <div class="podium-panel">
             <div class="podium-header">
-              <strong>Today’s podium</strong>
-              <span>Extra bonus for #1–3</span>
+              <strong data-i18n="podiumTitle">Today’s podium</strong>
+              <span data-i18n="podiumSub">Extra bonus for #1–3</span>
             </div>
             <div class="podium-grid" id="podiumGrid"></div>
           </div>
 
           <div class="table-panel">
             <div class="search-row">
-              <input id="searchInput" placeholder="Search your GitHub / in-game username…" />
-              <button id="searchBtn">Find</button>
+              <input id="searchInput" placeholder="Search your username…" />
+              <button id="searchBtn" data-i18n="searchBtn">Find</button>
             </div>
             <div class="search-result" id="searchResult"></div>
 
             <div class="list-header">
-              <span>Top 20 Turnover board</span>
-              <span>Full list & prizes in Google Sheet</span>
+              <span data-i18n="listHeaderLeft">Top 20 Turnover board</span>
+              <span data-i18n="listHeaderRight">Full list &amp; prizes in Google Sheet</span>
             </div>
 
             <div class="ranking-list" id="rankingList"></div>
           </div>
         </div>
+
+        <!-- Bottom CTAs inside Turnover tab -->
+        <div class="turnover-ctas">
+          <button class="btn-play" id="startPlayingBtn">
+            🎮 <span data-i18n="btnPlay">Start Playing</span>
+          </button>
+          <button class="btn-how" id="howWorksBtn">
+            ❓ <span data-i18n="btnHow">How it works / T&amp;C</span>
+          </button>
+        </div>
       </section>
     </section>
-  </div>
-</div>
 
-<!-- Voucher popup -->
-<div class="voucher-panel" id="voucherPanel">
-  <div class="voucher-inner">
-    <div class="voucher-main-wrap">
-      <div class="voucher-header">
-        <div>
-          <div style="font-size:12px; text-transform:uppercase; letter-spacing:0.1em;">Voucher page</div>
-          <div style="font-size:10px; color:#9ca3af;">This is your reward for today’s calendar tile.</div>
-        </div>
-        <button class="voucher-back" id="voucherBackBtn">
-          ← Back to calendar
-        </button>
-      </div>
-
-      <div class="voucher-main">
-        <div class="voucher-day" id="voucherDayLabel">Day 2</div>
-        <div class="voucher-sub" id="voucherRewardText">
-          You have received: 50% OFF coupon from Mr. Rico Mart.
+    <!-- TAB: T&C / FAQ -->
+    <section id="tab-faq" class="tab-panel">
+      <section class="faq-section">
+        <div class="section-title" data-i18n="faqTitle">Turnover Challenge – T&amp;C &amp; FAQ</div>
+        <div class="section-sub" data-i18n="faqSub">
+          Tap on each point to expand. Edit this copy to match your final terms.
         </div>
 
-        <div class="coupon-card">
-          <div>
-            <div class="coupon-value" id="voucherBigText">50% OFF</div>
-            <div class="coupon-label" id="voucherSmallText">
-              Discount on selected Mr. Rico Mart bundles.
+        <div class="faq-list">
+          <article class="faq-item open">
+            <button class="faq-question">
+              <div class="faq-question-text">
+                <span class="faq-question-index">1</span>
+                <span data-i18n="faqQ1">How does the combined BR &amp; MX leaderboard work?</span>
+              </div>
+              <span class="faq-icon">+</span>
+            </button>
+            <div class="faq-answer" data-i18n-html="faqA1">
+              <p>
+                All eligible turnover from Brazil and Mexico players is converted to USD based on the rate you set in the Google Sheet.
+              </p>
+              <ul>
+                <li>🇧🇷 BR players appear with a Brazil flag.</li>
+                <li>🇲🇽 MX players appear with a Mexico flag.</li>
+                <li>Ranking is based on total USD turnover within the campaign period.</li>
+              </ul>
             </div>
-          </div>
-          <div class="coupon-code-box">
-            <div style="font-size:10px; text-transform:uppercase; letter-spacing:0.2em;">Voucher code</div>
-            <div id="voucherCodeText">DEC02-VOUCHER</div>
-          </div>
-        </div>
+          </article>
 
-        <div class="coupon-note">
-          Paste this code inside the promo section before the end of the day. Each code is valid for a single account only.
-        </div>
+          <article class="faq-item">
+            <button class="faq-question">
+              <div class="faq-question-text">
+                <span class="faq-question-index">2</span>
+                <span data-i18n="faqQ2">When is the rewards payout done?</span>
+              </div>
+              <span class="faq-icon">+</span>
+            </button>
+            <div class="faq-answer" data-i18n-html="faqA2">
+              <p>
+                Rewards are processed once per day, after the daily session ends.
+              </p>
+              <ul>
+                <li>Payout time: <strong>01:00 Mexico time (UTC-6)</strong>.</li>
+                <li>The top timer shows the remaining time until the next payout.</li>
+                <li>Any turnover after the cut-off will be counted for the next day.</li>
+              </ul>
+            </div>
+          </article>
 
-        <div class="voucher-actions">
-          <button class="btn-primary" id="voucherCopyBtn">
-            <span>📋</span>
-            <span>Copy code & redeem</span>
-          </button>
-          <span id="voucherStatusHint">
-            Voucher is active for today only. Copy & redeem before the day ends.
-          </span>
+          <article class="faq-item">
+            <button class="faq-question">
+              <div class="faq-question-text">
+                <span class="faq-question-index">3</span>
+                <span data-i18n="faqQ3">How often is the leaderboard updated?</span>
+              </div>
+              <span class="faq-icon">+</span>
+            </button>
+            <div class="faq-answer" data-i18n-html="faqA3">
+              <p>
+                The leaderboard pulls data from your Google Sheet on a fixed interval.
+              </p>
+              <ul>
+                <li>Refresh frequency: every <strong>39 minutes</strong>.</li>
+                <li>The blue timer shows when the next update is expected.</li>
+                <li>Any manual changes in the Sheet will reflect after the next update cycle.</li>
+              </ul>
+            </div>
+          </article>
+
+          <article class="faq-item">
+            <button class="faq-question">
+              <div class="faq-question-text">
+                <span class="faq-question-index">4</span>
+                <span data-i18n="faqQ4">Basic eligibility &amp; general rules</span>
+              </div>
+              <span class="faq-icon">+</span>
+            </button>
+            <div class="faq-answer" data-i18n-html="faqA4">
+              <p>
+                Replace this section with your official terms &amp; conditions text.
+              </p>
+              <ul>
+                <li>Promotion period: [Start Date] – [End Date].</li>
+                <li>Only real money bets on selected products are counted.</li>
+                <li>Duplicate, fraudulent or abusive accounts may be disqualified.</li>
+                <li>Standard site-wide terms &amp; conditions apply.</li>
+              </ul>
+            </div>
+          </article>
+
+          <article class="faq-item">
+            <button class="faq-question">
+              <div class="faq-question-text">
+                <span class="faq-question-index">5</span>
+                <span data-i18n="faqQ5">Language &amp; localisation</span>
+              </div>
+              <span class="faq-icon">+</span>
+            </button>
+            <div class="faq-answer" data-i18n-html="faqA5">
+              <p>
+                This page can show different languages based on player location (BR Portuguese, MX Spanish, English for others).
+              </p>
+              <ul>
+                <li>We detect your country via a Geo-IP service.</li>
+                <li>Brazil → Brazilian Portuguese, Mexico → Spanish, others → English.</li>
+                <li>You can still customise the final wording directly in this HTML.</li>
+              </ul>
+            </div>
+          </article>
         </div>
-      </div>
-    </div>
+      </section>
+    </section>
   </div>
 </div>
 
@@ -1336,31 +935,26 @@
 <nav class="bottom-nav">
   <div class="bottom-nav-inner">
     <div class="nav-bar">
-      <button class="nav-btn active" data-tab-target="home">
-        <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M4 10.5L12 4l8 6.5V20a1 1 0 0 1-1 1h-4.5a.5.5 0 0 1-.5-.5V15a2 2 0 0 0-2-2h-1a2 2 0 0 0-2 2v5.5a.5.5 0 0 1-.5.5H5a1 1 0 0 1-1-1v-9.5z" />
-        </svg>
-        <span>Home</span>
-      </button>
-      <button class="nav-btn" data-tab-target="calendar">
-        <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true">
-          <rect x="3.5" y="5" width="17" height="15.5" rx="2" />
-          <path d="M8 3.5v3M16 3.5v3M3.5 9h17" />
-        </svg>
-        <span>Calendar</span>
-      </button>
-      <button class="nav-btn" data-tab-target="turnover">
+      <button class="nav-btn active" data-tab-target="turnover">
         <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true">
           <path d="M8 21v-6.5M12 21V5M16 21v-9" />
           <path d="M7 9h10l-1.2-5H8.2z" />
         </svg>
-        <span>Turnover</span>
+        <span data-i18n="navTurnover">Turnover</span>
+      </button>
+      <button class="nav-btn" data-tab-target="faq">
+        <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="12" cy="12" r="8.5" />
+          <path d="M12 15.5v-2.2c.9 0 1.8-.7 1.9-1.7a1.9 1.9 0 0 0-1.9-2.1 2 2 0 0 0-1.8 1" />
+          <circle cx="12" cy="17.5" r="0.7" />
+        </svg>
+        <span data-i18n="navFaq">T&amp;C / FAQ</span>
       </button>
     </div>
   </div>
 </nav>
 
-<div id="toast" class="toast">Voucher code copied!</div>
+<div id="toast" class="toast">Done!</div>
 
 <script>
   /* Snow */
@@ -1372,7 +966,7 @@
       const left = Math.random() * 100;
       const duration = 8 + Math.random() * 8;
       const delay = Math.random() * -duration;
-      const size = 6 + Math.random() * 6;
+      const size = 7 + Math.random() * 6;
       el.style.left = left + "vw";
       el.style.fontSize = size + "px";
       el.style.animationDuration = duration + "s";
@@ -1382,269 +976,100 @@
   }
   createSnowflakes();
 
-  /* Date + countdown */
-  const DECEMBER_MONTH = 11; // 0-based
-  const nowDate = new Date();
-  const isDecember = nowDate.getMonth() === DECEMBER_MONTH;
-  const demoDay = 2;         // for testing when it's not December
-  const todayDay = isDecember ? nowDate.getDate() : demoDay;
-  const todayInDecember = Math.min(Math.max(todayDay, 1), 31);
-
+  /* 1) Payout countdown – daily 01:00 Mexico time (UTC-6) */
   const nextRewardTimeEl = document.getElementById("nextRewardTime");
-  function updateCountdown() {
-    const now = new Date();
-    const next = new Date();
-    next.setHours(24, 0, 0, 0);
-    const diff = next - now;
-    if (diff <= 0) {
-      nextRewardTimeEl.textContent = "00:00:00";
-      return;
+
+  function getNextMexicoPayoutUtcMs(nowUtcMs) {
+    const offsetMs = -6 * 60 * 60 * 1000; // UTC-6
+    const mexNow = new Date(nowUtcMs + offsetMs);
+    let target = new Date(
+      mexNow.getFullYear(),
+      mexNow.getMonth(),
+      mexNow.getDate(),
+      1, 0, 0, 0
+    );
+    if (target <= mexNow) {
+      target.setDate(target.getDate() + 1);
     }
+    return target.getTime() - offsetMs;
+  }
+
+  function updatePayoutCountdown() {
+    if (!nextRewardTimeEl) return;
+    const now = new Date();
+    const nowUtcMs = now.getTime();
+    const targetUtcMs = getNextMexicoPayoutUtcMs(nowUtcMs);
+    let diff = targetUtcMs - nowUtcMs;
+    if (diff <= 0) diff = 0;
+
     const h = String(Math.floor(diff / (1000 * 60 * 60))).padStart(2, "0");
     const m = String(Math.floor((diff / (1000 * 60)) % 60)).padStart(2, "0");
     const s = String(Math.floor((diff / 1000) % 60)).padStart(2, "0");
     nextRewardTimeEl.textContent = `${h}:${m}:${s}`;
   }
-  updateCountdown();
-  setInterval(updateCountdown, 1000);
+  updatePayoutCountdown();
+  setInterval(updatePayoutCountdown, 1000);
 
-  /* Voucher + rewards config */
-  const voucherCodes = {};
-  for (let d = 1; d <= 31; d++) {
-    voucherCodes[d] = `DEC${String(d).padStart(2, "0")}-VOUCHER`;
-  }
+  /* 2) Leaderboard update countdown – every 39 minutes */
+  const lbCountdownEl = document.getElementById("lbCountdown");
+  let nextLbUpdateTime = Date.now() + 39 * 60 * 1000;
 
-  const rewardsConfig = {
-    1: {
-      title: "Starter Coins",
-      desc: "Up to 350M extra coins based on your VIP tier.",
-      infoHtml: `
-        <strong>Day 1 · Coin Pack</strong>
-        <ul>
-          <li>Up to <b>350M</b> bonus coins</li>
-          <li>VIP 01–03: 50M</li>
-          <li>VIP 04–05: 150M</li>
-          <li>VIP 06+: 350M</li>
-        </ul>`,
-      bigText: "350M COINS"
-    },
-    2: {
-      title: "Christmas Coupon",
-      desc: "50% OFF selected Mr. Rico Mart bundles.",
-      infoHtml: `
-        <strong>Day 2 · 50% Coupon</strong>
-        <ul>
-          <li>50% OFF one selected Mr. Rico Mart pack</li>
-          <li>1-time use per player</li>
-        </ul>`,
-      bigText: "50% OFF"
-    },
-    3: {
-      title: "Epic Loot Crate",
-      desc: "Up to 3x epic items & bonus coins.",
-      infoHtml: `
-        <strong>Day 3 · Epic Loot</strong>
-        <ul>
-          <li>Up to <b>3x Epic items</b></li>
-          <li>Higher VIP = more items & coins</li>
-        </ul>`,
-      bigText: "EPIC LOOT"
+  function updateLbCountdown() {
+    if (!lbCountdownEl) return;
+    const now = Date.now();
+    let diff = nextLbUpdateTime - now;
+
+    if (diff <= 0) {
+      nextLbUpdateTime = now + 39 * 60 * 1000;
+      diff = nextLbUpdateTime - now;
     }
-    // fill 4–31 if needed
-  };
 
-  function getReward(day) {
-    return rewardsConfig[day] || {
-      title: `Mystery Reward`,
-      desc: `Reward details for Day ${day} will be announced soon.`,
-      infoHtml: `
-        <strong>Day ${day} · Mystery</strong>
-        <ul>
-          <li>Stay tuned – this day will be revealed later.</li>
-        </ul>`,
-      bigText: "MYSTERY"
-    };
+    const totalSeconds = Math.floor(diff / 1000);
+    const mins = Math.floor(totalSeconds / 60);
+    const secs = totalSeconds % 60;
+
+    lbCountdownEl.textContent =
+      String(mins).padStart(2, "0") + ":" + String(secs).padStart(2, "0");
   }
+  updateLbCountdown();
+  setInterval(updateLbCountdown, 1000);
 
-  /* Calendar rendering */
-  const dayGrid = document.getElementById("dayGrid");
-  const weekChips = document.querySelectorAll(".week-chip");
-  const totalDays = 31;
-
-  function createTile(day) {
-    const tile = document.createElement("button");
-    tile.className = "day-tile";
-    const weekIndex = Math.floor((day - 1) / 7); // 0–4
-    tile.dataset.week = weekIndex;
-
-    const state =
-      day < todayInDecember ? "past" :
-      day === todayInDecember ? "today" :
-      "future";
-    tile.classList.add(state);
-
-    const stateText =
-      state === "past" ? "Opened" :
-      state === "today" ? "Today" :
-      "Locked";
-
-    const reward = getReward(day);
-
-    tile.innerHTML = `
-      <div class="tile-inner">
-        <div class="day-label">Day</div>
-        <div class="day-number">${day}</div>
-        <div class="tile-state">${stateText}</div>
-        <div class="tile-info-row">
-          <div class="info-badge">i</div>
-          ${state === "future" ? '<div class="lock-icon">🔒</div>' : ""}
-        </div>
-      </div>
-      <div class="tooltip">
-        ${reward.infoHtml}
-      </div>
-    `;
-
-    tile.addEventListener("click", () => {
-      if (day === todayInDecember) {
-        openVoucher(day);
-      }
-    });
-
-    return tile;
-  }
-
-  function renderCalendar() {
-    dayGrid.innerHTML = "";
-    for (let d = 1; d <= totalDays; d++) {
-      dayGrid.appendChild(createTile(d));
-    }
-  }
-  renderCalendar();
-
-  function setActiveWeek(weekIndex) {
-    weekChips.forEach(chip => {
-      chip.classList.toggle("active", Number(chip.dataset.week) === weekIndex);
-    });
-    const tiles = document.querySelectorAll(".day-tile");
-    tiles.forEach(tile => {
-      tile.classList.toggle(
-        "hidden-week",
-        Number(tile.dataset.week) !== weekIndex
-      );
-    });
-  }
-
-  const currentWeek = Math.floor((todayInDecember - 1) / 7);
-  setActiveWeek(currentWeek);
-
-  weekChips.forEach(chip => {
-    chip.addEventListener("click", () => {
-      const w = Number(chip.dataset.week);
-      setActiveWeek(w);
-    });
-  });
-
-  /* Voucher modal logic */
-  const voucherPanel = document.getElementById("voucherPanel");
-  const voucherBackBtn = document.getElementById("voucherBackBtn");
-  const voucherDayLabel = document.getElementById("voucherDayLabel");
-  const voucherRewardText = document.getElementById("voucherRewardText");
-  const voucherBigText = document.getElementById("voucherBigText");
-  const voucherSmallText = document.getElementById("voucherSmallText");
-  const voucherCodeText = document.getElementById("voucherCodeText");
-  const voucherCopyBtn = document.getElementById("voucherCopyBtn");
-  const voucherStatusHint = document.getElementById("voucherStatusHint");
-
-  function openVoucher(day) {
-    const reward = getReward(day);
-    const code = voucherCodes[day];
-
-    voucherDayLabel.textContent = `Day ${day}`;
-    voucherRewardText.textContent = `You have received: ${reward.title}.`;
-    voucherBigText.textContent = reward.bigText;
-    voucherSmallText.textContent = reward.desc;
-    voucherCodeText.textContent = code;
-    voucherStatusHint.textContent = "Voucher is active for today only. Copy & redeem before the day ends.";
-    voucherCopyBtn.disabled = false;
-
-    voucherPanel.classList.add("show");
-  }
-
-  function closeVoucher() {
-    voucherPanel.classList.remove("show");
-  }
-
-  voucherBackBtn.addEventListener("click", closeVoucher);
-
-  // close when clicking outside the card
-  voucherPanel.addEventListener("click", (e) => {
-    if (e.target === voucherPanel) {
-      closeVoucher();
-    }
-  });
-
-  /* Copy code */
+  /* Toast helper */
   const toastEl = document.getElementById("toast");
   function showToast(msg) {
+    if (!toastEl) return;
     toastEl.textContent = msg;
     toastEl.classList.add("show");
     setTimeout(() => toastEl.classList.remove("show"), 1800);
   }
 
-  voucherCopyBtn.addEventListener("click", () => {
-    const code = voucherCodeText.textContent.trim();
-    if (!code) return;
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard.writeText(code)
-        .then(() => showToast("Voucher code copied!"))
-        .catch(() => fallbackCopy(code));
-    } else {
-      fallbackCopy(code);
-    }
-  });
-
-  function fallbackCopy(text) {
-    const ta = document.createElement("textarea");
-    ta.value = text;
-    document.body.appendChild(ta);
-    ta.select();
-    try {
-      document.execCommand("copy");
-      showToast("Voucher code copied!");
-    } catch(e) {
-      showToast("Unable to copy – please copy manually.");
-    }
-    document.body.removeChild(ta);
-  }
-
-  /* Turnover data & rendering */
+  /* Turnover data & rendering – BR / MX flags */
   const rankingData = [
-    { username: "SnowLegend", turnover: 98500 },
-    { username: "WinterWhale", turnover: 95600 },
-    { username: "CodeElf", turnover: 93200 },
-    { username: "DecemberDev", turnover: 91000 },
-    { username: "HolidayHero", turnover: 88750 },
-    { username: "FestiveFox", turnover: 86500 },
-    { username: "SantaScript", turnover: 84250 },
-    { username: "GitGifts", turnover: 82900 },
-    { username: "CandyCane", turnover: 81200 },
-    { username: "FrostyBug", turnover: 79800 },
-    { username: "ReindeerRun", turnover: 78200 },
-    { username: "PullRequest", turnover: 76900 },
-    { username: "YuleLog", turnover: 75400 },
-    { username: "MergeWizard", turnover: 74000 },
-    { username: "Snowflake", turnover: 72950 },
-    { username: "HolidayCommit", turnover: 71500 },
-    { username: "NorthStar", turnover: 70600 },
-    { username: "BlizzardByte", turnover: 69100 },
-    { username: "PineTree", turnover: 67800 },
-    { username: "FuzzyPenguin", turnover: 66400 }
+    { username: "SnowLegend",   turnover: 98500, country: "BR" },
+    { username: "WinterWhale",  turnover: 95600, country: "MX" },
+    { username: "CodeElf",      turnover: 93200, country: "BR" },
+    { username: "DecemberDev",  turnover: 91000, country: "MX" },
+    { username: "HolidayHero",  turnover: 88750, country: "BR" },
+    { username: "FestiveFox",   turnover: 86500, country: "MX" },
+    { username: "SantaScript",  turnover: 84250, country: "BR" },
+    { username: "GitGifts",     turnover: 82900, country: "MX" },
+    { username: "CandyCane",    turnover: 81200, country: "BR" },
+    { username: "FrostyBug",    turnover: 79800, country: "MX" },
+    { username: "ReindeerRun",  turnover: 78200, country: "BR" },
+    { username: "PullRequest",  turnover: 76900, country: "MX" },
+    { username: "YuleLog",      turnover: 75400, country: "BR" },
+    { username: "MergeWizard",  turnover: 74000, country: "MX" },
+    { username: "Snowflake",    turnover: 72950, country: "BR" },
+    { username: "HolidayCommit",turnover: 71500, country: "MX" },
+    { username: "NorthStar",    turnover: 70600, country: "BR" },
+    { username: "BlizzardByte", turnover: 69100, country: "MX" },
+    { username: "PineTree",     turnover: 67800, country: "BR" },
+    { username: "FuzzyPenguin", turnover: 66400, country: "MX" }
   ];
 
   const extraRanks = [
-    { username: "You", turnover: 43210, rank: 54 },
-    { username: "ExampleUser", turnover: 51000, rank: 26 }
+    { username: "You",         turnover: 43210, rank: 54, country: "BR" },
+    { username: "ExampleUser", turnover: 51000, rank: 26, country: "MX" }
   ];
 
   function shortNum(n) {
@@ -1652,13 +1077,13 @@
     if (n >= 1_000) return (n / 1_000).toFixed(1) + "K";
     return n.toString();
   }
-  function initials(name) {
-    return name
-      .split(/[^A-Za-z0-9]+/)
-      .filter(Boolean)
-      .slice(0, 2)
-      .map(p => p[0].toUpperCase())
-      .join("");
+
+  function countryFlag(code) {
+    if (!code) return "🌐";
+    const c = code.toUpperCase();
+    if (c === "BR") return "🇧🇷";
+    if (c === "MX") return "🇲🇽";
+    return "🌐";
   }
 
   const podiumGrid = document.getElementById("podiumGrid");
@@ -1679,9 +1104,10 @@
       card.className = "podium-item rank-" + rank;
       card.innerHTML = `
         <div class="podium-rank">#${rank}</div>
-        <div class="podium-avatar">${initials(player.username)}</div>
+        <div class="podium-avatar">${countryFlag(player.country)}</div>
         <div class="podium-name">${player.username}</div>
-        <div class="podium-turnover">${shortNum(player.turnover)} TO</div>
+        <div class="podium-turnover">${shortNum(player.turnover)} USD</div>
+        <div class="podium-country-label">${player.country || ""}</div>
       `;
       podiumGrid.appendChild(card);
     });
@@ -1696,12 +1122,15 @@
       row.innerHTML = `
         <div class="rank-badge">#${rank}</div>
         <div class="rank-main">
-          <div class="rank-avatar">${initials(player.username)}</div>
-          <div class="rank-name">${player.username}</div>
+          <div class="rank-avatar">${countryFlag(player.country)}</div>
+          <div>
+            <div class="rank-name">${player.username}</div>
+            <div class="rank-country">${player.country || ""}</div>
+          </div>
         </div>
         <div class="rank-turnover">
           ${shortNum(player.turnover)}
-          <span class="label">Turnover</span>
+          <span class="label">Turnover (USD)</span>
         </div>
       `;
       rankingList.appendChild(row);
@@ -1739,14 +1168,17 @@
     if (!result) {
       searchResult.innerHTML =
         `No ranking found for <strong>${q}</strong> yet. ` +
-        `Add your username to the Google Sheet to join the board.`;
+        `Please make sure your username is added to the Google Sheet.`;
       return;
     }
 
+    const countryLabel = result.country ? ` (${result.country})` : "";
+
     if (result.inTop20) {
       searchResult.innerHTML =
-        `<strong>${result.username}</strong> is currently <strong>#${result.rank}</strong> ` +
-        `with <strong>${shortNum(result.turnover)}</strong> turnover.`;
+        `<strong>${result.username}</strong>${countryLabel} is currently ` +
+        `<strong>#${result.rank}</strong> with ` +
+        `<strong>${shortNum(result.turnover)}</strong> USD turnover.`;
       const row = rankingList.children[result.rank - 1];
       if (row) {
         row.classList.add("highlight");
@@ -1754,8 +1186,9 @@
       }
     } else {
       searchResult.innerHTML =
-        `<strong>${result.username}</strong> is currently <strong>#${result.rank}</strong> ` +
-        `with <strong>${shortNum(result.turnover)}</strong> turnover (outside Top 20 list).`;
+        `<strong>${result.username}</strong>${countryLabel} is currently ` +
+        `<strong>#${result.rank}</strong> with ` +
+        `<strong>${shortNum(result.turnover)}</strong> USD turnover (outside Top 20 list).`;
     }
   }
 
@@ -1766,12 +1199,11 @@
     });
   }
 
-  /* Bottom nav + home CTAs */
+  /* Bottom nav + CTAs */
   const navButtons = document.querySelectorAll(".nav-btn");
   const tabPanels = {
-    home: document.getElementById("tab-home"),
-    calendar: document.getElementById("tab-calendar"),
-    turnover: document.getElementById("tab-turnover")
+    turnover: document.getElementById("tab-turnover"),
+    faq: document.getElementById("tab-faq")
   };
 
   function setActiveTab(target) {
@@ -1794,13 +1226,323 @@
     });
   });
 
-  document.querySelectorAll("[data-goto-tab]").forEach(btn => {
+  const startPlayingBtn = document.getElementById("startPlayingBtn");
+  const howWorksBtn = document.getElementById("howWorksBtn");
+
+  if (startPlayingBtn) {
+    startPlayingBtn.addEventListener("click", () => {
+      window.open("https://www.rico.bet/", "_blank");
+    });
+  }
+  if (howWorksBtn) {
+    howWorksBtn.addEventListener("click", () => {
+      setActiveTab("faq");
+    });
+  }
+
+  /* FAQ accordion */
+  document.querySelectorAll(".faq-item").forEach(item => {
+    const btn = item.querySelector(".faq-question");
+    if (!btn) return;
     btn.addEventListener("click", () => {
-      const target = btn.dataset.gotoTab;
-      if (!target) return;
-      setActiveTab(target);
+      const isOpen = item.classList.contains("open");
+      document.querySelectorAll(".faq-item").forEach(i => {
+        if (i !== item) i.classList.remove("open");
+      });
+      if (!isOpen) item.classList.add("open");
+      else item.classList.remove("open");
     });
   });
+
+  /* --- Multi-language via IP (BR/MX/others) --- */
+  const translations = {
+    en: {
+      heroGreeting: "Happy holidays, Rico!",
+      heroTitleLine1: "Christmas Month",
+      heroTitleLine2: "Turnover Challenge",
+      heroSub: "Play, climb the combined BR & MX leaderboard (converted to USD), and watch for the next payout.",
+      heroTag: "Leaderboard combines Brazil & Mexico players.",
+      countdownLabel1: "Next rewards payout in",
+      countdownMeta1: "Payout sent daily at 01:00 (Mexico, UTC-6). Timer is based on Mexico local time.",
+      rankingTitle: "Turnover Challenge",
+      rankingSub: "Combined BR & MX board. Turnover is converted to USD based on your Google Sheet.",
+      mini1Title: "Leaderboard update in",
+      mini1Meta: "Board refreshes every 39 minutes (based on your latest Google Sheet data).",
+      mini2Title: "Country indicator",
+      mini2Meta: "🇧🇷 = Brazil player · 🇲🇽 = Mexico player<br />USD turnover values are pulled from your Google Sheet.",
+      podiumTitle: "Today’s podium",
+      podiumSub: "Extra bonus for #1–3",
+      searchBtn: "Find",
+      listHeaderLeft: "Top 20 Turnover board",
+      listHeaderRight: "Full list & prizes in Google Sheet",
+      btnPlay: "Start Playing",
+      btnHow: "How it works / T&C",
+      faqTitle: "Turnover Challenge – T&C & FAQ",
+      faqSub: "Tap on each point to expand. Edit this copy to match your final terms.",
+      faqQ1: "How does the combined BR & MX leaderboard work?",
+      faqQ2: "When is the rewards payout done?",
+      faqQ3: "How often is the leaderboard updated?",
+      faqQ4: "Basic eligibility & general rules",
+      faqQ5: "Language & localisation",
+      faqA1: `
+        <p>
+          All eligible turnover from Brazil and Mexico players is converted to USD based on the rate you set in the Google Sheet.
+        </p>
+        <ul>
+          <li>🇧🇷 BR players appear with a Brazil flag.</li>
+          <li>🇲🇽 MX players appear with a Mexico flag.</li>
+          <li>Ranking is based on total USD turnover within the campaign period.</li>
+        </ul>
+      `,
+      faqA2: `
+        <p>
+          Rewards are processed once per day, after the daily session ends.
+        </p>
+        <ul>
+          <li>Payout time: <strong>01:00 Mexico time (UTC-6)</strong>.</li>
+          <li>The top timer shows the remaining time until the next payout.</li>
+          <li>Any turnover after the cut-off will be counted for the next day.</li>
+        </ul>
+      `,
+      faqA3: `
+        <p>
+          The leaderboard pulls data from your Google Sheet on a fixed interval.
+        </p>
+        <ul>
+          <li>Refresh frequency: every <strong>39 minutes</strong>.</li>
+          <li>The blue timer shows when the next update is expected.</li>
+          <li>Any manual changes in the Sheet will reflect after the next update cycle.</li>
+        </ul>
+      `,
+      faqA4: `
+        <p>
+          Replace this section with your official terms &amp; conditions text.
+        </p>
+        <ul>
+          <li>Promotion period: [Start Date] – [End Date].</li>
+          <li>Only real money bets on selected products are counted.</li>
+          <li>Duplicate, fraudulent or abusive accounts may be disqualified.</li>
+          <li>Standard site-wide terms &amp; conditions apply.</li>
+        </ul>
+      `,
+      faqA5: `
+        <p>
+          This page can show different languages based on player location (BR Portuguese, MX Spanish, English for others).
+        </p>
+        <ul>
+          <li>We detect your country via a Geo-IP service.</li>
+          <li>Brazil → Brazilian Portuguese, Mexico → Spanish, others → English.</li>
+          <li>You can still customise the final wording directly in this HTML.</li>
+        </ul>
+      `,
+      navTurnover: "Turnover",
+      navFaq: "T&C / FAQ"
+    },
+    pt: {
+      heroGreeting: "Feliz Natal, Rico!",
+      heroTitleLine1: "Mês de Natal",
+      heroTitleLine2: "Desafio de Turnover",
+      heroSub: "Jogue, suba no ranking combinado BR & MX (convertido em USD) e acompanhe o próximo pagamento.",
+      heroTag: "O ranking combina jogadores do Brasil e do México.",
+      countdownLabel1: "Próximo pagamento de prêmios em",
+      countdownMeta1: "Pagamento diário às 01:00 (horário do México, UTC-6). O contador usa o horário do México.",
+      rankingTitle: "Desafio de Turnover",
+      rankingSub: "Ranking combinado BR & MX. O turnover é convertido para USD com base na sua planilha.",
+      mini1Title: "Atualização do ranking em",
+      mini1Meta: "O ranking atualiza a cada 39 minutos (dados mais recentes da sua planilha do Google).",
+      mini2Title: "Indicador de país",
+      mini2Meta: "🇧🇷 = jogador do Brasil · 🇲🇽 = jogador do México<br />Os valores em USD vêm da sua planilha.",
+      podiumTitle: "Pódio de hoje",
+      podiumSub: "Bônus extra para #1–3",
+      searchBtn: "Procurar",
+      listHeaderLeft: "Top 20 do Turnover",
+      listHeaderRight: "Lista completa e prêmios na planilha",
+      btnPlay: "Começar a jogar",
+      btnHow: "Como funciona / T&C",
+      faqTitle: "Desafio de Turnover – Termos & FAQ",
+      faqSub: "Toque em cada ponto para expandir. Edite este texto para combinar com seus termos oficiais.",
+      faqQ1: "Como funciona o ranking combinado BR & MX?",
+      faqQ2: "Quando o pagamento dos prêmios é feito?",
+      faqQ3: "Com que frequência o ranking é atualizado?",
+      faqQ4: "Regras básicas de elegibilidade & gerais",
+      faqQ5: "Idioma & localização",
+      faqA1: `
+        <p>
+          Todo turnover elegível de jogadores do Brasil e do México é convertido para USD com base na taxa que você define na planilha do Google.
+        </p>
+        <ul>
+          <li>🇧🇷 Jogadores do BR aparecem com a bandeira do Brasil.</li>
+          <li>🇲🇽 Jogadores do MX aparecem com a bandeira do México.</li>
+          <li>O ranking é baseado no turnover total em USD durante o período da campanha.</li>
+        </ul>
+      `,
+      faqA2: `
+        <p>
+          Os prêmios são processados uma vez por dia, após o encerramento da sessão diária.
+        </p>
+        <ul>
+          <li>Horário de pagamento: <strong>01:00 horário do México (UTC-6)</strong>.</li>
+          <li>O contador no topo mostra o tempo restante até o próximo pagamento.</li>
+          <li>Qualquer turnover após o horário limite conta para o dia seguinte.</li>
+        </ul>
+      `,
+      faqA3: `
+        <p>
+          O ranking busca os dados da sua planilha do Google em um intervalo fixo.
+        </p>
+        <ul>
+          <li>Frequência de atualização: a cada <strong>39 minutos</strong>.</li>
+          <li>O timer azul mostra quando a próxima atualização é esperada.</li>
+          <li>Alterações manuais na planilha aparecem após o próximo ciclo de atualização.</li>
+        </ul>
+      `,
+      faqA4: `
+        <p>
+          Substitua esta parte pelos seus termos &amp; condições oficiais.
+        </p>
+        <ul>
+          <li>Período da promoção: [Data de início] – [Data de fim].</li>
+          <li>Apenas apostas em dinheiro real em produtos selecionados contam.</li>
+          <li>Contas duplicadas, fraudulentas ou abusivas podem ser desclassificadas.</li>
+          <li>Aplicam-se os termos &amp; condições gerais do site.</li>
+        </ul>
+      `,
+      faqA5: `
+        <p>
+          Esta página pode mostrar idiomas diferentes com base na localização do jogador (português BR, espanhol MX, inglês para outros).
+        </p>
+        <ul>
+          <li>Detectamos o país através de um serviço de Geo-IP.</li>
+          <li>Brasil → português BR, México → espanhol, outros → inglês.</li>
+          <li>Você ainda pode ajustar os textos diretamente neste HTML.</li>
+        </ul>
+      `,
+      navTurnover: "Turnover",
+      navFaq: "T&C / FAQ"
+    },
+    es: {
+      heroGreeting: "¡Felices fiestas, Rico!",
+      heroTitleLine1: "Mes de Navidad",
+      heroTitleLine2: "Reto de Turnover",
+      heroSub: "Juega, sube en el ranking combinado BR & MX (convertido a USD) y espera el próximo pago.",
+      heroTag: "El ranking combina jugadores de Brasil y México.",
+      countdownLabel1: "Próximo pago de premios en",
+      countdownMeta1: "Pago diario a la 01:00 (México, UTC-6). El contador usa la hora de México.",
+      rankingTitle: "Reto de Turnover",
+      rankingSub: "Ranking combinado BR & MX. El turnover se convierte a USD según tu hoja de Google.",
+      mini1Title: "Actualización del ranking en",
+      mini1Meta: "El ranking se actualiza cada 39 minutos (según tu hoja de Google más reciente).",
+      mini2Title: "Indicador de país",
+      mini2Meta: "🇧🇷 = jugador de Brasil · 🇲🇽 = jugador de México<br />Los valores en USD vienen de tu hoja de Google.",
+      podiumTitle: "Podio de hoy",
+      podiumSub: "Bono extra para #1–3",
+      searchBtn: "Buscar",
+      listHeaderLeft: "Top 20 de Turnover",
+      listHeaderRight: "Lista completa y premios en la hoja",
+      btnPlay: "Empezar a jugar",
+      btnHow: "Cómo funciona / T&C",
+      faqTitle: "Reto de Turnover – Términos & FAQ",
+      faqSub: "Toca cada punto para expandir. Edita este texto según tus términos oficiales.",
+      faqQ1: "¿Cómo funciona el ranking combinado BR & MX?",
+      faqQ2: "¿Cuándo se pagan las recompensas?",
+      faqQ3: "¿Con qué frecuencia se actualiza el ranking?",
+      faqQ4: "Reglas básicas de elegibilidad y generales",
+      faqQ5: "Idioma & localización",
+      faqA1: `
+        <p>
+          Todo el turnover elegible de jugadores de Brasil y México se convierte a USD según la tasa que configuras en tu hoja de Google.
+        </p>
+        <ul>
+          <li>🇧🇷 Los jugadores de BR aparecen con la bandera de Brasil.</li>
+          <li>🇲🇽 Los jugadores de MX aparecen con la bandera de México.</li>
+          <li>El ranking se basa en el turnover total en USD durante el periodo de campaña.</li>
+        </ul>
+      `,
+      faqA2: `
+        <p>
+          Las recompensas se procesan una vez al día, después de terminar la sesión diaria.
+        </p>
+        <ul>
+          <li>Hora de pago: <strong>01:00 hora de México (UTC-6)</strong>.</li>
+          <li>El contador superior muestra el tiempo restante hasta el próximo pago.</li>
+          <li>Cualquier turnover después del corte se contará para el día siguiente.</li>
+        </ul>
+      `,
+      faqA3: `
+        <p>
+          El ranking obtiene datos de tu hoja de Google en un intervalo fijo.
+        </p>
+        <ul>
+          <li>Frecuencia de actualización: cada <strong>39 minutos</strong>.</li>
+          <li>El temporizador azul muestra cuándo será la siguiente actualización.</li>
+          <li>Los cambios manuales en la hoja aparecerán después del siguiente ciclo.</li>
+        </ul>
+      `,
+      faqA4: `
+        <p>
+          Sustituye esta sección por tus términos &amp; condiciones oficiales.
+        </p>
+        <ul>
+          <li>Periodo de la promoción: [Fecha de inicio] – [Fecha de fin].</li>
+          <li>Solo cuentan apuestas con dinero real en productos seleccionados.</li>
+          <li>Las cuentas duplicadas, fraudulentas o abusivas pueden ser descalificadas.</li>
+          <li>Aplican los términos &amp; condiciones generales del sitio.</li>
+        </ul>
+      `,
+      faqA5: `
+        <p>
+          Esta página puede mostrar distintos idiomas según la ubicación del jugador (portugués BR, español MX, inglés para otros).
+        </p>
+        <ul>
+          <li>Detectamos tu país con un servicio de Geo-IP.</li>
+          <li>Brasil → portugués BR, México → español, otros → inglés.</li>
+          <li>Puedes ajustar los textos directamente en este HTML.</li>
+        </ul>
+      `,
+      navTurnover: "Turnover",
+      navFaq: "T&C / FAQ"
+    }
+  };
+
+  function applyLanguage(lang) {
+    const dict = translations[lang] || translations.en;
+    document.documentElement.setAttribute("data-lang", lang);
+
+    document.querySelectorAll("[data-i18n]").forEach(el => {
+      const key = el.getAttribute("data-i18n");
+      if (dict[key]) {
+        el.textContent = dict[key];
+      }
+    });
+
+    document.querySelectorAll("[data-i18n-html]").forEach(el => {
+      const key = el.getAttribute("data-i18n-html");
+      if (dict[key]) {
+        el.innerHTML = dict[key];
+      }
+    });
+  }
+
+  function detectLanguageAndApply() {
+    fetch("https://ipapi.co/json/")
+      .then(res => res.json())
+      .then(data => {
+        let lang = "en";
+        if (data && data.country === "BR") lang = "pt";
+        else if (data && data.country === "MX") lang = "es";
+        applyLanguage(lang);
+      })
+      .catch(() => {
+        const navLang = (navigator.language || navigator.userLanguage || "en")
+          .slice(0, 2)
+          .toLowerCase();
+        if (navLang === "pt") applyLanguage("pt");
+        else if (navLang === "es") applyLanguage("es");
+        else applyLanguage("en");
+      });
+  }
+
+  detectLanguageAndApply();
 </script>
 </body>
 </html>
