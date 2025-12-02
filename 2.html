@@ -1116,18 +1116,36 @@
     }
   }
 
-  function toIsoDateFromValue(v) {
-    if (typeof v === "number") {
-      // Google Sheets serial date
+  /* Convert various Google date formats -> YYYY-MM-DD */
+  function toIsoDate(raw) {
+    if (raw == null) return "";
+
+    // Google serial number
+    if (typeof raw === "number") {
       const base = new Date(1899, 11, 30);
-      const d = new Date(base.getTime() + v * 86400000);
+      const d = new Date(base.getTime() + raw * 86400000);
       return d.toISOString().slice(0, 10);
     }
-    if (typeof v === "string") {
-      const d = new Date(v);
-      if (!isNaN(d)) return d.toISOString().slice(0, 10);
-      return v.trim();
+
+    if (typeof raw === "string") {
+      const v = raw.trim();
+
+      // Date(2025,11,1) format
+      const m = v.match(/^Date\((\d+),\s*(\d+),\s*(\d+)\)$/);
+      if (m) {
+        const year  = parseInt(m[1], 10);
+        const month = parseInt(m[2], 10); // already 0-based
+        const day   = parseInt(m[3], 10);
+        const d = new Date(year, month, day);
+        return d.toISOString().slice(0, 10);
+      }
+
+      const d2 = new Date(v);
+      if (!isNaN(d2)) return d2.toISOString().slice(0, 10);
+
+      return v;
     }
+
     return "";
   }
 
@@ -1141,26 +1159,26 @@
 
     tableRows.forEach((r, idx) => {
       if (!r.c) return;
-      if (idx === 0) return; // skip header row
+      if (idx === 0) return; // skip header
 
       const cellDate = r.c[0];
       let date = "";
       if (cellDate) {
-        if (typeof cellDate.v !== "undefined") {
-          date = toIsoDateFromValue(cellDate.v);
-        } else if (cellDate.f) {
-          date = toIsoDateFromValue(cellDate.f);
-        }
+        const raw = (typeof cellDate.f !== "undefined" && cellDate.f !== null)
+          ? cellDate.f
+          : cellDate.v;
+        date = toIsoDate(raw);
       }
 
-      const rank = r.c[1]?.v;
+      const rank     = r.c[1]?.v;
       const username = r.c[2]?.v ? String(r.c[2].v).trim() : "";
       const turnover = r.c[3]?.v;
-      const flagUrl = r.c[4]?.v ? String(r.c[4].v).trim() : "";
+      const flagUrl  = r.c[4]?.v ? String(r.c[4].v).trim() : "";
 
       if (!date || !rank || !username) return;
       rows.push({ date, rank, username, turnover, flagUrl });
     });
+
     return rows;
   }
 
@@ -1174,11 +1192,18 @@
           return;
         }
 
-        const fromPicker = (searchDateInput && searchDateInput.value) || "";
-        let target = preferredDate || fromPicker || (allRows[0] && allRows[0].date);
+        // list of unique dates sorted ascending
+        const uniqueDates = Array.from(new Set(allRows.map(r => r.date))).sort();
 
-        // if picker empty, sync it once
-        if (searchDateInput && !searchDateInput.value && target) {
+        const fromPicker = (searchDateInput && searchDateInput.value) || "";
+        let target = preferredDate || fromPicker || uniqueDates[uniqueDates.length - 1];
+
+        // If selected date not in sheet, fallback to latest available
+        if (target && !uniqueDates.includes(target)) {
+          target = uniqueDates[uniqueDates.length - 1];
+        }
+
+        if (searchDateInput && target) {
           searchDateInput.value = target;
         }
 
@@ -1190,13 +1215,13 @@
       });
   }
 
-  // Pre-fill date picker with today in ISO, then load sheet
+  // Pre-fill date picker with today (for UI only)
   if (searchDateInput) {
     const today = new Date();
     const isoToday = today.toISOString().slice(0, 10);
     searchDateInput.value = isoToday;
 
-    // When user changes date, refetch sheet & render that day (no page refresh needed)
+    // When user changes date, re-fetch & re-render (no page refresh needed)
     searchDateInput.addEventListener("change", () => {
       const d = searchDateInput.value;
       if (!d) return;
@@ -1225,6 +1250,8 @@
   function handleSearch() {
     if (!searchInput || !searchResult) return;
     const q = searchInput.value;
+
+    // Use date picker value, which we keep in sync with loaded date
     const dateValue =
       (searchDateInput && searchDateInput.value) || (allRows[0] && allRows[0].date);
     const displayDate = dateValue || "this date";
@@ -1234,7 +1261,7 @@
       return;
     }
     if (!allRows.length) {
-      searchResult.innerHTML = "Leaderboard not loaded yet. Please try again shortly.";
+searchResult.innerHTML = "Leaderboard not loaded yet. Please try again shortly.";
       return;
     }
 
