@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Christmas Turnover Challenge – App Style</title>
+  <title>Christmas Turnover Challenge – One Page</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700&display=swap" rel="stylesheet" />
   <style>
@@ -37,7 +37,7 @@
       color: #f9fafb;
       display: flex;
       justify-content: center;
-      padding: 20px 10px calc(26px + var(--nav-height));
+      padding: 20px 10px 26px;
     }
 
     .page {
@@ -135,38 +135,18 @@
       bottom: -80px;
     }
 
-    .hero-greeting {
-      font-size: 14px;
-      opacity: 0.9;
-    }
     .hero-title {
-      margin-top: 6px;
-      font-size: 24px;
+      margin-top: 4px;
+      font-size: 26px;
       line-height: 1.15;
-    }
-    .hero-title span {
-      display: block;
       font-weight: 700;
     }
 
     .hero-sub {
-      margin-top: 6px;
-      font-size: 13px;
+      margin-top: 8px;
+      font-size: 14px;
       opacity: 0.9;
       max-width: 360px;
-    }
-
-    .hero-tag {
-      margin-top: 10px;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      background: rgba(15,23,42,0.9);
-      color: #fbbf24;
-      padding: 5px 12px;
-      border-radius: 999px;
-      font-size: 11px;
-      box-shadow: 0 8px 16px rgba(15,23,42,0.45);
     }
 
     .countdown-card {
@@ -200,35 +180,16 @@
       color: #9ca3af;
     }
 
-    /* TABS */
-    .tab-panel { display: none; }
-    .tab-panel.active { display: block; }
-
-    /* TURNOVER TAB  */
+    /* TURNOVER MAIN SECTION */
     .ranking-header {
       display: flex;
-      justify-content: space-between;
+      justify-content: flex-end;
       gap: 8px;
-      align-items: flex-start;
-      margin-bottom: 10px;
+      align-items: center;
+      margin-bottom: 6px;
       margin-top: 6px;
     }
-    .ranking-title {
-      font-size: 16px;
-      display: flex;
-      flex-direction: column;
-      gap: 3px;
-    }
-    .ranking-title span.topline {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .ranking-title span.topline .icon { font-size: 20px; }
-    .ranking-title .sub {
-      font-size: 12px;
-      color: #9ca3af;
-    }
+
     .ranking-updated {
       font-size: 11px;
       color: #9ca3af;
@@ -237,45 +198,6 @@
       background: #020617;
       border: 1px solid rgba(148,163,184,0.7);
       white-space: nowrap;
-    }
-
-    .turnover-countdowns {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 10px;
-      margin-bottom: 10px;
-    }
-    @media (max-width: 700px) {
-      .turnover-countdowns {
-        grid-template-columns: minmax(0, 1fr);
-      }
-    }
-    .mini-card {
-      border-radius: 18px;
-      padding: 10px 12px;
-      background: radial-gradient(circle at 0 0, rgba(255,255,255,0.08), transparent 55%),
-                  linear-gradient(145deg, #020617, #020617);
-      border: 1px solid rgba(55,65,81,0.9);
-      font-size: 12px;
-      color: #e5e7eb;
-      box-shadow: var(--shadow-soft);
-    }
-    .mini-card-title {
-      font-size: 11px;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: #9ca3af;
-      margin-bottom: 4px;
-    }
-    .mini-card-time {
-      font-size: 20px;
-      font-weight: 700;
-      color: #38bdf8;
-    }
-    .mini-card-meta {
-      font-size: 11px;
-      color: #9ca3af;
-      margin-top: 2px;
     }
 
     .ranking-layout {
@@ -297,20 +219,12 @@
       padding: 9px 9px 11px;
       box-shadow: var(--shadow-soft);
     }
-    .podium-header {
-      font-size: 13px;
-      color: #9ca3af;
-      margin-bottom: 7px;
-      display: flex;
-      justify-content: space-between;
-      gap: 6px;
-    }
-    .podium-header strong { color: #f9fafb; }
 
     .podium-grid {
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 8px;
+      align-items: flex-end;
     }
 
     .podium-item {
@@ -325,7 +239,7 @@
     .podium-item.rank-1 {
       background: linear-gradient(180deg, #facc15, #fb7185);
       color: #1e1307;
-      transform: translateY(-4px);
+      transform: translateY(-8px);
       box-shadow: 0 12px 24px rgba(0,0,0,0.9);
     }
 
@@ -418,12 +332,13 @@
     .search-result strong { color: #bae6fd; }
 
     .list-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 12px;
+      display: grid;
+      grid-template-columns: 40px minmax(0, 1.2fr) minmax(0, 1fr) minmax(0, 1fr);
+      gap: 6px;
+      font-size: 11px;
       color: #9ca3af;
       margin: 6px 0;
+      padding: 0 7px;
     }
 
     .ranking-list {
@@ -434,7 +349,7 @@
 
     .ranking-row {
       display: grid;
-      grid-template-columns: 32px minmax(0, 1fr) minmax(0, 80px);
+      grid-template-columns: 40px minmax(0, 1.2fr) minmax(0, 1fr) minmax(0, 1fr);
       gap: 6px;
       align-items: center;
       padding: 6px 7px;
@@ -459,6 +374,7 @@
       justify-content: center;
       border: 1px solid rgba(148,163,184,0.8);
       background: radial-gradient(circle, rgba(255,255,255,0.15), transparent 60%);
+      font-weight: 700;
     }
 
     .rank-main {
@@ -498,9 +414,14 @@
       color: #9ca3af;
       font-weight: 400;
     }
+    .rank-prize {
+      text-align: right;
+      font-weight: 600;
+      font-size: 11px;
+    }
 
     .turnover-ctas {
-      margin-top: 12px;
+      margin-top: 8px;
       display: flex;
       flex-wrap: wrap;
       gap: 8px;
@@ -533,9 +454,91 @@
       box-shadow: 0 6px 14px rgba(15,23,42,0.8);
     }
 
-    /* FAQ / T&C TAB */
+    .lb-footer {
+      margin-top: 10px;
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      color: #9ca3af;
+    }
+    .lb-footer-time {
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(59,130,246,0.8);
+      background: radial-gradient(circle, rgba(59,130,246,0.15), transparent 60%);
+      font-weight: 700;
+      font-size: 11px;
+    }
+
+    /* FAQ MODAL (iframe-style popup) */
+    .faq-modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(15,23,42,0.86);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 40;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease;
+    }
+    .faq-modal.show {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .faq-modal-inner {
+      width: 100%;
+      max-width: 720px;
+      max-height: 80vh;
+      border-radius: 24px;
+      background: #020617;
+      border: 1px solid rgba(148,163,184,0.9);
+      box-shadow: 0 18px 40px rgba(0,0,0,0.9);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .faq-modal-header {
+      padding: 10px 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: radial-gradient(circle at 0 0, rgba(255,255,255,0.06), transparent 55%),
+                  linear-gradient(145deg, #020617, #020617);
+      border-bottom: 1px solid rgba(55,65,81,0.9);
+    }
+    .faq-modal-title {
+      font-size: 14px;
+      font-weight: 600;
+    }
+    .faq-modal-sub {
+      font-size: 11px;
+      color: #9ca3af;
+    }
+    .faq-modal-close {
+      border-radius: 999px;
+      border: 0;
+      padding: 5px 10px;
+      font-size: 12px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      cursor: pointer;
+      background: #020617;
+      color: #e5e7eb;
+      border: 1px solid rgba(148,163,184,0.9);
+    }
+    .faq-modal-body {
+      padding: 10px 14px 12px;
+      overflow-y: auto;
+      background: #020617;
+    }
+
     .faq-section {
-      margin-top: 6px;
+      margin-top: 4px;
     }
     .section-title {
       font-size: 17px;
@@ -620,71 +623,11 @@
       margin: 2px 0;
     }
 
-    /* BOTTOM NAV */
-    .bottom-nav {
-      position: fixed;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      height: var(--nav-height);
-      display: flex;
-      justify-content: center;
-      z-index: 20;
-      pointer-events: none;
-    }
-    .bottom-nav-inner {
-      pointer-events: auto;
-      width: 100%;
-      max-width: 1100px;
-      padding: 0 12px 0;
-    }
-
-    .nav-bar {
-      background: rgba(3,7,18,0.98);
-      border-radius: 18px 18px 0 0;
-      display: flex;
-      justify-content: space-around;
-      align-items: center;
-      padding: 8px 8px 10px;
-      border: 1px solid rgba(31,41,55,0.9);
-      box-shadow: 0 -6px 22px rgba(0,0,0,0.9);
-    }
-
-    .nav-btn {
-      flex: 1;
-      border: 0;
-      background: transparent;
-      color: #9ca3af;
-      font-family: inherit;
-      font-size: 12px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 3px;
-      cursor: pointer;
-      transition: color 0.12s ease;
-    }
-
-    .nav-icon {
-      width: 20px;
-      height: 20px;
-      stroke: currentColor;
-      stroke-width: 1.8;
-      fill: none;
-    }
-
-    .nav-btn.active {
-      color: #f9fafb;
-    }
-    .nav-btn.active .nav-icon {
-      color: #f9735b;
-    }
-
     /* TOAST */
     .toast {
       position: fixed;
       left: 50%;
-      bottom: calc(var(--nav-height) + 16px);
+      bottom: 16px;
       transform: translateX(-50%) translateY(10px);
       background: radial-gradient(circle at 0 0, rgba(255,255,255,0.15), transparent 55%),
                   linear-gradient(135deg, #22c55e, #16a34a);
@@ -717,113 +660,90 @@
     <!-- HEADER -->
     <header class="header">
       <div class="hero-card">
-        <div class="hero-greeting" data-i18n="heroGreeting">
-          Happy holidays, Rico!
-        </div>
-        <div class="hero-title">
-          <span data-i18n="heroTitleLine1">Christmas Month</span>
-          <span data-i18n="heroTitleLine2">Turnover Challenge</span>
+        <div class="hero-title" data-i18n="heroTitle">
+          Daily Turnover Challenge
         </div>
         <div class="hero-sub" data-i18n="heroSub">
-          Play, climb the combined BR &amp; MX leaderboard (converted to USD), and watch for the next payout.
-        </div>
-        <div class="hero-tag">
-          <span>⭐</span>
-          <span data-i18n="heroTag">Leaderboard combines Brazil &amp; Mexico players.</span>
+          Challenge and win up to USD100 every day!
         </div>
       </div>
 
-      <!-- 1st countdown: Next rewards payout (Mexico time, UTC-6) -->
+      <!-- Payout countdown -->
       <div class="countdown-card">
         <div>
           <div class="countdown-label" data-i18n="countdownLabel1">Next rewards payout in</div>
           <div class="countdown-time" id="nextRewardTime">--:--:--</div>
         </div>
         <div class="countdown-meta" data-i18n="countdownMeta1">
-          Payout sent daily at 01:00 (Mexico, UTC-6). Timer is based on Mexico local time.
+          Countdown timer based on UTC-6
         </div>
       </div>
     </header>
 
-    <!-- TAB: TURNOVER -->
-    <section id="tab-turnover" class="tab-panel active">
-      <section>
-        <header class="ranking-header">
-          <div class="ranking-title">
-            <span class="topline">
-              <span class="icon">🏁</span>
-              <span data-i18n="rankingTitle">Turnover Challenge</span>
-            </span>
-            <span class="sub" data-i18n="rankingSub">
-              Combined BR &amp; MX board. Turnover is converted to USD based on your Google Sheet.
-            </span>
-          </div>
-          <div class="ranking-updated" id="updatedAt">Updated –</div>
-        </header>
+    <!-- TURNOVER CONTENT -->
+    <section>
+      <header class="ranking-header">
+        <div class="ranking-updated" id="updatedAt">Updated –</div>
+      </header>
 
-        <!-- 2nd countdown: leaderboard update every 39 mins -->
-        <div class="turnover-countdowns">
-          <div class="mini-card">
-            <div class="mini-card-title" data-i18n="mini1Title">Leaderboard update in</div>
-            <div class="mini-card-time" id="lbCountdown">39:00</div>
-            <div class="mini-card-meta" data-i18n="mini1Meta">
-              Board refreshes every 39 minutes (based on your latest Google Sheet data).
-            </div>
-          </div>
-          <div class="mini-card">
-            <div class="mini-card-title" data-i18n="mini2Title">Country indicator</div>
-            <div class="mini-card-meta" data-i18n="mini2Meta">
-              🇧🇷 = Brazil player · 🇲🇽 = Mexico player<br />
-              USD turnover values are pulled from your Google Sheet.
-            </div>
-          </div>
+      <div class="ranking-layout">
+        <div class="podium-panel">
+          <div class="podium-grid" id="podiumGrid"></div>
         </div>
 
-        <div class="ranking-layout">
-          <div class="podium-panel">
-            <div class="podium-header">
-              <strong data-i18n="podiumTitle">Today’s podium</strong>
-              <span data-i18n="podiumSub">Extra bonus for #1–3</span>
-            </div>
-            <div class="podium-grid" id="podiumGrid"></div>
+        <div class="table-panel">
+          <div class="search-row">
+            <input id="searchInput" placeholder="Search your username…" />
+            <button id="searchBtn" data-i18n="searchBtn">Find</button>
+          </div>
+          <div class="search-result" id="searchResult"></div>
+
+          <div class="list-header">
+            <span>Rank</span>
+            <span>Username</span>
+            <span>Turnover</span>
+            <span>Prizes</span>
           </div>
 
-          <div class="table-panel">
-            <div class="search-row">
-              <input id="searchInput" placeholder="Search your username…" />
-              <button id="searchBtn" data-i18n="searchBtn">Find</button>
-            </div>
-            <div class="search-result" id="searchResult"></div>
-
-            <div class="list-header">
-              <span data-i18n="listHeaderLeft">Top 20 Turnover board</span>
-              <span data-i18n="listHeaderRight">Full list &amp; prizes in Google Sheet</span>
-            </div>
-
-            <div class="ranking-list" id="rankingList"></div>
-          </div>
+          <div class="ranking-list" id="rankingList"></div>
         </div>
+      </div>
 
-        <!-- Bottom CTAs inside Turnover tab -->
-        <div class="turnover-ctas">
-          <button class="btn-play" id="startPlayingBtn">
-            🎮 <span data-i18n="btnPlay">Start Playing</span>
-          </button>
-          <button class="btn-how" id="howWorksBtn">
-            ❓ <span data-i18n="btnHow">How it works / T&amp;C</span>
-          </button>
-        </div>
-      </section>
+      <!-- Leaderboard update countdown moved to bottom right -->
+      <div class="lb-footer">
+        <span>Leaderboard updates in</span>
+        <span class="lb-footer-time" id="lbCountdown">30:00</span>
+      </div>
+
+      <!-- CTAs -->
+      <div class="turnover-ctas">
+        <button class="btn-play" id="startPlayingBtn">
+          🎮 <span data-i18n="btnPlay">Start Playing</span>
+        </button>
+        <button class="btn-how" id="howWorksBtn">
+          ❓ <span data-i18n="btnHow">How it works / T&amp;C</span>
+        </button>
+      </div>
     </section>
+  </div>
+</div>
 
-    <!-- TAB: T&C / FAQ -->
-    <section id="tab-faq" class="tab-panel">
-      <section class="faq-section">
-        <div class="section-title" data-i18n="faqTitle">Turnover Challenge – T&amp;C &amp; FAQ</div>
-        <div class="section-sub" data-i18n="faqSub">
+<!-- FAQ MODAL -->
+<div class="faq-modal" id="faqModal">
+  <div class="faq-modal-inner">
+    <div class="faq-modal-header">
+      <div>
+        <div class="faq-modal-title" data-i18n="faqTitle">Turnover Challenge – T&amp;C &amp; FAQ</div>
+        <div class="faq-modal-sub" data-i18n="faqSub">
           Tap on each point to expand. Edit this copy to match your final terms.
         </div>
-
+      </div>
+      <button class="faq-modal-close" id="faqCloseBtn">
+        ✕ <span>Close</span>
+      </button>
+    </div>
+    <div class="faq-modal-body">
+      <section class="faq-section">
         <div class="faq-list">
           <article class="faq-item open">
             <button class="faq-question">
@@ -927,32 +847,9 @@
           </article>
         </div>
       </section>
-    </section>
-  </div>
-</div>
-
-<!-- Bottom nav -->
-<nav class="bottom-nav">
-  <div class="bottom-nav-inner">
-    <div class="nav-bar">
-      <button class="nav-btn active" data-tab-target="turnover">
-        <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M8 21v-6.5M12 21V5M16 21v-9" />
-          <path d="M7 9h10l-1.2-5H8.2z" />
-        </svg>
-        <span data-i18n="navTurnover">Turnover</span>
-      </button>
-      <button class="nav-btn" data-tab-target="faq">
-        <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true">
-          <circle cx="12" cy="12" r="8.5" />
-          <path d="M12 15.5v-2.2c.9 0 1.8-.7 1.9-1.7a1.9 1.9 0 0 0-1.9-2.1 2 2 0 0 0-1.8 1" />
-          <circle cx="12" cy="17.5" r="0.7" />
-        </svg>
-        <span data-i18n="navFaq">T&amp;C / FAQ</span>
-      </button>
     </div>
   </div>
-</nav>
+</div>
 
 <div id="toast" class="toast">Done!</div>
 
@@ -976,7 +873,7 @@
   }
   createSnowflakes();
 
-  /* 1) Payout countdown – daily 01:00 Mexico time (UTC-6) */
+  /* Payout countdown – daily 01:00 Mexico time (UTC-6) */
   const nextRewardTimeEl = document.getElementById("nextRewardTime");
 
   function getNextMexicoPayoutUtcMs(nowUtcMs) {
@@ -1010,9 +907,9 @@
   updatePayoutCountdown();
   setInterval(updatePayoutCountdown, 1000);
 
-  /* 2) Leaderboard update countdown – every 39 minutes */
+  /* Leaderboard update countdown – every 30 minutes */
   const lbCountdownEl = document.getElementById("lbCountdown");
-  let nextLbUpdateTime = Date.now() + 39 * 60 * 1000;
+  let nextLbUpdateTime = Date.now() + 30 * 60 * 1000;
 
   function updateLbCountdown() {
     if (!lbCountdownEl) return;
@@ -1020,7 +917,7 @@
     let diff = nextLbUpdateTime - now;
 
     if (diff <= 0) {
-      nextLbUpdateTime = now + 39 * 60 * 1000;
+      nextLbUpdateTime = now + 30 * 60 * 1000;
       diff = nextLbUpdateTime - now;
     }
 
@@ -1045,26 +942,26 @@
 
   /* Turnover data & rendering – BR / MX flags */
   const rankingData = [
-    { username: "SnowLegend",   turnover: 98500, country: "BR" },
-    { username: "WinterWhale",  turnover: 95600, country: "MX" },
-    { username: "CodeElf",      turnover: 93200, country: "BR" },
-    { username: "DecemberDev",  turnover: 91000, country: "MX" },
-    { username: "HolidayHero",  turnover: 88750, country: "BR" },
-    { username: "FestiveFox",   turnover: 86500, country: "MX" },
-    { username: "SantaScript",  turnover: 84250, country: "BR" },
-    { username: "GitGifts",     turnover: 82900, country: "MX" },
-    { username: "CandyCane",    turnover: 81200, country: "BR" },
-    { username: "FrostyBug",    turnover: 79800, country: "MX" },
-    { username: "ReindeerRun",  turnover: 78200, country: "BR" },
-    { username: "PullRequest",  turnover: 76900, country: "MX" },
-    { username: "YuleLog",      turnover: 75400, country: "BR" },
-    { username: "MergeWizard",  turnover: 74000, country: "MX" },
-    { username: "Snowflake",    turnover: 72950, country: "BR" },
-    { username: "HolidayCommit",turnover: 71500, country: "MX" },
-    { username: "NorthStar",    turnover: 70600, country: "BR" },
-    { username: "BlizzardByte", turnover: 69100, country: "MX" },
-    { username: "PineTree",     turnover: 67800, country: "BR" },
-    { username: "FuzzyPenguin", turnover: 66400, country: "MX" }
+    { username: "SnowLegend",   turnover: 98500, country: "BR", prize: "$100" },
+    { username: "WinterWhale",  turnover: 95600, country: "MX", prize: "$80" },
+    { username: "CodeElf",      turnover: 93200, country: "BR", prize: "$60" },
+    { username: "DecemberDev",  turnover: 91000, country: "MX", prize: "$40" },
+    { username: "HolidayHero",  turnover: 88750, country: "BR", prize: "$30" },
+    { username: "FestiveFox",   turnover: 86500, country: "MX", prize: "$25" },
+    { username: "SantaScript",  turnover: 84250, country: "BR", prize: "$20" },
+    { username: "GitGifts",     turnover: 82900, country: "MX", prize: "$15" },
+    { username: "CandyCane",    turnover: 81200, country: "BR", prize: "$10" },
+    { username: "FrostyBug",    turnover: 79800, country: "MX", prize: "$8" },
+    { username: "ReindeerRun",  turnover: 78200, country: "BR", prize: "$6" },
+    { username: "PullRequest",  turnover: 76900, country: "MX", prize: "$5" },
+    { username: "YuleLog",      turnover: 75400, country: "BR", prize: "$4" },
+    { username: "MergeWizard",  turnover: 74000, country: "MX", prize: "$3" },
+    { username: "Snowflake",    turnover: 72950, country: "BR", prize: "$3" },
+    { username: "HolidayCommit",turnover: 71500, country: "MX", prize: "$2" },
+    { username: "NorthStar",    turnover: 70600, country: "BR", prize: "$2" },
+    { username: "BlizzardByte", turnover: 69100, country: "MX", prize: "$2" },
+    { username: "PineTree",     turnover: 67800, country: "BR", prize: "$2" },
+    { username: "FuzzyPenguin", turnover: 66400, country: "MX", prize: "$2" }
   ];
 
   const extraRanks = [
@@ -1098,12 +995,15 @@
   }
 
   if (podiumGrid) {
-    rankingData.slice(0, 3).forEach((player, index) => {
-      const rank = index + 1;
+    const top3 = rankingData.slice(0, 3);
+    const order = [1, 0, 2]; // 2nd, 1st (center), 3rd
+    order.forEach(idx => {
+      const player = top3[idx];
+      const rank = idx + 1;
       const card = document.createElement("div");
       card.className = "podium-item rank-" + rank;
       card.innerHTML = `
-        <div class="podium-rank">#${rank}</div>
+        <div class="podium-rank">${rank}</div>
         <div class="podium-avatar">${countryFlag(player.country)}</div>
         <div class="podium-name">${player.username}</div>
         <div class="podium-turnover">${shortNum(player.turnover)} USD</div>
@@ -1120,7 +1020,7 @@
       row.className = "ranking-row";
       if (rank <= 3) row.classList.add("highlight");
       row.innerHTML = `
-        <div class="rank-badge">#${rank}</div>
+        <div class="rank-badge">${rank}</div>
         <div class="rank-main">
           <div class="rank-avatar">${countryFlag(player.country)}</div>
           <div>
@@ -1131,6 +1031,9 @@
         <div class="rank-turnover">
           ${shortNum(player.turnover)}
           <span class="label">Turnover (USD)</span>
+        </div>
+        <div class="rank-prize">
+          ${player.prize || "-"}
         </div>
       `;
       rankingList.appendChild(row);
@@ -1199,44 +1102,30 @@
     });
   }
 
-  /* Bottom nav + CTAs */
-  const navButtons = document.querySelectorAll(".nav-btn");
-  const tabPanels = {
-    turnover: document.getElementById("tab-turnover"),
-    faq: document.getElementById("tab-faq")
-  };
-
-  function setActiveTab(target) {
-    Object.entries(tabPanels).forEach(([key, panel]) => {
-      if (!panel) return;
-      panel.classList.toggle("active", key === target);
-    });
-    navButtons.forEach(btn => {
-      const isActive = btn.dataset.tabTarget === target;
-      btn.classList.toggle("active", isActive);
-    });
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  }
-
-  navButtons.forEach(btn => {
-    btn.addEventListener("click", () => {
-      const target = btn.dataset.tabTarget;
-      if (!target) return;
-      setActiveTab(target);
-    });
-  });
-
+  /* CTAs */
   const startPlayingBtn = document.getElementById("startPlayingBtn");
   const howWorksBtn = document.getElementById("howWorksBtn");
+  const faqModal = document.getElementById("faqModal");
+  const faqCloseBtn = document.getElementById("faqCloseBtn");
 
   if (startPlayingBtn) {
     startPlayingBtn.addEventListener("click", () => {
       window.open("https://www.rico.bet/", "_blank");
     });
   }
-  if (howWorksBtn) {
+  if (howWorksBtn && faqModal) {
     howWorksBtn.addEventListener("click", () => {
-      setActiveTab("faq");
+      faqModal.classList.add("show");
+    });
+  }
+  if (faqCloseBtn && faqModal) {
+    faqCloseBtn.addEventListener("click", () => {
+      faqModal.classList.remove("show");
+    });
+  }
+  if (faqModal) {
+    faqModal.addEventListener("click", (e) => {
+      if (e.target === faqModal) faqModal.classList.remove("show");
     });
   }
 
@@ -1254,16 +1143,13 @@
     });
   });
 
-  /* --- Multi-language via IP (BR/MX/others) --- */
+  /* Multi-language via IP (BR/MX/others) */
   const translations = {
     en: {
-      heroGreeting: "Happy holidays, Rico!",
-      heroTitleLine1: "Christmas Month",
-      heroTitleLine2: "Turnover Challenge",
-      heroSub: "Play, climb the combined BR & MX leaderboard (converted to USD), and watch for the next payout.",
-      heroTag: "Leaderboard combines Brazil & Mexico players.",
+      heroTitle: "Daily Turnover Challenge",
+      heroSub: "Challenge and win up to USD100 every day!",
       countdownLabel1: "Next rewards payout in",
-      countdownMeta1: "Payout sent daily at 01:00 (Mexico, UTC-6). Timer is based on Mexico local time.",
+      countdownMeta1: "Countdown timer based on UTC-6",
       rankingTitle: "Turnover Challenge",
       rankingSub: "Combined BR & MX board. Turnover is converted to USD based on your Google Sheet.",
       mini1Title: "Leaderboard update in",
@@ -1334,18 +1220,13 @@
           <li>Brazil → Brazilian Portuguese, Mexico → Spanish, others → English.</li>
           <li>You can still customise the final wording directly in this HTML.</li>
         </ul>
-      `,
-      navTurnover: "Turnover",
-      navFaq: "T&C / FAQ"
+      `
     },
     pt: {
-      heroGreeting: "Feliz Natal, Rico!",
-      heroTitleLine1: "Mês de Natal",
-      heroTitleLine2: "Desafio de Turnover",
-      heroSub: "Jogue, suba no ranking combinado BR & MX (convertido em USD) e acompanhe o próximo pagamento.",
-      heroTag: "O ranking combina jogadores do Brasil e do México.",
+      heroTitle: "Desafio Diário de Turnover",
+      heroSub: "Participe e ganhe até USD100 todos os dias!",
       countdownLabel1: "Próximo pagamento de prêmios em",
-      countdownMeta1: "Pagamento diário às 01:00 (horário do México, UTC-6). O contador usa o horário do México.",
+      countdownMeta1: "Cronômetro baseado em UTC-6",
       rankingTitle: "Desafio de Turnover",
       rankingSub: "Ranking combinado BR & MX. O turnover é convertido para USD com base na sua planilha.",
       mini1Title: "Atualização do ranking em",
@@ -1416,18 +1297,13 @@
           <li>Brasil → português BR, México → espanhol, outros → inglês.</li>
           <li>Você ainda pode ajustar os textos diretamente neste HTML.</li>
         </ul>
-      `,
-      navTurnover: "Turnover",
-      navFaq: "T&C / FAQ"
+      `
     },
     es: {
-      heroGreeting: "¡Felices fiestas, Rico!",
-      heroTitleLine1: "Mes de Navidad",
-      heroTitleLine2: "Reto de Turnover",
-      heroSub: "Juega, sube en el ranking combinado BR & MX (convertido a USD) y espera el próximo pago.",
-      heroTag: "El ranking combina jugadores de Brasil y México.",
+      heroTitle: "Reto Diario de Turnover",
+      heroSub: "¡Participa y gana hasta USD100 cada día!",
       countdownLabel1: "Próximo pago de premios en",
-      countdownMeta1: "Pago diario a la 01:00 (México, UTC-6). El contador usa la hora de México.",
+      countdownMeta1: "Contador basado en UTC-6",
       rankingTitle: "Reto de Turnover",
       rankingSub: "Ranking combinado BR & MX. El turnover se convierte a USD según tu hoja de Google.",
       mini1Title: "Actualización del ranking en",
@@ -1498,9 +1374,7 @@
           <li>Brasil → portugués BR, México → español, otros → inglés.</li>
           <li>Puedes ajustar los textos directamente en este HTML.</li>
         </ul>
-      `,
-      navTurnover: "Turnover",
-      navFaq: "T&C / FAQ"
+      `
     }
   };
 
