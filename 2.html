@@ -11,7 +11,7 @@
       --accent: #f9735b;
       --accent-green: #22c55e;
       --accent-blue: #0ea5e9;
-      --shadow-soft: 0 12px 30px rgba(15, 23, 42, 0.25);
+      --shadow-soft: 0 18px 40px rgba(15, 23, 42, 0.75);
     }
 
     * { box-sizing: border-box; }
@@ -22,19 +22,45 @@
       font-family: "Baloo 2", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       font-size: 15px;
       background:
-        radial-gradient(circle at 0 0, #fecaca, transparent 60%),
-        radial-gradient(circle at 100% 100%, #bfdbfe, transparent 70%),
-        linear-gradient(180deg, #020617 0%, #020617 55%, #020617 100%);
+        radial-gradient(circle at 0 0, #111827 0%, #020617 55%, #000000 100%);
       color: #f9fafb;
-      padding: 18px 10px 26px;
+      padding: 18px 12px 26px;
       display: flex;
       justify-content: center;
+      align-items: flex-start;
+      overflow-x: hidden;
     }
 
     .page {
       width: 100%;
-      max-width: 1100px;
-      padding: 0 4px;
+      max-width: 430px;
+      position: relative;
+    }
+
+    .frame {
+      width: 100%;
+      border-radius: 32px;
+      padding: 16px 16px 18px;
+      background:
+        radial-gradient(circle at 0 0, rgba(148,163,184,0.35), transparent 65%),
+        radial-gradient(circle at 100% 100%, rgba(56,189,248,0.4), transparent 70%),
+        linear-gradient(180deg, #020617 0%, #020617 100%);
+      box-shadow: var(--shadow-soft);
+      border: 1px solid rgba(148,163,184,0.45);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .frame::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at 50% -30%, rgba(248,250,252,0.12), transparent 55%),
+        radial-gradient(circle at -10% 120%, rgba(59,130,246,0.15), transparent 55%);
+      mix-blend-mode: screen;
+      opacity: 0.8;
+      pointer-events: none;
     }
 
     .inner { position: relative; z-index: 1; }
@@ -45,7 +71,7 @@
       top: -10px;
       color: #e5f0ff;
       font-size: 9px;
-      opacity: 0.7;
+      opacity: 0.6;
       pointer-events: none;
       z-index: 5;
       animation-name: snowFall;
@@ -60,78 +86,67 @@
 
     /* HEADER */
     .header {
-      margin-bottom: 16px;
+      margin-bottom: 14px;
       display: grid;
-      grid-template-columns: minmax(0, 1.8fr) minmax(0, 1.2fr);
-      gap: 12px;
-      align-items: stretch;
+      grid-template-columns: minmax(0, 1.7fr) minmax(0, 1.3fr);
+      gap: 10px;
+      align-items: flex-end;
     }
-    @media (max-width: 800px) {
+    @media (max-width: 480px) {
       .header { grid-template-columns: minmax(0, 1fr); }
     }
 
     .hero-card {
-      border-radius: 26px;
-      padding: 16px 18px 18px;
-      background: radial-gradient(circle at 0 0, rgba(248,250,252,0.16), transparent 60%),
-                  linear-gradient(135deg, #030712, #020617);
-      box-shadow: var(--shadow-soft);
-      position: relative;
-      overflow: hidden;
-    }
-
-    .hero-card::after {
-      content: "";
-      position: absolute;
-      width: 260px;
-      height: 260px;
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(248, 250, 252, 0.18), transparent 65%);
-      right: -80px;
-      bottom: -120px;
+      padding: 12px 14px 13px;
+      border-radius: 22px;
+      background: linear-gradient(145deg, #020617, #030712);
+      border: 1px solid rgba(31,41,55,0.85);
+      box-shadow: 0 12px 28px rgba(15,23,42,0.7);
     }
 
     .hero-title {
-      font-size: 28px;
-      text-transform: uppercase;
-      letter-spacing: 0.12em;
-      font-weight: 700;
-      position: relative;
-      z-index: 1;
-      background: linear-gradient(90deg, #f9735b, #facc15, #38bdf8, #f9735b);
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-      animation:
-        titleGlow 2.8s ease-in-out infinite alternate,
-        titleSlide 10s linear infinite;
+      font-size: 23px;
+      text-transform: none;
+      letter-spacing: 0.06em;
+      font-weight: 800;
+      color: #fefce8;
+      text-shadow:
+        0 0 6px rgba(248, 250, 252, 0.8),
+        0 0 16px rgba(248, 250, 252, 0.4);
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+      animation: titlePulse 2.6s ease-in-out infinite alternate;
+      position: relative;
     }
 
-    @media (max-width: 480px) {
-      .hero-title {
-        font-size: 22px;
-      }
+    .hero-title::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: -5px;
+      height: 2px;
+      width: 110%;
+      background: linear-gradient(90deg, #f9735b, #facc15, #38bdf8, #f9735b);
+      filter: blur(1px);
+      opacity: 0.85;
+      animation: titleUnderline 5s linear infinite;
     }
 
-    @keyframes titleGlow {
-      0% { text-shadow: 0 0 8px rgba(248,113,113,0.4); transform: translateY(0); }
-      100% { text-shadow: 0 0 16px rgba(248,250,252,0.9); transform: translateY(-2px); }
+    @keyframes titlePulse {
+      0% { transform: translateY(0); text-shadow: 0 0 6px rgba(248,250,252,0.7); }
+      100% { transform: translateY(-2px); text-shadow: 0 0 16px rgba(248,250,252,1); }
     }
-    @keyframes titleSlide {
-      0% { background-position: 0% 50%; }
-      100% { background-position: 200% 50%; }
+    @keyframes titleUnderline {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-30%); }
     }
 
     .hero-sub {
-      margin-top: 10px;
-      font-size: 14px;
+      margin-top: 12px;
+      font-size: 13px;
+      max-width: 320px;
       opacity: 0;
-      max-width: 420px;
-      position: relative;
-      z-index: 1;
       animation: subFadeUp 0.8s ease-out 0.2s forwards;
     }
     @keyframes subFadeUp {
@@ -140,68 +155,161 @@
     }
 
     .countdown-card {
-      border-radius: 24px;
-      padding: 14px 16px;
-      background: radial-gradient(circle at 0 0, rgba(255,255,255,0.1), transparent 55%),
-                  linear-gradient(160deg, #020617, #020617);
-      border: 1px solid rgba(148,163,184,0.7);
+      padding: 12px 14px 11px;
+      border-radius: 22px;
+      background: radial-gradient(circle at 0 0, rgba(59,130,246,0.33), transparent 65%);
+      background-color: #020617;
+      border: 1px solid rgba(37,99,235,0.9);
       font-size: 13px;
       color: #e5e7eb;
-      box-shadow: var(--shadow-soft);
+      box-shadow: 0 14px 28px rgba(15,23,42,0.8);
       display: flex;
       flex-direction: column;
-      justify-content: space-between;
-      gap: 8px;
+      gap: 6px;
+      align-items: flex-start;
+      justify-content: center;
     }
 
     .countdown-label {
-      font-size: 11px;
+      font-size: 10px;
       text-transform: uppercase;
       letter-spacing: 0.12em;
       color: #9ca3af;
     }
     .countdown-time {
-      font-size: 24px;
+      font-size: 21px;
       font-weight: 700;
       color: #4ade80;
     }
     .countdown-meta {
-      font-size: 12px;
+      font-size: 11px;
       color: #9ca3af;
     }
 
-    /* MAIN SECTION */
-    .ranking-layout {
-      display: grid;
-      grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
-      gap: 12px;
-      align-items: start;
-      margin-top: 10px;
-    }
-    @media (max-width: 900px) {
-      .ranking-layout { grid-template-columns: minmax(0, 1fr); }
-    }
-
-    .podium-panel {
-      border-radius: 20px;
-      background: radial-gradient(circle at 50% 0, rgba(248, 250, 252, 0.16), transparent 60%),
-                  linear-gradient(145deg, #111827, #020617);
-      border: 1px solid rgba(255,255,255,0.18);
-      padding: 10px 10px 12px;
-      box-shadow: var(--shadow-soft);
+    /* LEADERBOARD CARD */
+    .leaderboard-card {
+      margin-top: 6px;
+      padding: 12px 10px 10px;
+      border-radius: 22px;
+      background: radial-gradient(circle at 0 0, rgba(148,163,184,0.25), transparent 60%);
+      background-color: #020617;
+      border: 1px solid rgba(31,41,55,0.9);
+      box-shadow: 0 16px 32px rgba(15,23,42,0.85);
     }
 
+    .leaderboard-top {
+      margin-bottom: 6px;
+    }
+
+    .filter-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 6px;
+    }
+    .filter-row input[type="date"] {
+      border-radius: 999px;
+      border: 1px solid rgba(55,65,81,0.9);
+      background: #020617;
+      color: #f9fafb;
+      font-family: inherit;
+      font-size: 12px;
+      padding: 7px 10px;
+      outline: none;
+    }
+    .filter-row input[type="date"]::-webkit-calendar-picker-indicator {
+      filter: invert(1);
+    }
+
+    .search-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 4px;
+      align-items: center;
+    }
+    .search-row input[type="text"] {
+      flex: 1 1 160px;
+      border-radius: 999px;
+      border: 1px solid rgba(55,65,81,0.9);
+      background: radial-gradient(circle at 0 0, rgba(15,23,42,0.8), transparent 65%);
+      color: #f9fafb;
+      font-family: inherit;
+      font-size: 12px;
+      padding: 7px 11px;
+      outline: none;
+    }
+    .search-row input::placeholder { color: #6b7280; }
+    .search-row button {
+      border-radius: 999px;
+      border: 0;
+      padding: 7px 13px;
+      font-size: 12px;
+      font-weight: 700;
+      background: linear-gradient(135deg, #22c55e, #4ade80);
+      color: #022c22;
+      cursor: pointer;
+      box-shadow: 0 10px 18px rgba(34,197,94,0.75);
+      white-space: nowrap;
+    }
+
+    .lb-top-timer {
+      margin-left: auto;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 2px;
+      font-size: 10px;
+    }
+    .lb-top-label {
+      color: #9ca3af;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+    .lb-top-time {
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(59,130,246,0.9);
+      background: rgba(15,23,42,0.98);
+      font-weight: 700;
+      font-size: 11px;
+      color: #bfdbfe;
+    }
+
+    @media (max-width: 640px) {
+      .lb-top-timer {
+        width: 100%;
+        align-items: flex-start;
+        margin-left: 0;
+        margin-top: 4px;
+      }
+    }
+
+    .search-result {
+      font-size: 11px;
+      color: #9ca3af;
+      min-height: 16px;
+    }
+    .search-result strong { color: #bae6fd; }
+
+    .leaderboard-body {
+      margin-top: 6px;
+    }
+
+    /* Podium – top 3 */
     .podium-grid {
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 8px;
       align-items: flex-end;
+      margin-bottom: 8px;
     }
 
     .podium-item {
       border-radius: 18px;
-      background: linear-gradient(180deg, #111827, #020617);
-      border: 1px solid rgba(148,163,184,0.7);
+      background: radial-gradient(circle at 50% 0, rgba(148,163,184,0.45), transparent 70%);
+      background-color: #020617;
+      border: 1px solid rgba(55,65,81,0.9);
       padding: 8px 6px 10px;
       text-align: center;
       position: relative;
@@ -228,16 +336,25 @@
     }
 
     .podium-avatar {
-      width: 38px;
-      height: 38px;
+      width: 42px;
+      height: 42px;
       border-radius: 50%;
       margin: 18px auto 6px;
       display: flex;
       align-items: center;
       justify-content: center;
+      overflow: hidden;
       border: 2px solid rgba(255,255,255,0.9);
-      background: radial-gradient(circle, rgba(255,255,255,0.3), transparent 60%);
-      font-size: 20px;
+      background: #020617;
+    }
+    .podium-avatar img {
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: cover;
+    }
+    .podium-avatar span {
+      font-size: 22px;
     }
 
     .podium-name {
@@ -252,86 +369,23 @@
       margin-top: 2px;
     }
 
-    .table-panel {
-      border-radius: 20px;
-      background: #020617;
-      border: 1px solid rgba(55,65,81,0.9);
-      padding: 10px 10px 12px;
-      box-shadow: var(--shadow-soft);
-    }
-
-    .filter-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      margin-bottom: 4px;
-    }
-    .filter-row input[type="date"] {
-      border-radius: 999px;
-      border: 1px solid rgba(191,219,254,0.9);
-      background: #020617;
-      color: #f9fafb;
-      font-family: inherit;
-      font-size: 12px;
-      padding: 7px 10px;
-      outline: none;
-    }
-    .filter-row input[type="date"]::-webkit-calendar-picker-indicator {
-      filter: invert(1);
-    }
-
-    .search-row {
-      display: flex;
-      gap: 6px;
-      margin-bottom: 4px;
-      margin-top: 4px;
-    }
-    .search-row input[type="text"] {
-      flex: 1;
-      border-radius: 999px;
-      border: 1px solid rgba(191,219,254,0.9);
-      background: #020617;
-      color: #f9fafb;
-      font-family: inherit;
-      font-size: 12px;
-      padding: 7px 11px;
-      outline: none;
-    }
-    .search-row input::placeholder { color: #6b7280; }
-    .search-row button {
-      border-radius: 999px;
-      border: 0;
-      padding: 7px 13px;
-      font-size: 12px;
-      font-weight: 700;
-      background: linear-gradient(135deg, #22c55e, #4ade80);
-      color: #022c22;
-      cursor: pointer;
-      box-shadow: 0 10px 18px rgba(34,197,94,0.75);
-      white-space: nowrap;
-    }
-
-    .search-result {
-      font-size: 11px;
-      color: #9ca3af;
-      min-height: 16px;
-    }
-    .search-result strong { color: #bae6fd; }
-
     .list-header {
       display: grid;
       grid-template-columns: 40px minmax(0, 1.2fr) minmax(0, 1fr) minmax(0, 1fr);
       gap: 6px;
-      font-size: 11px;
+      font-size: 10px;
       color: #9ca3af;
       margin: 6px 0;
       padding: 0 7px;
     }
 
     .ranking-list {
-      max-height: 230px;
+      max-height: 260px;
       overflow-y: auto;
-      border-radius: 16px;
+      border-radius: 14px;
+      background: radial-gradient(circle at 0 0, rgba(15,23,42,0.85), transparent 70%);
+      background-color: #020617;
+      border: 1px solid rgba(31,41,55,0.9);
     }
 
     .ranking-row {
@@ -341,9 +395,10 @@
       align-items: center;
       padding: 6px 7px;
       font-size: 11px;
-      background: #020617;
+      background: rgba(15,23,42,0.96);
+      border-bottom: 1px solid #020617;
     }
-    .ranking-row:nth-child(even) { background: #040716; }
+    .ranking-row:nth-child(even) { background: #030712; }
 
     .ranking-row.highlight {
       border: 1px solid #38bdf8;
@@ -371,16 +426,26 @@
       overflow: hidden;
     }
     .rank-avatar {
-      width: 24px;
-      height: 24px;
+      width: 26px;
+      height: 26px;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
+      overflow: hidden;
       border: 1px solid rgba(148,163,184,0.9);
-      background: radial-gradient(circle, rgba(255,255,255,0.25), transparent 60%);
-      font-size: 15px;
+      background: #020617;
     }
+    .rank-avatar img {
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: cover;
+    }
+    .rank-avatar span {
+      font-size: 16px;
+    }
+
     .rank-name {
       white-space: nowrap;
       overflow: hidden;
@@ -403,28 +468,9 @@
       font-size: 11px;
     }
 
-    .lb-footer {
-      margin-top: 10px;
-      display: flex;
-      justify-content: flex-end;
-      align-items: center;
-      gap: 6px;
-      font-size: 11px;
-      color: #0f172a;
-    }
-    .lb-footer-time {
-      padding: 4px 10px;
-      border-radius: 999px;
-      border: 1px solid rgba(59,130,246,0.8);
-      background: radial-gradient(circle, rgba(59,130,246,0.15), transparent 60%);
-      font-weight: 700;
-      font-size: 11px;
-      color: #0f172a; /* darker font for better contrast */
-    }
-
     /* CTAS */
     .turnover-ctas {
-      margin-top: 18px;
+      margin-top: 16px;
       display: flex;
       flex-wrap: wrap;
       gap: 10px;
@@ -472,7 +518,7 @@
     .faq-modal {
       position: fixed;
       inset: 0;
-      background: rgba(15,23,42,0.86);
+      background: rgba(15,23,42,0.96);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -489,9 +535,9 @@
       width: 100%;
       max-width: 720px;
       max-height: 80vh;
-      border-radius: 24px;
+      border-radius: 20px;
       background: #020617;
-      border: 1px solid rgba(148,163,184,0.9);
+      border: 1px solid rgba(55,65,81,0.9);
       box-shadow: 0 18px 40px rgba(0,0,0,0.9);
       display: flex;
       flex-direction: column;
@@ -502,9 +548,8 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      background: radial-gradient(circle at 0 0, rgba(255,255,255,0.06), transparent 55%),
-                  linear-gradient(145deg, #020617, #020617);
       border-bottom: 1px solid rgba(55,65,81,0.9);
+      background: #020617;
     }
     .faq-modal-title {
       font-size: 14px;
@@ -533,19 +578,12 @@
       background: #020617;
     }
 
-    .faq-section {
-      margin-top: 4px;
-    }
-    .faq-list {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
+    .faq-section { margin-top: 4px; }
+    .faq-list { display: flex; flex-direction: column; gap: 6px; }
     .faq-item {
-      border-radius: 16px;
+      border-radius: 14px;
       background: #020617;
       border: 1px solid rgba(55,65,81,0.9);
-      box-shadow: var(--shadow-soft);
       overflow: hidden;
     }
     .faq-question {
@@ -583,9 +621,7 @@
       color: #9ca3af;
       transition: transform 0.15s ease;
     }
-    .faq-item.open .faq-icon {
-      transform: rotate(45deg);
-    }
+    .faq-item.open .faq-icon { transform: rotate(45deg); }
     .faq-answer {
       max-height: 0;
       overflow: hidden;
@@ -598,9 +634,7 @@
       padding-bottom: 9px;
       max-height: 260px;
     }
-    .faq-answer p {
-      margin: 6px 0;
-    }
+    .faq-answer p { margin: 6px 0; }
     .faq-answer ul {
       margin: 4px 0 0;
       padding-left: 18px;
@@ -640,38 +674,32 @@
 </head>
 <body>
 <div class="page">
-  <div class="inner">
-    <!-- HEADER -->
-    <header class="header">
-      <div class="hero-card">
-        <div class="hero-title" data-i18n="heroTitle">
-          Daily Turnover Challenge
+  <div class="frame">
+    <div class="inner">
+      <!-- HEADER -->
+      <header class="header">
+        <div class="hero-card">
+          <div class="hero-title" data-i18n="heroTitle">
+            Daily Turnover Challenge
+          </div>
+          <div class="hero-sub" data-i18n="heroSub">
+            Challenge and win up to USD100 every day this December!
+          </div>
         </div>
-        <div class="hero-sub" data-i18n="heroSub">
-          Challenge and win up to USD100 every day this December!
-        </div>
-      </div>
 
-      <!-- Payout countdown -->
-      <div class="countdown-card">
-        <div>
+        <!-- Payout countdown -->
+        <div class="countdown-card">
           <div class="countdown-label" data-i18n="countdownLabel1">Next rewards payout in</div>
           <div class="countdown-time" id="nextRewardTime">--:--:--</div>
+          <div class="countdown-meta" data-i18n="countdownMeta1">
+            Countdown timer based on UTC-6.
+          </div>
         </div>
-        <div class="countdown-meta" data-i18n="countdownMeta1">
-          Countdown timer based on UTC-6.
-        </div>
-      </div>
-    </header>
+      </header>
 
-    <!-- TURNOVER CONTENT -->
-    <section>
-      <div class="ranking-layout">
-        <div class="podium-panel">
-          <div class="podium-grid" id="podiumGrid"></div>
-        </div>
-
-        <div class="table-panel">
+      <!-- LEADERBOARD -->
+      <section class="leaderboard-card">
+        <div class="leaderboard-top">
           <div class="filter-row">
             <input id="searchDate" type="date" aria-label="Search date (December)" />
           </div>
@@ -679,8 +707,18 @@
           <div class="search-row">
             <input id="searchInput" type="text" placeholder="Search your username…" />
             <button id="searchBtn" data-i18n="searchBtn">Find</button>
+
+            <div class="lb-top-timer">
+              <span class="lb-top-label">Next board update in</span>
+              <span class="lb-top-time" id="lbCountdown">30:00</span>
+            </div>
           </div>
+
           <div class="search-result" id="searchResult"></div>
+        </div>
+
+        <div class="leaderboard-body">
+          <div class="podium-grid" id="podiumGrid"></div>
 
           <div class="list-header">
             <span>Rank</span>
@@ -691,15 +729,9 @@
 
           <div class="ranking-list" id="rankingList"></div>
         </div>
-      </div>
+      </section>
 
-      <!-- Leaderboard update countdown at bottom right -->
-      <div class="lb-footer">
-        <span>Leaderboard updates in</span>
-        <span class="lb-footer-time" id="lbCountdown">30:00</span>
-      </div>
-
-      <!-- CTAs (centered) -->
+      <!-- CTAs -->
       <div class="turnover-ctas">
         <button class="btn-play" id="startPlayingBtn">
           🎮 <span data-i18n="btnPlay">Start Playing</span>
@@ -708,7 +740,7 @@
           ❓ <span data-i18n="btnHow">How it works / T&amp;C</span>
         </button>
       </div>
-    </section>
+    </div>
   </div>
 </div>
 
@@ -782,8 +814,8 @@
                 The leaderboard pulls data from your Google Sheet on a fixed interval.
               </p>
               <ul>
-                <li>Front-end countdown: every <strong>30 minutes</strong>.</li>
-                <li>The blue timer shows when the next update is expected.</li>
+                <li>Front-end countdown: every <strong>30 minutes</strong> (on :00 and :30 each hour).</li>
+                <li>The timer beside the search bar shows when the next update is expected.</li>
                 <li>Any manual changes in the Sheet will reflect after the next update cycle.</li>
               </ul>
             </div>
@@ -838,7 +870,28 @@
 <div id="toast" class="toast">Done!</div>
 
 <script>
-  /* Snow */
+  /* ========== CONFIG FOR GOOGLE SHEET ========== */
+  /*
+    1) Make your Google Sheet public / "Anyone with the link – Viewer".
+    2) Recommended columns (row 1 as header):
+       A: Date       (text, e.g. 2024-12-01)
+       B: Rank       (1,2,3,...)
+       C: Username
+       D: Turnover   (number)
+       E: FlagURL    (permalink URL of round flag image)
+    3) Replace GOOGLE_SHEET_ID and SHEET_NAME below with your own.
+  */
+  const GOOGLE_SHEET_ID = "1pnHNbmUETs4Mve_jVGENUiY8PEoaKWkc988tOdt3RA8";     // <--- PUT YOUR SHEET ID HERE
+  const SHEET_NAME      = "Leaderboard";            // <--- SHEET TAB NAME
+
+  const SHEET_URL =
+    "https://docs.google.com/spreadsheets/d/" +
+    GOOGLE_SHEET_ID +
+    "/gviz/tq?tqx=out:json&sheet=" +
+    encodeURIComponent(SHEET_NAME);
+
+  /* ========== GENERAL EFFECTS ========== */
+
   function createSnowflakes(count = 40) {
     for (let i = 0; i < count; i++) {
       const el = document.createElement("div");
@@ -857,7 +910,8 @@
   }
   createSnowflakes();
 
-  /* Payout countdown – daily 01:00 Mexico time (UTC-6) */
+  /* ========== DAILY PAYOUT COUNTDOWN (UTC-6) ========== */
+
   const nextRewardTimeEl = document.getElementById("nextRewardTime");
 
   function getNextMexicoPayoutUtcMs(nowUtcMs) {
@@ -891,18 +945,36 @@
   updatePayoutCountdown();
   setInterval(updatePayoutCountdown, 1000);
 
-  /* Leaderboard update countdown – every 30 minutes */
+  /* ========== LEADERBOARD UPDATE COUNTDOWN – FIXED :00 / :30 ========== */
+
   const lbCountdownEl = document.getElementById("lbCountdown");
-  let nextLbUpdateTime = Date.now() + 30 * 60 * 1000;
+
+  function getNextHalfHourTimeMs() {
+    const now = new Date();
+    const next = new Date(now);
+    next.setSeconds(0, 0);
+    const mins = now.getMinutes();
+
+    if (mins < 30) {
+      next.setMinutes(30);
+    } else {
+      next.setMinutes(0);
+      next.setHours(next.getHours() + 1);
+    }
+    return next.getTime();
+  }
+
+  let nextLbUpdateTime = getNextHalfHourTimeMs();
 
   function updateLbCountdown() {
     if (!lbCountdownEl) return;
+
     const now = Date.now();
     let diff = nextLbUpdateTime - now;
 
     if (diff <= 0) {
-      nextLbUpdateTime = now + 30 * 60 * 1000;
-      diff = nextLbUpdateTime - now;
+      nextLbUpdateTime = getNextHalfHourTimeMs();
+      diff = nextLbUpdateTime - Date.now();
     }
 
     const totalSeconds = Math.floor(diff / 1000);
@@ -912,10 +984,12 @@
     lbCountdownEl.textContent =
       String(mins).padStart(2, "0") + ":" + String(secs).padStart(2, "0");
   }
+
   updateLbCountdown();
   setInterval(updateLbCountdown, 1000);
 
-  /* Toast helper */
+  /* ========== TOAST ========== */
+
   const toastEl = document.getElementById("toast");
   function showToast(msg) {
     if (!toastEl) return;
@@ -924,155 +998,222 @@
     setTimeout(() => toastEl.classList.remove("show"), 1800);
   }
 
-  /* Turnover data & rendering – with prize mapping */
-  const rankingData = [
-    { username: "SnowLegend",   turnover: 98500, country: "BR" },
-    { username: "WinterWhale",  turnover: 95600, country: "MX" },
-    { username: "CodeElf",      turnover: 93200, country: "BR" },
-    { username: "DecemberDev",  turnover: 91000, country: "MX" },
-    { username: "HolidayHero",  turnover: 88750, country: "BR" },
-    { username: "FestiveFox",   turnover: 86500, country: "MX" },
-    { username: "SantaScript",  turnover: 84250, country: "BR" },
-    { username: "GitGifts",     turnover: 82900, country: "MX" },
-    { username: "CandyCane",    turnover: 81200, country: "BR" },
-    { username: "FrostyBug",    turnover: 79800, country: "MX" },
-    { username: "ReindeerRun",  turnover: 78200, country: "BR" },
-    { username: "PullRequest",  turnover: 76900, country: "MX" },
-    { username: "YuleLog",      turnover: 75400, country: "BR" },
-    { username: "MergeWizard",  turnover: 74000, country: "MX" },
-    { username: "Snowflake",    turnover: 72950, country: "BR" },
-    { username: "HolidayCommit",turnover: 71500, country: "MX" },
-    { username: "NorthStar",    turnover: 70600, country: "BR" },
-    { username: "BlizzardByte", turnover: 69100, country: "MX" },
-    { username: "PineTree",     turnover: 67800, country: "BR" },
-    { username: "FuzzyPenguin", turnover: 66400, country: "MX" }
-  ];
-
-  // Extra sample rows for search outside top 20
-  const extraRanks = [
-    { username: "You",         turnover: 43210, rank: 54, country: "BR" },
-    { username: "ExampleUser", turnover: 51000, rank: 26, country: "MX" }
-  ];
-
-  function prizeForRank(rank) {
-    if (rank === 1) return "$100";
-    if (rank === 2) return "$70";
-    if (rank === 3) return "$50";
-    if (rank === 4) return "$45";
-    if (rank === 5) return "$40";
-    if (rank === 6) return "$30";
-    if (rank === 7) return "$25";
-    if (rank === 8) return "$20";
-    if (rank === 9) return "$15";
-    if (rank === 10) return "$10";
-    if (rank >= 11 && rank <= 20) return "$5";
-    return "-";
-  }
-
-  function shortNum(n) {
-    if (n >= 1_000_000) return (n / 1_000_000).toFixed(1) + "M";
-    if (n >= 1_000) return (n / 1_000).toFixed(1) + "K";
-    return n.toString();
-  }
-
-  function countryFlag(code) {
-    if (!code) return "🌐";
-    const c = code.toUpperCase();
-    if (c === "BR") return "🇧🇷";
-    if (c === "MX") return "🇲🇽";
-    return "🌐";
-  }
+  /* ========== GOOGLE SHEET → LEADERBOARD DATA ========== */
 
   const podiumGrid = document.getElementById("podiumGrid");
   const rankingList = document.getElementById("rankingList");
-
-  /* Podium – Top 3 at top */
-  if (podiumGrid) {
-    const top3 = rankingData.slice(0, 3);
-    const order = [1, 0, 2]; // 2nd, 1st centre, 3rd
-    order.forEach(idx => {
-      const player = top3[idx];
-      const rank = idx + 1;
-      const card = document.createElement("div");
-      card.className = "podium-item rank-" + rank;
-      card.innerHTML = `
-        <div class="podium-rank">${rank}</div>
-        <div class="podium-avatar">${countryFlag(player.country)}</div>
-        <div class="podium-name">${player.username}</div>
-        <div class="podium-turnover">${shortNum(player.turnover)} USD</div>
-      `;
-      podiumGrid.appendChild(card);
-    });
-  }
-
-  /* Leaderboard list – start from rank 4 onward */
-  if (rankingList) {
-    rankingData.slice(3, 20).forEach((player, idx) => {
-      const rank = idx + 4; // since we sliced from index 3
-      const row = document.createElement("div");
-      row.className = "ranking-row";
-      if (rank <= 20 && rank >= 4 && rank <= 6) {
-        // small subtle highlight for 4-6 if you want; remove if not needed
-      }
-      row.innerHTML = `
-        <div class="rank-badge">${rank}</div>
-        <div class="rank-main">
-          <div class="rank-avatar">${countryFlag(player.country)}</div>
-          <div class="rank-name">${player.username}</div>
-        </div>
-        <div class="rank-turnover">
-          ${shortNum(player.turnover)}
-          <span class="label">Turnover (USD)</span>
-        </div>
-        <div class="rank-prize">
-          ${prizeForRank(rank)}
-        </div>
-      `;
-      rankingList.appendChild(row);
-    });
-  }
-
   const searchInput = document.getElementById("searchInput");
   const searchBtn = document.getElementById("searchBtn");
   const searchResult = document.getElementById("searchResult");
   const searchDateInput = document.getElementById("searchDate");
 
-  // Pre-fill date with today
-  if (searchDateInput) {
-    const today = new Date();
-    const iso = today.toISOString().slice(0,10);
-    searchDateInput.value = iso;
+  let allRows = [];
+  let currentDayRows = [];
+
+  function flagInner(flagUrl) {
+    if (flagUrl) {
+      const safe = String(flagUrl).replace(/"/g, "&quot;");
+      return `<img src="${safe}" alt="flag" />`;
+    }
+    return `<span>🌐</span>`;
   }
 
-  function findRank(usernameRaw) {
+  function shortNum(n) {
+    const num = Number(n) || 0;
+    if (num >= 1_000_000) return (num / 1_000_000).toFixed(1) + "M";
+    if (num >= 1_000) return (num / 1_000).toFixed(1) + "K";
+    return num.toString();
+  }
+
+  function prizeForRank(rank) {
+    const r = Number(rank);
+    if (r === 1) return "$100";
+    if (r === 2) return "$70";
+    if (r === 3) return "$50";
+    if (r === 4) return "$45";
+    if (r === 5) return "$40";
+    if (r === 6) return "$30";
+    if (r === 7) return "$25";
+    if (r === 8) return "$20";
+    if (r === 9) return "$15";
+    if (r === 10) return "$10";
+    if (r >= 11 && r <= 20) return "$5";
+    return "-";
+  }
+
+  function clearPodiumAndList() {
+    if (podiumGrid) podiumGrid.innerHTML = "";
+    if (rankingList) rankingList.innerHTML = "";
+  }
+
+  function renderForDate(dateStr) {
+    clearPodiumAndList();
+
+    if (!allRows.length) {
+      if (searchResult) {
+        searchResult.innerHTML = "Leaderboard data is not loaded yet.";
+      }
+      return;
+    }
+
+    const targetDate = dateStr || allRows[0].date;
+    if (searchDateInput && !searchDateInput.value) {
+      searchDateInput.value = targetDate;
+    }
+
+    const rowsForDate = allRows
+      .filter(r => r.date === targetDate)
+      .sort((a, b) => Number(a.rank) - Number(b.rank));
+
+    currentDayRows = rowsForDate;
+
+    if (!rowsForDate.length) {
+      if (searchResult) {
+        searchResult.innerHTML =
+          `No leaderboard found for <strong>${targetDate}</strong>.`;
+      }
+      return;
+    }
+
+    /* Podium – ranks 1–3 */
+    if (podiumGrid) {
+      const top3 = rowsForDate.filter(r => Number(r.rank) >= 1 && Number(r.rank) <= 3);
+      const desiredOrder = [2, 1, 3];
+      desiredOrder.forEach(rank => {
+        const player = top3.find(r => Number(r.rank) === rank);
+        if (!player) return;
+        const card = document.createElement("div");
+        card.className = "podium-item rank-" + rank;
+        card.innerHTML = `
+          <div class="podium-rank">${rank}</div>
+          <div class="podium-avatar">${flagInner(player.flagUrl)}</div>
+          <div class="podium-name">${player.username}</div>
+          <div class="podium-turnover">${shortNum(player.turnover)} USD</div>
+        `;
+        podiumGrid.appendChild(card);
+      });
+    }
+
+    /* List – ranks 4–20 */
+    if (rankingList) {
+      rowsForDate
+        .filter(r => Number(r.rank) >= 4 && Number(r.rank) <= 20)
+        .forEach(player => {
+          const rank = Number(player.rank);
+          const row = document.createElement("div");
+          row.className = "ranking-row";
+          row.dataset.rank = rank;
+          row.innerHTML = `
+            <div class="rank-badge">${rank}</div>
+            <div class="rank-main">
+              <div class="rank-avatar">${flagInner(player.flagUrl)}</div>
+              <div class="rank-name">${player.username}</div>
+            </div>
+            <div class="rank-turnover">
+              ${shortNum(player.turnover)}
+              <span class="label">Turnover (USD)</span>
+            </div>
+            <div class="rank-prize">
+              ${prizeForRank(rank)}
+            </div>
+          `;
+          rankingList.appendChild(row);
+        });
+    }
+
+    if (searchResult) {
+      searchResult.innerHTML = "";
+    }
+  }
+
+  function parseSheetResponse(text) {
+    const match = text.match(/\{.*\}/s);
+    if (!match) throw new Error("Invalid sheet format");
+    const json = JSON.parse(match[0]);
+
+    const rows = [];
+    const tableRows = json.table.rows || [];
+    tableRows.forEach(r => {
+      if (!r.c) return;
+      const date = r.c[0]?.v ? String(r.c[0].v).trim() : "";
+      const rank = r.c[1]?.v;
+      const username = r.c[2]?.v ? String(r.c[2].v).trim() : "";
+      const turnover = r.c[3]?.v;
+      const flagUrl = r.c[4]?.v ? String(r.c[4].v).trim() : "";
+      if (!date || !rank || !username) return;
+      rows.push({ date, rank, username, turnover, flagUrl });
+    });
+    return rows;
+  }
+
+  function loadSheetData() {
+    fetch(SHEET_URL)
+      .then(res => res.text())
+      .then(text => {
+        allRows = parseSheetResponse(text);
+        if (!allRows.length) {
+          showToast("No data in sheet");
+          return;
+        }
+        const initialDate =
+          (searchDateInput && searchDateInput.value) || allRows[0].date;
+        if (searchDateInput && !searchDateInput.value) {
+          searchDateInput.value = initialDate;
+        }
+        renderForDate(initialDate);
+      })
+      .catch(err => {
+        console.error(err);
+        showToast("Error loading leaderboard");
+      });
+  }
+
+  // Pre-fill date picker with today
+  if (searchDateInput) {
+    const today = new Date();
+    const iso = today.toISOString().slice(0, 10);
+    searchDateInput.value = iso;
+    searchDateInput.addEventListener("change", () => {
+      const d = searchDateInput.value;
+      renderForDate(d);
+    });
+  }
+
+  /* ========== SEARCH BY USERNAME + DATE ========== */
+
+  function findRankForDate(usernameRaw, dateStr) {
     const username = usernameRaw.trim().toLowerCase();
     if (!username) return null;
-    const index = rankingData.findIndex(
-      p => p.username.toLowerCase() === username
+    const dateRows = allRows.filter(r => r.date === dateStr);
+    if (!dateRows.length) return null;
+    const userRow = dateRows.find(
+      r => String(r.username).toLowerCase() === username
     );
-    if (index >= 0) {
-      return { ...rankingData[index], rank: index + 1, inTop20: true };
-    }
-    const extra = extraRanks.find(
-      p => p.username.toLowerCase() === username
-    );
-    if (extra) return { ...extra, inTop20: false };
-    return null;
+    if (!userRow) return null;
+
+    const rank = Number(userRow.rank);
+    const inTop20 = rank >= 1 && rank <= 20;
+    const turnover = userRow.turnover;
+    return { ...userRow, rank, turnover, inTop20 };
   }
 
   function handleSearch() {
     if (!searchInput || !searchResult) return;
     const q = searchInput.value;
-    const dateValue = searchDateInput && searchDateInput.value
-      ? searchDateInput.value
-      : "";
-    const displayDate = dateValue ? dateValue : "this date";
+    const dateValue =
+      (searchDateInput && searchDateInput.value) || (allRows[0] && allRows[0].date);
+    const displayDate = dateValue || "this date";
 
     if (!q.trim()) {
       searchResult.textContent = "";
       return;
     }
-    const result = findRank(q);
+    if (!allRows.length) {
+      searchResult.innerHTML = "Leaderboard not loaded yet. Please try again shortly.";
+      return;
+    }
+
+    const result = findRankForDate(q, displayDate);
     if (!result) {
       searchResult.innerHTML =
         `No ranking found for <strong>${q}</strong> on <strong>${displayDate}</strong> yet. ` +
@@ -1090,10 +1231,10 @@
         `on <strong>${displayDate}</strong>. ` +
         `Prize for this rank: <strong>${rankPrize}</strong>.`;
 
-      // Scroll only if rank >= 4 (since list shows 4–20)
       if (result.rank >= 4 && result.rank <= 20 && rankingList) {
-        const rowIndex = result.rank - 4; // rank 4 -> index 0
-        const row = rankingList.children[rowIndex];
+        const rows = Array.from(rankingList.children);
+        rows.forEach(r => r.classList.remove("highlight"));
+        const row = rows.find(r => Number(r.dataset.rank) === result.rank);
         if (row) {
           row.classList.add("highlight");
           row.scrollIntoView({ behavior: "smooth", block: "center" });
@@ -1115,7 +1256,8 @@
     });
   }
 
-  /* CTAs */
+  /* ========== CTAS & FAQ ========== */
+
   const startPlayingBtn = document.getElementById("startPlayingBtn");
   const howWorksBtn = document.getElementById("howWorksBtn");
   const faqModal = document.getElementById("faqModal");
@@ -1142,7 +1284,6 @@
     });
   }
 
-  /* FAQ accordion */
   document.querySelectorAll(".faq-item").forEach(item => {
     const btn = item.querySelector(".faq-question");
     if (!btn) return;
@@ -1156,7 +1297,8 @@
     });
   });
 
-  /* Multi-language via IP (BR/MX/others) */
+  /* ========== MULTI-LANGUAGE VIA IP (BR / MX / OTHERS) ========== */
+
   const translations = {
     en: {
       heroTitle: "Daily Turnover Challenge",
@@ -1198,8 +1340,8 @@
           The leaderboard pulls data from your Google Sheet on a fixed interval.
         </p>
         <ul>
-          <li>Front-end countdown: every <strong>30 minutes</strong>.</li>
-          <li>The blue timer shows when the next update is expected.</li>
+          <li>Front-end countdown: every <strong>30 minutes</strong> (on :00 and :30 each hour).</li>
+          <li>The timer beside the search bar shows when the next update is expected.</li>
           <li>Any manual changes in the Sheet will reflect after the next update cycle.</li>
         </ul>
       `,
@@ -1265,8 +1407,8 @@
           O ranking busca os dados da sua planilha do Google em um intervalo fixo.
         </p>
         <ul>
-          <li>Contagem no front-end: a cada <strong>30 minutos</strong>.</li>
-          <li>O timer azul mostra quando a próxima atualização é esperada.</li>
+          <li>Contagem no front-end: a cada <strong>30 minutos</strong> (:00 e :30 de cada hora).</li>
+          <li>O timer ao lado da barra de busca mostra quando a próxima atualização é esperada.</li>
           <li>Alterações manuais na planilha aparecem após o próximo ciclo de atualização.</li>
         </ul>
       `,
@@ -1332,8 +1474,8 @@
           El ranking obtiene datos de tu hoja de Google en un intervalo fijo.
         </p>
         <ul>
-          <li>Cuenta regresiva en el front-end: cada <strong>30 minutos</strong>.</li>
-          <li>El temporizador azul muestra cuándo será la siguiente actualización.</li>
+          <li>Cuenta regresiva en el front-end: cada <strong>30 minutos</strong> (:00 y :30 de cada hora).</li>
+          <li>El temporizador junto a la barra de búsqueda muestra cuándo será la siguiente actualización.</li>
           <li>Los cambios manuales en la hoja aparecerán después del siguiente ciclo.</li>
         </ul>
       `,
@@ -1400,6 +1542,9 @@
   }
 
   detectLanguageAndApply();
+
+  /* Load sheet after setup */
+  loadSheetData();
 </script>
 </body>
 </html>
