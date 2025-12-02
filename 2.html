@@ -105,7 +105,15 @@
       animation:
         titleGlow 2.8s ease-in-out infinite alternate,
         titleSlide 10s linear infinite;
-      white-space: normal;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    @media (max-width: 480px) {
+      .hero-title {
+        font-size: 22px;
+      }
     }
 
     @keyframes titleGlow {
@@ -411,6 +419,7 @@
       background: radial-gradient(circle, rgba(59,130,246,0.15), transparent 60%);
       font-weight: 700;
       font-size: 11px;
+      color: #0f172a; /* darker font for better contrast */
     }
 
     /* CTAS */
@@ -773,7 +782,7 @@
                 The leaderboard pulls data from your Google Sheet on a fixed interval.
               </p>
               <ul>
-                <li>Refresh frequency: every <strong>30 minutes</strong> (front-end timer).</li>
+                <li>Front-end countdown: every <strong>30 minutes</strong>.</li>
                 <li>The blue timer shows when the next update is expected.</li>
                 <li>Any manual changes in the Sheet will reflect after the next update cycle.</li>
               </ul>
@@ -977,6 +986,7 @@
   const podiumGrid = document.getElementById("podiumGrid");
   const rankingList = document.getElementById("rankingList");
 
+  /* Podium – Top 3 at top */
   if (podiumGrid) {
     const top3 = rankingData.slice(0, 3);
     const order = [1, 0, 2]; // 2nd, 1st centre, 3rd
@@ -995,12 +1005,15 @@
     });
   }
 
+  /* Leaderboard list – start from rank 4 onward */
   if (rankingList) {
-    rankingData.forEach((player, index) => {
-      const rank = index + 1;
+    rankingData.slice(3, 20).forEach((player, idx) => {
+      const rank = idx + 4; // since we sliced from index 3
       const row = document.createElement("div");
       row.className = "ranking-row";
-      if (rank <= 3) row.classList.add("highlight");
+      if (rank <= 20 && rank >= 4 && rank <= 6) {
+        // small subtle highlight for 4-6 if you want; remove if not needed
+      }
       row.innerHTML = `
         <div class="rank-badge">${rank}</div>
         <div class="rank-main">
@@ -1024,14 +1037,11 @@
   const searchResult = document.getElementById("searchResult");
   const searchDateInput = document.getElementById("searchDate");
 
-  // Pre-fill date with today (you can set to 1 Dec manually if you prefer)
+  // Pre-fill date with today
   if (searchDateInput) {
     const today = new Date();
     const iso = today.toISOString().slice(0,10);
     searchDateInput.value = iso;
-    // Example for December-only constraint:
-    // searchDateInput.min = "2024-12-01";
-    // searchDateInput.max = "2024-12-31";
   }
 
   function findRank(usernameRaw) {
@@ -1079,10 +1089,15 @@
         `<strong>${shortNum(result.turnover)}</strong> USD turnover ` +
         `on <strong>${displayDate}</strong>. ` +
         `Prize for this rank: <strong>${rankPrize}</strong>.`;
-      const row = rankingList.children[result.rank - 1];
-      if (row) {
-        row.classList.add("highlight");
-        row.scrollIntoView({ behavior: "smooth", block: "center" });
+
+      // Scroll only if rank >= 4 (since list shows 4–20)
+      if (result.rank >= 4 && result.rank <= 20 && rankingList) {
+        const rowIndex = result.rank - 4; // rank 4 -> index 0
+        const row = rankingList.children[rowIndex];
+        if (row) {
+          row.classList.add("highlight");
+          row.scrollIntoView({ behavior: "smooth", block: "center" });
+        }
       }
     } else {
       searchResult.innerHTML =
