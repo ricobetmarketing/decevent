@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Daily Turnover Challenge Leaderboard</title>
+    <title id="pageTitle">Daily Turnover Challenge Leaderboard</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         /* CSS Variables for The Gold Standard Theme */
         :root {
-            --color-dark-bg: #0D1117; /* Deep Space Blue */
+            --color-dark-bg: #0D1117; 
             --color-gold-primary: #FFD700;
             --color-gold-light: #FFEA8D;
             --color-teal-accent: #00FFFF;
@@ -35,19 +35,26 @@
         .container {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 20px;
+            padding: 0 20px; /* Adjusted padding */
         }
 
         /* ------------------ Header & Title ------------------ */
         header {
-            text-align: center;
-            padding: 40px 20px;
+            padding-top: 50px; /* Space for the language switcher */
+            padding-bottom: 40px;
             position: sticky;
             top: 0;
             z-index: 100;
             background-color: var(--color-header-bg);
             backdrop-filter: blur(5px);
             border-bottom: 2px solid rgba(255, 215, 0, 0.1);
+        }
+        
+        .header-content {
+            position: relative;
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
         }
 
         h1 {
@@ -68,6 +75,36 @@
             margin-bottom: 30px;
         }
 
+        /* ------------------ Language Switcher (Fixed Position) ------------------ */
+        .language-switcher {
+            position: absolute;
+            top: -35px; /* Moved up to clear title area */
+            right: 0;
+            z-index: 101;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            background-color: #212833;
+            padding: 5px 10px;
+            border-radius: 6px;
+            border: 1px solid var(--color-teal-accent);
+        }
+
+        .language-switcher select {
+            background-color: transparent;
+            color: var(--color-text-light);
+            border: none;
+            padding: 5px;
+            font-size: 0.9rem; /* Slightly smaller on desktop */
+            cursor: pointer;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            outline: none;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+        }
+        
         /* ------------------ Countdown Timer ------------------ */
         .countdown-box {
             background: linear-gradient(45deg, #1f2733, #0D1117);
@@ -80,14 +117,7 @@
             box-shadow: 0 0 20px rgba(0, 255, 255, 0.2);
             margin-bottom: 40px;
         }
-
-        .countdown-label {
-            font-weight: 600;
-            font-size: 1rem;
-            text-transform: uppercase;
-            color: var(--color-teal-light);
-        }
-
+        
         .countdown-time {
             font-size: 1.8rem;
             font-weight: 700;
@@ -115,67 +145,15 @@
             gap: 15px;
             flex-grow: 1;
         }
-
-        .search-group input[type="date"],
-        .search-group input[type="text"] {
-            padding: 10px 15px;
-            border: 1px solid var(--color-teal-accent);
-            background-color: #0d121b;
-            color: var(--color-text-light);
-            border-radius: 6px;
-            font-size: 1rem;
-            flex-grow: 1;
-            transition: border-color 0.3s, box-shadow 0.3s;
-        }
-
-        .search-group input:focus {
-            border-color: var(--color-gold-primary);
-            outline: none;
-            box-shadow: 0 0 8px rgba(255, 215, 0, 0.4);
-        }
-
-        .update-timer {
-            display: flex;
-            align-items: center;
-            font-size: 0.9rem;
-            font-weight: 600;
-            color: var(--color-gold-light);
-            padding: 8px 15px;
-            background-color: rgba(255, 215, 0, 0.1);
-            border: 1px solid var(--color-gold-primary);
-            border-radius: 6px;
-        }
-
-        .update-timer .fa-sync-alt {
-            animation: spin 1.5s linear infinite;
-            margin-right: 8px;
-            color: var(--color-gold-primary);
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
         
-        /* ------------------ Avatar Flag Style ------------------ */
-        .flag-img { 
-            width: 36px; 
-            height: 36px; 
-            border-radius: 50%; /* Make it circular */
-            object-fit: cover;
-            border: 2px solid var(--color-teal-accent); 
-            box-shadow: 0 0 5px rgba(0, 0, 0, 0.5); 
-            vertical-align: middle;
-        }
-        
-        /* ------------------ Top 3 Trophy Display ------------------ */
+        /* ------------------ Top 3 Trophy Display (Podium Layout) ------------------ */
         .top-three-grid {
             display: grid;
-            grid-template-columns: 1fr 1.5fr 1fr; /* Center column is wider */
+            grid-template-columns: 1fr 1.5fr 1fr; 
             gap: 20px;
             margin-bottom: 40px;
             text-align: center;
-            align-items: flex-end; /* Align the bottom of the containers */
+            align-items: flex-end; 
         }
 
         .top-player {
@@ -188,71 +166,33 @@
             display: flex;
             flex-direction: column;
             justify-content: flex-end;
-            min-height: 250px; /* Ensure visual height difference */
+            min-height: 250px; 
         }
         
-        .top-player:hover {
-             transform: translateY(-5px);
-             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6);
-        }
-
-        /* Player 1 (Center) */
-        .top-player:nth-child(1) { 
-            order: 2; /* CSS Grid Order: 2nd element goes to the 2nd column (middle) */
-            border-color: #FFD700; 
-            min-height: 300px;
-            background: linear-gradient(to top, #1a202a, #2c2f3a);
-        }
-        .top-player:nth-child(1) .rank-badge { background-color: var(--color-gold-primary); color: var(--color-dark-bg); }
-        .top-player:nth-child(1) .fa-trophy { color: var(--color-gold-primary); font-size: 4rem; text-shadow: 0 0 15px rgba(255, 215, 0, 0.9); }
-        .top-player:nth-child(1) .top-username { font-size: 1.8rem; font-weight: 800; color: var(--color-gold-light); }
-
-        /* Player 2 (Left) */
-        .top-player:nth-child(2) { 
-            order: 1; /* 1st element goes to the 1st column (left) */
-            border-color: #C0C0C0;
-            min-height: 250px;
-        }
-        .top-player:nth-child(2) .rank-badge { background-color: #C0C0C0; color: var(--color-dark-bg); }
-        .top-player:nth-child(2) .fa-trophy { color: #C0C0C0; font-size: 3rem; }
-        .top-player:nth-child(2) .top-username { font-size: 1.4rem; color: #C0C0C0; }
-
-        /* Player 3 (Right) */
-        .top-player:nth-child(3) { 
-            order: 3; /* 3rd element goes to the 3rd column (right) */
-            border-color: #CD7F32;
-            min-height: 250px;
-        }
-        .top-player:nth-child(3) .rank-badge { background-color: #CD7F32; color: var(--color-dark-bg); }
-        .top-player:nth-child(3) .fa-trophy { color: #CD7F32; font-size: 3rem; }
-        .top-player:nth-child(3) .top-username { font-size: 1.4rem; color: #CD7F32; }
-
-        .rank-badge {
-            font-size: 1.5rem;
-            font-weight: 800;
-            padding: 5px 15px;
-            border-radius: 5px;
-            margin-bottom: 10px;
-            display: inline-block;
-        }
-
-        .top-player .flag-img { margin-bottom: 10px; }
-        .top-player .top-turnover { font-size: 1.1rem; color: var(--color-teal-accent); margin-top: 5px; }
-        .top-player .top-prize { font-size: 1.3rem; font-weight: 700; color: var(--color-gold-primary); margin-top: 5px; }
+        /* Podium Ordering */
+        .top-player:nth-child(1) { order: 2; border-color: #FFD700; min-height: 300px; background: linear-gradient(to top, #1a202a, #2c2f3a); }
+        .top-player:nth-child(2) { order: 1; border-color: #C0C0C0; min-height: 250px; }
+        .top-player:nth-child(3) { order: 3; border-color: #CD7F32; min-height: 250px; }
         
-        /* Inner container for content to push to the bottom */
-        .top-player-content {
-            margin-top: auto;
-            width: 100%;
+        /* Avatar Flag Style */
+        .flag-img { 
+            width: 36px; 
+            height: 36px; 
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--color-teal-accent); 
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.5); 
+            vertical-align: middle;
         }
-
-        /* ------------------ Rank 4-20 Table ------------------ (Retained) */
+        
+        /* ------------------ Rank 4-20 Table ------------------ */
         .leaderboard-table-container {
             overflow-x: auto;
             margin-bottom: 50px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
             border-radius: 10px;
         }
+        
         .leaderboard-table {
             width: 100%;
             border-collapse: separate;
@@ -260,7 +200,22 @@
             min-width: 600px;
             background-color: #1a202a;
         }
-        /* ... other table styles retained ... */
+        
+        .leaderboard-table th, .leaderboard-table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #2e3541;
+        }
+
+        .leaderboard-table th {
+            background-color: #212833;
+            color: var(--color-teal-light);
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            position: sticky;
+            top: 100px;
+        }
         
         .highlight-row {
             background-color: var(--color-row-highlight) !important;
@@ -277,43 +232,139 @@
             display: none; 
         }
 
-        /* ------------------ Footer & CTAs (Retained) ------------------ */
+        /* ------------------ Footer & CTAs (Fixed styling) ------------------ */
         .cta-section {
             text-align: center;
             padding: 50px 20px;
             border-top: 1px solid #333;
         }
-        /* ... other CTA styles retained ... */
+
+        .cta-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            flex-wrap: wrap;
+        }
+
+        .cta-button {
+            padding: 15px 35px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            border-radius: 8px;
+            text-decoration: none;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            min-width: 200px;
+            cursor: pointer;
+            border: none; /* Ensure buttons don't have default borders */
+            display: inline-block; /* Crucial for anchor tags to look like buttons */
+            text-align: center;
+        }
         
-        /* ================== RESPONSIVENESS ================== */
+        .cta-primary {
+            background: linear-gradient(90deg, #FFEB3B, var(--color-gold-primary));
+            color: var(--color-dark-bg);
+        }
+
+        .cta-secondary {
+            background-color: transparent;
+            color: var(--color-teal-accent);
+            border: 2px solid var(--color-teal-accent);
+        }
+        
+        /* ------------------ MODAL & FAQ STYLES ------------------ */
+        .modal-backdrop {
+            display: none; 
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.85); 
+            backdrop-filter: blur(5px);
+            animation: fadeIn 0.3s;
+        }
+        
+        .modal-content {
+            background-color: var(--color-modal-bg);
+            margin: 5% auto; 
+            padding: 30px;
+            border: 2px solid var(--color-teal-accent);
+            border-radius: 15px;
+            width: 90%; 
+            max-width: 800px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+            animation: slideIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        
+        .faq-question {
+            padding: 15px;
+            cursor: pointer;
+            font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #2e3541;
+            transition: background-color 0.3s;
+            color: var(--color-text-light);
+        }
+        
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease-in-out;
+            padding: 0 15px;
+            color: var(--color-text-muted);
+        }
+        
+        .faq-answer.open {
+            max-height: 500px; 
+            padding: 15px;
+        }
+        
+        /* ================== RESPONSIVENESS (Mobile Fixes) ================== */
         @media (max-width: 768px) {
             
+            /* Header Fixes */
+            header {
+                padding-top: 20px; /* Reduced header padding on top */
+            }
+            .language-switcher {
+                top: 0; /* Align to the very top */
+                right: 10px;
+                position: fixed; /* Keep it visible even when scrolling title out */
+            }
+            
+            h1 {
+                margin-top: 20px; /* Push title down slightly to clear fixed switcher */
+            }
+
             /* Controls */
-            .controls-bar { flex-direction: column; align-items: stretch; }
-            .search-group { flex-direction: column; gap: 10px; }
-            .update-timer { justify-content: center; margin-top: 15px; }
+            .controls-bar {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .search-group {
+                flex-direction: column;
+                gap: 10px;
+            }
 
             /* Top 3 Mobile Layout: Stacked 1, 2, 3 */
             .top-three-grid {
-                grid-template-columns: 1fr; /* Stack vertically */
+                grid-template-columns: 1fr; 
                 gap: 15px;
             }
-            .top-player:nth-child(1) { order: 1; min-height: 180px; } /* Rank 1 top */
-            .top-player:nth-child(2) { order: 2; min-height: 160px; } /* Rank 2 middle */
-            .top-player:nth-child(3) { order: 3; min-height: 160px; } /* Rank 3 bottom */
+            .top-player:nth-child(1) { order: 1; min-height: 180px; } 
+            .top-player:nth-child(2) { order: 2; min-height: 160px; } 
+            .top-player:nth-child(3) { order: 3; min-height: 160px; } 
             
-            /* Adjust fonts for mobile readability */
-            .top-player:nth-child(1) .fa-trophy { font-size: 3rem; }
-            .top-player:nth-child(1) .top-username { font-size: 1.5rem; }
-            .top-player:nth-child(2) .fa-trophy, .top-player:nth-child(3) .fa-trophy { font-size: 2.5rem; }
-            .top-player:nth-child(2) .top-username, .top-player:nth-child(3) .top-username { font-size: 1.2rem; }
-            
-            /* Table Mobile Enhancement */
-            .leaderboard-table th, .leaderboard-table td {
-                padding: 8px 10px;
-                font-size: 0.9rem;
+            /* Modal Fix */
+            .modal-content {
+                margin: 20px auto; 
             }
-            .flag-img { width: 30px; height: 30px; }
         }
     </style>
 </head>
@@ -321,12 +372,23 @@
 
     <header>
         <div class="container">
-            <h1>Daily Turnover Challenge</h1>
-            <p class="description">Challenge and win up to USD100 every day!</p>
+            <div class="header-content">
+                <div class="language-switcher">
+                    <i class="fas fa-globe"></i>
+                    <select id="languageSelect" onchange="setLanguage(this.value)">
+                        <option value="en">English</option>
+                        <option value="pt">Português (BR)</option>
+                        <option value="es">Español (MX)</option>
+                    </select>
+                </div>
 
-            <div class="countdown-box">
-                <span class="countdown-label">Next Rewards Payout in:</span>
-                <span class="countdown-time" id="payout-timer">00:00:00</span>
+                <h1 id="headerTitle">Daily Turnover Challenge</h1>
+                <p class="description" data-translate="description">Challenge and win up to USD100 every day!</p>
+
+                <div class="countdown-box">
+                    <span class="countdown-label" data-translate="payoutLabel">Next Rewards Payout in:</span>
+                    <span class="countdown-time" id="payout-timer">00:00:00</span>
+                </div>
             </div>
         </div>
     </header>
@@ -334,17 +396,17 @@
     <main class="container">
         
         <section class="leaderboard-section">
-            <h2 style="color: var(--color-gold-primary); text-align: center; margin-bottom: 20px; font-size: 2rem;">🏆 Leaderboard for: <span id="currentDateDisplay"></span></h2>
+            <h2 style="color: var(--color-gold-primary); text-align: center; margin-bottom: 20px; font-size: 2rem;">🏆 <span data-translate="leaderboardTitle">Leaderboard for:</span> <span id="currentDateDisplay"></span></h2>
             
             <div class="controls-bar">
                 <div class="search-group">
                     <input type="date" id="dateSearch" onchange="fetchLeaderboardData(this.value)">
-                    <input type="text" id="usernameSearch" placeholder="Search Username" onkeyup="filterLeaderboard()">
+                    <input type="text" id="usernameSearch" data-translate-placeholder="searchUsername" placeholder="Search Username" onkeyup="filterLeaderboard()">
                 </div>
                 
                 <div class="update-timer">
                     <i class="fas fa-sync-alt"></i>
-                    <span id="update-countdown">Data Refresh in: 30:00</span>
+                    <span id="update-countdown" data-translate="refreshLabel">Data Refresh in: 30:00</span>
                 </div>
             </div>
             
@@ -356,10 +418,10 @@
                     <div class="top-player-content">
                         <i class="fas fa-trophy"></i>
                         <div class="rank-badge">2</div>
-                        <img src="[MX_AVATAR_FLAG_PERMALINK]" alt="MX" class="flag-img">
+                        <img src="https://i.imgur.com/k2p6rZq.png" alt="MX" class="flag-img">
                         <div class="top-username">...</div>
-                        <div class="top-turnover">Turnover: $0.00</div>
-                        <div class="top-prize">Prize: $0.00</div>
+                        <div class="top-turnover" data-translate="turnover">Turnover: $0.00</div>
+                        <div class="top-prize" data-translate="prize">Prize: $0.00</div>
                     </div>
                 </div>
                 
@@ -367,10 +429,10 @@
                     <div class="top-player-content">
                         <i class="fas fa-trophy"></i>
                         <div class="rank-badge">1</div>
-                        <img src="[BR_AVATAR_FLAG_PERMALINK]" alt="BR" class="flag-img">
+                        <img src="https://i.imgur.com/g8o4qYk.png" alt="BR" class="flag-img">
                         <div class="top-username">...</div>
-                        <div class="top-turnover">Turnover: $0.00</div>
-                        <div class="top-prize">Prize: $0.00</div>
+                        <div class="top-turnover" data-translate="turnover">Turnover: $0.00</div>
+                        <div class="top-prize" data-translate="prize">Prize: $0.00</div>
                     </div>
                 </div>
 
@@ -378,24 +440,25 @@
                     <div class="top-player-content">
                         <i class="fas fa-trophy"></i>
                         <div class="rank-badge">3</div>
-                        <img src="[BR_AVATAR_FLAG_PERMALINK]" alt="BR" class="flag-img">
+                        <img src="https://i.imgur.com/g8o4qYk.png" alt="BR" class="flag-img">
                         <div class="top-username">...</div>
-                        <div class="top-turnover">Turnover: $0.00</div>
-                        <div class="top-prize">Prize: $0.00</div>
+                        <div class="top-turnover" data-translate="turnover">Turnover: $0.00</div>
+                        <div class="top-prize" data-translate="prize">Prize: $0.00</div>
                     </div>
                 </div>
             </div>
 
-            <h3 style="color: var(--color-teal-light); margin-top: 20px; border-bottom: 1px solid #333; padding-bottom: 10px;">Ranks 4 - 20</h3>
+            <h3 style="color: var(--color-teal-light); margin-top: 20px; border-bottom: 1px solid #333; padding-bottom: 10px;" data-translate="ranks4to20">Ranks 4 - 20</h3>
 
             <div class="leaderboard-table-container">
                 <table class="leaderboard-table">
                     <thead>
                         <tr>
-                            <th>Rank</th>
-                            <th></th> <th>Username</th>
-                            <th class="turnover-cell">Turnover (USD)</th>
-                            <th class="prize-cell">Prize (USD)</th>
+                            <th data-translate="rank">Rank</th>
+                            <th></th> 
+                            <th data-translate="username">Username</th>
+                            <th class="turnover-cell" data-translate="turnoverHeader">Turnover (USD)</th>
+                            <th class="prize-cell" data-translate="prizeHeader">Prize (USD)</th>
                         </tr>
                     </thead>
                     <tbody id="leaderboardBody">
@@ -409,33 +472,166 @@
     <footer class="cta-section">
         <hr style="border-color: #333; margin-bottom: 40px;">
         <div class="cta-buttons">
-            <a href="[YOUR_START_PLAYING_LINK]" class="cta-button cta-primary">Start Playing</a>
-            <button class="cta-button cta-secondary" onclick="openModal()">How It Works (FAQ & T&C)</button>
+            <a href="#" class="cta-button cta-primary" data-translate="ctaPlay">Start Playing</a>
+            <button class="cta-button cta-secondary" onclick="openModal()" data-translate="ctaHowItWorks">How It Works (FAQ & T&C)</button>
         </div>
-        <p style="margin-top: 30px; font-size: 0.85rem; color: var(--color-text-muted);">Event Running Whole December</p>
+        <p style="margin-top: 30px; font-size: 0.85rem; color: var(--color-text-muted);" data-translate="eventRunning">Event Running Whole December</p>
     </footer>
 
+    <div id="howItWorksModal" class="modal-backdrop">
+      <div class="modal-content">
+        <div class="modal-header">
+            <h2 class="modal-title" data-translate="modalTitle">❓ How It Works: Challenge Details</h2>
+            <span class="close-button" onclick="closeModal()">&times;</span>
+        </div>
+        
+        <div class="modal-body">
+            
+            <h3 data-translate="modalTncHeader" style="color: var(--color-teal-accent); margin-top: 0; border-bottom: 1px solid #333; padding-bottom: 5px;">General Terms & Conditions</h3>
+            <p data-translate="modalTncBody">Participation is open to all registered users in the specified markets (BR/MX). Rankings are based purely on aggregated daily turnover. All times are based on UTC-6.</p>
+
+            <h3 data-translate="modalFaqHeader" style="color: var(--color-teal-accent); margin-top: 25px; border-bottom: 1px solid #333; padding-bottom: 5px;">Frequently Asked Questions (FAQ)</h3>
+
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFAQ(this)">
+                    <span data-translate="faq1Q">What is the Daily Turnover Challenge?</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    <p data-translate="faq1A">It's a daily competition where players are ranked based on their total turnover in USD equivalent within a 24-hour period (1:00 AM UTC-6 to 1:00 AM UTC-6 the next day).</p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFAQ(this)">
+                    <span data-translate="faq2Q">How is Turnover calculated?</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    <p data-translate="faq2A">Turnover is the total amount wagered or traded by the user. It is converted to USD using the daily exchange rate determined at 1:00 AM UTC-6.</p>
+                </div>
+            </div>
+            
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFAQ(this)">
+                    <span data-translate="faq3Q">When is the Leaderboard updated?</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    <p data-translate="faq3A">The leaderboard is **manually updated every 30 minutes** throughout the day. The timer at the top reflects the approximate time until the next manual data refresh.</p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFAQ(this)">
+                    <span data-translate="faq4Q">What are the prize tiers?</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    <p data-translate="faq4A1">Prizes are awarded daily based on the final ranking at the end of the 24-hour cycle:</p>
+                    <ul data-translate="faq4A2">
+                        <li>Rank 1: USD 100</li>
+                        <li>Rank 2: USD 50</li>
+                        <li>Rank 3: USD 30</li>
+                        <li>Rank 4-10: USD 20</li>
+                        <li>Prizes are credited within 24 hours of the challenge end.</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFAQ(this)">
+                    <span data-translate="faq5Q">How can I find my rank if I am not in the Top 20?</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    <p data-translate="faq5A">Use the **Username Search** bar above the leaderboard. If you enter your exact username, the system will pull your specific rank and turnover from the full dataset, even if you are ranked 50th.</p>
+                </div>
+            </div>
+
+        </div>
+      </div>
+    </div>
+
     <script>
-        // NOTE: Placeholder data and functions are retained. You must replace [PLACEHOLDERS] and implement the API connection.
-        
-        const SHEET_API_ENDPOINT = 'YOUR_GOOGLE_SHEET_JSON_API_ENDPOINT'; 
-        
-        // Placeholder Flag Permalinks (UPDATED TO REFLECT AVATAR STYLE)
-        const FLAG_BR = 'https://i.imgur.com/g8o4qYk.png'; // Example Circular BR Flag
-        const FLAG_MX = 'https://i.imgur.com/k2p6rZq.png'; // Example Circular MX Flag
+        // =======================================================
+        // LOCALIZATION DICTIONARIES AND LOGIC
+        // =======================================================
+        const FLAG_BR = 'https://i.imgur.com/g8o4qYk.png'; 
+        const FLAG_MX = 'https://i.imgur.com/k2p6rZq.png'; 
+        let fullLeaderboardData = []; // Global store for the current date's data
 
-        let fullLeaderboardData = []; 
+        const translations = {
+            en: {
+                pageTitle: "Daily Turnover Challenge Leaderboard", headerTitle: "Daily Turnover Challenge", description: "Challenge and win up to USD100 every day!", payoutLabel: "Next Rewards Payout in:", leaderboardTitle: "Leaderboard for:", searchUsername: "Search Username", refreshLabel: "Data Refresh in: ", ranks4to20: "Ranks 4 - 20", rank: "Rank", username: "Username", turnoverHeader: "Turnover (USD)", prizeHeader: "Prize (USD)", turnover: "Turnover: ", prize: "Prize: ", ctaPlay: "Start Playing", ctaHowItWorks: "How It Works (FAQ & T&C)", eventRunning: "Event Running Whole December", modalTitle: "❓ How It Works: Challenge Details", modalTncHeader: "General Terms & Conditions", modalTncBody: "Participation is open to all registered users in the specified markets (BR/MX). Rankings are based purely on aggregated daily turnover. All times are based on UTC-6.", modalFaqHeader: "Frequently Asked Questions (FAQ)", faq1Q: "What is the Daily Turnover Challenge?", faq1A: "It's a daily competition where players are ranked based on their total turnover in USD equivalent within a 24-hour period (1:00 AM UTC-6 to 1:00 AM UTC-6 the next day).", faq2Q: "How is Turnover calculated?", faq2A: "Turnover is the total amount wagered or traded by the user. It is converted to USD using the daily exchange rate determined at 1:00 AM UTC-6.", faq3Q: "When is the Leaderboard updated?", faq3A: "The leaderboard is **manually updated every 30 minutes** throughout the day. The timer at the top reflects the approximate time until the next manual data refresh.", faq4Q: "What are the prize tiers?", faq4A1: "Prizes are awarded daily based on the final ranking at the end of the 24-hour cycle:", faq4A2: ["Rank 1: USD 100", "Rank 2: USD 50", "Rank 3: USD 30", "Rank 4-10: USD 20", "Prizes are credited within 24 hours of the challenge end."], faq5Q: "How can I find my rank if I am not in the Top 20?", faq5A: "Use the **Username Search** bar above the leaderboard. If you enter your exact username, the system will pull your specific rank and turnover from the full dataset, even if you are ranked 50th.", msgTop3: (username, rank) => `🎉 Found **${username}**! You are Rank **${rank}**! (Check the podium above)`, msg4to20: (username, rank) => `Found **${username}** at Rank **${rank}**!`, msgOutOf20: (username, rank) => `Found **${username}** at Rank **${rank}**! (Your result is displayed below)`, msgNotFound: "❌ Username not found in the current ranking. Please check your spelling."
+            },
+            pt: {
+                pageTitle: "Classificação Diária do Desafio de Volume de Negócios", headerTitle: "Desafio Diário de Volume de Negócios", description: "Desafie e ganhe até US$100 todos os dias!", payoutLabel: "Próximo Pagamento de Prêmios em:", leaderboardTitle: "Classificação para:", searchUsername: "Buscar Nome de Usuário", refreshLabel: "Atualização de Dados em: ", ranks4to20: "Classificações 4 - 20", rank: "Posição", username: "Nome de Usuário", turnoverHeader: "Volume de Negócios (USD)", prizeHeader: "Prêmio (USD)", turnover: "Volume de Negócios: ", prize: "Prêmio: ", ctaPlay: "Começar a Jogar", ctaHowItWorks: "Como Funciona (FAQ & T&C)", eventRunning: "Evento em Duração Durante Todo o Dezembro", modalTitle: "❓ Como Funciona: Detalhes do Desafio", modalTncHeader: "Termos e Condições Gerais", modalTncBody: "A participação está aberta a todos os usuários registados nos mercados especificados (BR/MX). As classificações baseiam-se unicamente no volume de negócios diário agregado. Todos os horários são baseados em UTC-6.", modalFaqHeader: "Perguntas Frequentes (FAQ)", faq1Q: "O que é o Desafio Diário de Volume de Negócios?", faq1A: "É uma competição diária onde os jogadores são classificados com base no seu volume de negócios total em equivalente a USD dentro de um período de 24 horas (1:00 AM UTC-6 a 1:00 AM UTC-6 do dia seguinte).", faq2Q: "Como é calculado o Volume de Negócios?", faq2A: "O volume de negócios é o montante total apostado ou negociado pelo usuário. É convertido para USD usando a taxa de câmbio diária determinada às 1:00 AM UTC-6.", faq3Q: "Quando a Classificação é atualizada?", faq3A: "A classificação é **manualmente atualizada a cada 30 minutos** ao longo do dia. O temporizador no topo reflete o tempo aproximado até a próxima atualização manual dos dados.", faq4Q: "Quais são os escalões de prêmios?", faq4A1: "Os prêmios são atribuídos diariamente com base na classificação final no final do ciclo de 24 horas:", faq4A2: ["Posição 1: USD 100", "Posição 2: USD 50", "Posição 3: USD 30", "Posição 4-10: USD 20", "Os prêmios são creditados dentro de 24 horas após o término do desafio."], faq5Q: "Como posso encontrar a minha posição se não estiver no Top 20?", faq5A: "Utilize a barra de **Buscar Nome de Usuário** acima da classificação. Se inserir o seu nome de usuário exato, o sistema irá buscar a sua posição e volume de negócios específicos do conjunto de dados completo, mesmo que esteja na 50ª posição.", msgTop3: (username, rank) => `🎉 Encontrado **${username}**! Você está na Posição **${rank}**! (Verifique o pódio acima)`, msg4to20: (username, rank) => `Encontrado **${username}** na Posição **${rank}**!`, msgOutOf20: (username, rank) => `Encontrado **${username}** na Posição **${rank}**! (Seu resultado é exibido abaixo)`, msgNotFound: "❌ Nome de usuário não encontrado na classificação atual. Por favor, verifique a ortografia."
+            },
+            es: {
+                pageTitle: "Tabla de Clasificación Diaria del Reto de Facturación", headerTitle: "Reto Diario de Facturación", description: "¡Desafía y gana hasta $100 USD cada día!", payoutLabel: "Próximo Pago de Premios en:", leaderboardTitle: "Clasificación para:", searchUsername: "Buscar Nombre de Usuario", refreshLabel: "Actualización de Datos en: ", ranks4to20: "Clasificaciones 4 - 20", rank: "Rango", username: "Nombre de Usuario", turnoverHeader: "Facturación (USD)", prizeHeader: "Premio (USD)", turnover: "Facturación: ", prize: "Premio: ", ctaPlay: "Empezar a Jugar", ctaHowItWorks: "Cómo Funciona (FAQ y T&C)", eventRunning: "Evento en Curso Durante Todo Diciembre", modalTitle: "❓ Cómo Funciona: Detalles del Reto", modalTncHeader: "Términos y Condiciones Generales", modalTncBody: "La participación está abierta a todos los usuarios registrados en los mercados especificados (BR/MX). Las clasificaciones se basan únicamente en la facturación diaria agregada. Todos los horarios se basan en UTC-6.", modalFaqHeader: "Preguntas Frecuentes (FAQ)", faq1Q: "¿Qué es el Reto Diario de Facturación?", faq1A: "Es una competición diaria donde los jugadores se clasifican en función de su facturación total equivalente en USD dentro de un período de 24 horas (1:00 AM UTC-6 a 1:00 AM UTC-6 del día siguiente).", faq2Q: "¿Cómo se calcula la Facturación?", faq2A: "La facturación es la cantidad total apostada o negociada por el usuario. Se convierte a USD utilizando el tipo de cambio diario determinado a la 1:00 AM UTC-6.", faq3Q: "¿Cuándo se actualiza la Clasificación?", faq3A: "La clasificación se **actualiza manualmente cada 30 minutos** a lo largo del día. El temporizador en la parte superior refleja el tiempo aproximado hasta la próxima actualización manual de los datos.", faq4Q: "¿Cuáles son los niveles de premios?", faq4A1: "Los premios se otorgan diariamente según la clasificación final al finalizar el ciclo de 24 horas:", faq4A2: ["Rango 1: USD 100", "Rango 2: USD 50", "Rango 3: USD 30", "Rango 4-10: USD 20", "Los premios se acreditan dentro de las 24 horas posteriores a la finalización del reto."], faq5Q: "¿Cómo puedo encontrar mi rango si no estoy en el Top 20?", faq5A: "Utilice la barra de **Buscar Nombre de Usuario** encima de la clasificación. Si introduce su nombre de usuario exacto, el sistema obtendrá su rango y facturación específicos del conjunto de datos completo, incluso si está en el puesto 50.", msgTop3: (username, rank) => `🎉 ¡Encontrado **${username}**! Estás en el Rango **${rank}**! (Revisa el podio de arriba)`, msg4to20: (username, rank) => `¡Encontrado **${username}** en el Rango **${rank}**!`, msgOutOf20: (username, rank) => `¡Encontrado **${username}** en el Rango **${rank}**! (Tu resultado se muestra a continuación)`, msgNotFound: "❌ Nombre de usuario no encontrado en la clasificación actual. Por favor, verifica la ortografía."
+            }
+        };
 
-        /**
-         * Utility Function to Format Currency
-         */
-        function formatCurrency(amount) {
-            return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 2 }).format(amount);
+        // --- Core Localization Logic ---
+        function applyTranslations(lang) {
+            const dictionary = translations[lang];
+            if (!dictionary) return;
+
+            document.getElementById('pageTitle').textContent = dictionary.pageTitle;
+
+            document.querySelectorAll('[data-translate]').forEach(el => {
+                const key = el.getAttribute('data-translate');
+                if (key === 'faq4A2') {
+                    el.innerHTML = dictionary[key].map(item => `<li>${item}</li>`).join('');
+                } else if (dictionary[key]) {
+                    el.textContent = dictionary[key];
+                }
+            });
+
+            document.querySelectorAll('[data-translate-placeholder]').forEach(el => {
+                const key = el.getAttribute('data-translate-placeholder');
+                if (dictionary[key]) {
+                    el.setAttribute('placeholder', dictionary[key]);
+                }
+            });
+            
+            // Re-render Top 3 and search message to apply new currency formats and labels
+            renderTopThree(fullLeaderboardData.slice(0, 3));
+            filterLeaderboard(true); // Re-run filter silently to update message if present
         }
 
-        /**
-         * Utility for getting today's date in YYYY-MM-DD format
-         */
+        function setLanguage(lang) {
+            localStorage.setItem('leaderboardLang', lang);
+            document.getElementById('languageSelect').value = lang;
+            applyTranslations(lang);
+        }
+
+        async function detectAndSetLanguage() {
+            const savedLang = localStorage.getItem('leaderboardLang');
+            if (savedLang) {
+                setLanguage(savedLang);
+                return;
+            }
+            
+            // Default to English as Geo-IP is conceptual
+            setLanguage('en'); 
+        }
+
+        // --- Utility Functions ---
+        function getCurrentLanguage() {
+            return localStorage.getItem('leaderboardLang') || 'en';
+        }
+
+        function formatCurrency(amount) {
+            const lang = getCurrentLanguage();
+            return new Intl.NumberFormat(lang === 'pt' ? 'pt-BR' : lang === 'es' ? 'es-MX' : 'en-US', { 
+                style: 'currency', 
+                currency: 'USD', 
+                minimumFractionDigits: 2 
+            }).format(amount);
+        }
+
         function getCurrentDateString() {
             const today = new Date();
             const yyyy = today.getFullYear();
@@ -444,14 +640,74 @@
             return `${yyyy}-${mm}-${dd}`;
         }
         
-        /**
-         * Mock Data Generator (Replace this with your API call)
-         */
-        function getMockDataByDate(dateString) {
+        // --- Timer Functions (Now Functional) ---
+
+        function startPayoutCountdown() {
+            const targetHourUTC = 7; // 1:00 AM UTC-6 is 7:00 AM UTC
+            const timer = setInterval(() => {
+                const now = new Date();
+                const nowUTC = now.getTime() + (now.getTimezoneOffset() * 60000);
+                let target = new Date(nowUTC);
+                
+                // Set target date to today 7 AM UTC
+                target.setUTCFullYear(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate());
+                target.setUTCHours(targetHourUTC, 0, 0, 0);
+
+                // If target time already passed, set it for tomorrow
+                if (nowUTC >= target.getTime()) {
+                    target.setUTCDate(target.getUTCDate() + 1);
+                }
+                
+                const distance = target.getTime() - nowUTC;
+                
+                if (distance < 0) {
+                    clearInterval(timer);
+                    document.getElementById("payout-timer").innerHTML = "PAYOUT IN PROGRESS!";
+                    return;
+                }
+
+                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+                
+                const display = 
+                    String(hours).padStart(2, '0') + ":" + 
+                    String(minutes).padStart(2, '0') + ":" + 
+                    String(seconds).padStart(2, '0');
+                
+                document.getElementById("payout-timer").innerHTML = display;
+
+            }, 1000);
+        }
+
+        function startUpdateCountdown() {
+            let refreshMinutes = 30;
+            let totalSeconds = refreshMinutes * 60;
+            const timerElement = document.getElementById("update-countdown");
+            const dictionary = translations[getCurrentLanguage()];
+            
+            const updateTimer = setInterval(() => {
+                const minutes = Math.floor(totalSeconds / 60);
+                const seconds = totalSeconds % 60;
+                
+                // Use localized label
+                const display = dictionary.refreshLabel + `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+                timerElement.innerHTML = display;
+                
+                totalSeconds--;
+                if (totalSeconds < 0) {
+                    // Logic for refresh on zero can be implemented here (e.g., fetchLeaderboardData(getCurrentDateString());)
+                    totalSeconds = refreshMinutes * 60; 
+                }
+            }, 1000);
+        }
+
+
+        // --- Data & Rendering ---
+        function getMockDataByDate(dateString) { 
             const isToday = dateString === getCurrentDateString();
             const baseTurnover = isToday ? 15000 : 8000;
             
-            // NOTE: The flag URLs here use the AVATAR placeholders
             const data = [
                 { Rank: 1, Username: "PlayerAlpha", Turnover: baseTurnover * 1.5, Prize: 100.00, Flag_Permalink: FLAG_BR },
                 { Rank: 2, Username: "GamerBeta", Turnover: baseTurnover * 1.2, Prize: 50.00, Flag_Permalink: FLAG_MX },
@@ -460,10 +716,8 @@
                 { Rank: 5, Username: "Decimator", Turnover: baseTurnover * 0.8, Prize: 20.00, Flag_Permalink: FLAG_BR },
                 { Rank: 20, Username: "LastTop20", Turnover: baseTurnover * 0.12, Prize: 0.00, Flag_Permalink: FLAG_MX },
                 { Rank: 45, Username: "MyName", Turnover: baseTurnover * 0.05, Prize: 0.00, Flag_Permalink: FLAG_BR },
-                // ... Add remaining mock data for ranks 6-19
             ];
             
-            // Simple logic to ensure 20 players are available for slicing
             if (data.length < 20) {
                  for (let i = data.length; i < 20; i++) {
                     data.push({
@@ -475,15 +729,10 @@
                     });
                 }
             }
-            
-            // Sort to ensure ranks are in correct order
             return data.sort((a, b) => a.Rank - b.Rank);
         }
 
 
-        /**
-         * 1. Data Fetching and Initialization (Loads Current Date Data)
-         */
         async function fetchLeaderboardData(date = getCurrentDateString()) {
             document.getElementById('searchMessage').style.display = 'none';
             document.getElementById('usernameSearch').value = ''; 
@@ -491,50 +740,33 @@
             document.getElementById('currentDateDisplay').textContent = date;
             document.getElementById('dateSearch').value = date;
             
-            // --- MOCK DATA ---
             const mockData = getMockDataByDate(date); 
             fullLeaderboardData = mockData; 
 
-            // --- RENDERING ---
             renderTopThree(fullLeaderboardData.slice(0, 3));
             renderRanksFourToTwenty(fullLeaderboardData.slice(3, 20));
         }
 
-        /**
-         * 2. Rendering the Top 3 Cards
-         */
         function renderTopThree(topPlayers) {
-            // IDs correspond to the template: rank1, rank2, rank3
+            const dictionary = translations[getCurrentLanguage()];
             const rankOrder = [1, 2, 3]; 
 
             rankOrder.forEach(rank => {
                 const player = topPlayers.find(p => p.Rank === rank);
                 const element = document.getElementById(`rank${rank}`);
 
-                if (element) {
-                    if (player) {
-                        element.querySelector('.top-username').textContent = player.Username;
-                        element.querySelector('.top-turnover').textContent = `Turnover: ${formatCurrency(player.Turnover)}`;
-                        element.querySelector('.top-prize').textContent = `Prize: ${formatCurrency(player.Prize)}`;
-                        element.querySelector('.flag-img').src = player.Flag_Permalink;
-                        element.querySelector('.flag-img').alt = player.Flag_Permalink.includes(FLAG_BR) ? 'Brazil' : 'Mexico';
-                        element.style.display = 'flex'; // Ensure the flex container shows
-                    } else {
-                        // Display placeholders if data is missing for a rank
-                        element.querySelector('.top-username').textContent = 'TBD';
-                        element.querySelector('.top-turnover').textContent = 'Turnover: -';
-                        element.querySelector('.top-prize').textContent = 'Prize: -';
-                        element.querySelector('.flag-img').src = ''; 
-                    }
-                     // Ensure highlight is reset
+                if (element && player) {
+                    element.querySelector('.top-username').textContent = player.Username;
+                    element.querySelector('.top-turnover').textContent = `${dictionary.turnover}${formatCurrency(player.Turnover)}`;
+                    element.querySelector('.top-prize').textContent = `${dictionary.prize}${formatCurrency(player.Prize)}`;
+                    element.querySelector('.flag-img').src = player.Flag_Permalink;
+                    element.querySelector('.flag-img').alt = player.Flag_Permalink.includes(FLAG_BR) ? 'Brazil' : 'Mexico';
+                    element.style.display = 'flex'; 
                     element.classList.remove('highlight-row');
                 }
             });
         }
         
-        /**
-         * 3. Rendering Ranks 4-20
-         */
         function renderRanksFourToTwenty(players) {
             const tbody = document.getElementById('leaderboardBody');
             tbody.innerHTML = ''; 
@@ -545,7 +777,7 @@
                 
                 row.innerHTML = `
                     <td class="rank-cell">${player.Rank}</td>
-                    <td><img src="${player.Flag_Permalink}" alt="${player.Flag_Permalink.includes(FLAG_BR) ? 'Brazil' : 'Mexico'} Flag" class="flag-img"></td>
+                    <td><img src="${player.Flag_Permalink}" alt="Flag" class="flag-img"></td>
                     <td>${player.Username}</td>
                     <td class="turnover-cell">${formatCurrency(player.Turnover)}</td>
                     <td class="prize-cell">${formatCurrency(player.Prize)}</td>
@@ -554,127 +786,83 @@
             });
         }
 
-        /**
-         * 4. Filtering Logic (Search by Username)
-         */
-        function filterLeaderboard() {
+        // The filter function now handles localization of its messages
+        function filterLeaderboard(silent = false) {
             const searchInput = document.getElementById('usernameSearch').value.toLowerCase().trim();
             const messageDiv = document.getElementById('searchMessage');
-            
-            // Clear previous highlight and message
-            document.querySelectorAll('.highlight-row').forEach(row => row.classList.remove('highlight-row'));
-            messageDiv.style.display = 'none';
+            const dictionary = translations[getCurrentLanguage()];
 
-            if (searchInput === '') {
-                // If search is empty, reload the standard view (Ranks 4-20)
+            if (!silent) {
+                document.querySelectorAll('.highlight-row').forEach(row => row.classList.remove('highlight-row'));
+                messageDiv.style.display = 'none';
+                messageDiv.removeAttribute('data-current-msg');
+            }
+
+            if (searchInput === '' && !silent) {
                 renderRanksFourToTwenty(fullLeaderboardData.slice(3, 20));
                 return;
             }
 
             const foundUser = fullLeaderboardData.find(p => p.Username.toLowerCase() === searchInput);
             
-            // Re-render Ranks 4-20 first to clear any old temporary search results
-            renderRanksFourToTwenty(fullLeaderboardData.slice(3, 20));
+            if (!silent) renderRanksFourToTwenty(fullLeaderboardData.slice(3, 20));
             
             if (foundUser) {
+                messageDiv.dataset.username = foundUser.Username;
+                messageDiv.dataset.rank = foundUser.Rank;
+
                 if (foundUser.Rank <= 3) {
-                    // User is in Top 3: Highlight the Top 3 box
                     const topElement = document.getElementById(`rank${foundUser.Rank}`);
-                    if (topElement) topElement.classList.add('highlight-row');
+                    if (!silent && topElement) topElement.classList.add('highlight-row');
                     
-                    messageDiv.innerHTML = `🎉 Found **${foundUser.Username}**! You are Rank **${foundUser.Rank}**! (Check the podium above)`;
-                    messageDiv.style.display = 'block';
+                    messageDiv.innerHTML = dictionary.msgTop3(foundUser.Username, foundUser.Rank);
+                    messageDiv.dataset.currentMsg = 'msgTop3';
 
                 } else if (foundUser.Rank <= 20) {
-                    // User is in Ranks 4-20: Highlight the table row
-                    setTimeout(() => {
-                        const userRow = document.getElementById(`user-${foundUser.Username.replace(/\s/g, '')}`);
-                        if (userRow) userRow.classList.add('highlight-row');
-                    }, 50);
+                    if (!silent) {
+                        setTimeout(() => {
+                            const userRow = document.getElementById(`user-${foundUser.Username.replace(/\s/g, '')}`);
+                            if (userRow) userRow.classList.add('highlight-row');
+                        }, 50);
+                    }
                     
-                    messageDiv.innerHTML = `Found **${foundUser.Username}** at Rank **${foundUser.Rank}**!`;
-                    messageDiv.style.display = 'block';
+                    messageDiv.innerHTML = dictionary.msg4to20(foundUser.Username, foundUser.Rank);
+                    messageDiv.dataset.currentMsg = 'msg4to20';
 
                 } else {
-                    // User is outside Top 20: Display a temporary table showing *only* their result
-                    const tbody = document.getElementById('leaderboardBody');
-                    tbody.innerHTML = ''; // Clear Ranks 4-20
+                    if (!silent) {
+                        const tbody = document.getElementById('leaderboardBody');
+                        tbody.innerHTML = ''; // Clear Ranks 4-20
+                        
+                        const row = document.createElement('tr');
+                        row.id = `user-${foundUser.Username.replace(/\s/g, '')}`; 
+                        row.classList.add('highlight-row');
+                        
+                        row.innerHTML = `
+                            <td class="rank-cell">${foundUser.Rank}</td>
+                            <td><img src="${foundUser.Flag_Permalink}" alt="Flag" class="flag-img"></td>
+                            <td>${foundUser.Username}</td>
+                            <td class="turnover-cell">${formatCurrency(foundUser.Turnover)}</td>
+                            <td class="prize-cell">${formatCurrency(foundUser.Prize)}</td>
+                        `;
+                        tbody.appendChild(row);
+                    }
                     
-                    const row = document.createElement('tr');
-                    row.id = `user-${foundUser.Username.replace(/\s/g, '')}`; 
-                    row.classList.add('highlight-row');
-                    
-                    row.innerHTML = `
-                        <td class="rank-cell">${foundUser.Rank}</td>
-                        <td><img src="${foundUser.Flag_Permalink}" alt="${foundUser.Flag_Permalink.includes(FLAG_BR) ? 'Brazil' : 'Mexico'} Flag" class="flag-img"></td>
-                        <td>${foundUser.Username}</td>
-                        <td class="turnover-cell">${formatCurrency(foundUser.Turnover)}</td>
-                        <td class="prize-cell">${formatCurrency(foundUser.Prize)}</td>
-                    `;
-                    tbody.appendChild(row);
-                    
-                    messageDiv.innerHTML = `Found **${foundUser.Username}** at Rank **${foundUser.Rank}**! (Your result is displayed below)`;
-                    messageDiv.style.display = 'block';
+                    messageDiv.innerHTML = dictionary.msgOutOf20(foundUser.Username, foundUser.Rank);
+                    messageDiv.dataset.currentMsg = 'msgOutOf20';
                 }
-            } else {
-                // User not found
-                renderRanksFourToTwenty(fullLeaderboardData.slice(3, 20)); // Restore Ranks 4-20
-                messageDiv.innerHTML = `❌ Username not found in the current ranking. Please check your spelling.`;
+                if (!silent) messageDiv.style.display = 'block';
+
+            } else if (!silent) {
+                renderRanksFourToTwenty(fullLeaderboardData.slice(3, 20));
+                messageDiv.innerHTML = dictionary.msgNotFound;
+                messageDiv.dataset.currentMsg = 'msgNotFound';
                 messageDiv.style.display = 'block';
             }
         }
 
-        // ----------------------------------------------------
-        // --- TIMERS AND MODAL FUNCTIONS (COPY/PASTE HERE) ---
-        // ----------------------------------------------------
 
-        // [PASTE startPayoutCountdown(), startUpdateCountdown(), openModal(), closeModal(), toggleFAQ() HERE]
-        
-        // ** startPayoutCountdown() - (Daily 1am UTC-6) **
-        function startPayoutCountdown() {
-            const targetHourUTC = 7; 
-            const timer = setInterval(() => {
-                const now = new Date();
-                const nowUTC = now.getTime() + (now.getTimezoneOffset() * 60000);
-                let target = new Date(nowUTC);
-                target.setUTCFullYear(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate());
-                target.setUTCHours(targetHourUTC, 0, 0, 0);
-                if (nowUTC >= target.getTime()) {
-                    target.setUTCDate(target.getUTCDate() + 1);
-                }
-                const distance = target.getTime() - nowUTC;
-                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-                const display = 
-                    String(hours).padStart(2, '0') + ":" + 
-                    String(minutes).padStart(2, '0') + ":" + 
-                    String(seconds).padStart(2, '0');
-                document.getElementById("payout-timer").innerHTML = display;
-                if (distance < 0) {
-                    clearInterval(timer);
-                    document.getElementById("payout-timer").innerHTML = "PAYOUT IN PROGRESS!";
-                }
-            }, 1000);
-        }
-
-        // ** startUpdateCountdown() - (Every 30 Minutes) **
-        function startUpdateCountdown() {
-            let refreshMinutes = 30;
-            let totalSeconds = refreshMinutes * 60;
-            const updateTimer = setInterval(() => {
-                const minutes = Math.floor(totalSeconds / 60);
-                const seconds = totalSeconds % 60;
-                const display = `Data Refresh in: ${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
-                document.getElementById("update-countdown").innerHTML = display;
-                totalSeconds--;
-                if (totalSeconds < 0) {
-                    totalSeconds = refreshMinutes * 60; 
-                }
-            }, 1000);
-        }
-        
-        // ** MODAL FUNCTIONS (openModal, closeModal, toggleFAQ, window.onclick) **
+        // --- Modal Functions ---
         function openModal() {
             document.getElementById('howItWorksModal').style.display = 'block';
             document.body.style.overflow = 'hidden';
@@ -687,13 +875,14 @@
 
         function toggleFAQ(element) {
             const answer = element.nextElementSibling;
-            const icon = element.querySelector('.fa-chevron-down');
+            
             document.querySelectorAll('.faq-question.active').forEach(activeQuestion => {
                 if (activeQuestion !== element) {
                     activeQuestion.classList.remove('active');
                     activeQuestion.nextElementSibling.classList.remove('open');
                 }
             });
+            
             element.classList.toggle('active');
             answer.classList.toggle('open');
         }
@@ -703,91 +892,19 @@
                 closeModal();
             }
         }
-        // ----------------------------------------------------
         
-        // Initialization on Load
+        // --- Initialization ---
         document.addEventListener('DOMContentLoaded', () => {
+            detectAndSetLanguage();
+
             const currentDate = getCurrentDateString();
             document.getElementById('dateSearch').value = currentDate;
             fetchLeaderboardData(currentDate); 
+            
+            // Start the functional timers
             startPayoutCountdown(); 
             startUpdateCountdown(); 
         });
     </script>
-    
-    <div id="howItWorksModal" class="modal-backdrop">
-      <div class="modal-content">
-        <div class="modal-header">
-            <h2 class="modal-title">❓ How It Works: Challenge Details</h2>
-            <span class="close-button" onclick="closeModal()">&times;</span>
-        </div>
-        
-        <div class="modal-body">
-            
-            <h3 style="color: var(--color-teal-accent); margin-top: 0; border-bottom: 1px solid #333; padding-bottom: 5px;">General Terms & Conditions</h3>
-            <p>Participation is open to all registered users in the specified markets (BR/MX). Rankings are based purely on aggregated daily turnover. All times are based on UTC-6.</p>
-
-            <h3 style="color: var(--color-teal-accent); margin-top: 25px; border-bottom: 1px solid #333; padding-bottom: 5px;">Frequently Asked Questions (FAQ)</h3>
-
-            <div class="faq-item">
-                <div class="faq-question" onclick="toggleFAQ(this)">
-                    What is the Daily Turnover Challenge?
-                    <i class="fas fa-chevron-down"></i>
-                </div>
-                <div class="faq-answer">
-                    <p>It's a daily competition where players are ranked based on their total turnover in USD equivalent within a 24-hour period (1:00 AM UTC-6 to 1:00 AM UTC-6 the next day).</p>
-                </div>
-            </div>
-
-            <div class="faq-item">
-                <div class="faq-question" onclick="toggleFAQ(this)">
-                    How is Turnover calculated?
-                    <i class="fas fa-chevron-down"></i>
-                </div>
-                <div class="faq-answer">
-                    <p>Turnover is the total amount wagered or traded by the user. It is converted to USD using the daily exchange rate determined at 1:00 AM UTC-6.</p>
-                </div>
-            </div>
-            
-            <div class="faq-item">
-                <div class="faq-question" onclick="toggleFAQ(this)">
-                    When is the Leaderboard updated?
-                    <i class="fas fa-chevron-down"></i>
-                </div>
-                <div class="faq-answer">
-                    <p>The leaderboard is **manually updated every 30 minutes** throughout the day. The timer at the top reflects the approximate time until the next manual data refresh.</p>
-                </div>
-            </div>
-
-            <div class="faq-item">
-                <div class="faq-question" onclick="toggleFAQ(this)">
-                    What are the prize tiers?
-                    <i class="fas fa-chevron-down"></i>
-                </div>
-                <div class="faq-answer">
-                    <p>Prizes are awarded daily based on the final ranking at the end of the 24-hour cycle:</p>
-                    <ul>
-                        <li>Rank 1: USD 100</li>
-                        <li>Rank 2: USD 50</li>
-                        <li>Rank 3: USD 30</li>
-                        <li>Rank 4-10: USD 20</li>
-                        <li>Prizes are credited within 24 hours of the challenge end.</li>
-                    </ul>
-                </div>
-            </div>
-            
-            <div class="faq-item">
-                <div class="faq-question" onclick="toggleFAQ(this)">
-                    How can I find my rank if I am not in the Top 20?
-                    <i class="fas fa-chevron-down"></i>
-                </div>
-                <div class="faq-answer">
-                    <p>Use the **Username Search** bar above the leaderboard. If you enter your exact username, the system will pull your specific rank and turnover from the full dataset, even if you are ranked 50th.</p>
-                </div>
-            </div>
-
-        </div>
-      </div>
-    </div>
 </body>
 </html>
