@@ -328,298 +328,231 @@
       </div>
     </div>
     
-    <script>
-        let fullLeaderboardData = []; 
-        const FLAG_BR = 'https://i.imgur.com/g8o4qYk.png'; 
-        const FLAG_MX = 'https://i.imgur.com/k2p6rZq.png'; 
-        const FLAG_DEFAULT = 'https://i.imgur.com/4gS1s1j.png'; 
+<script>
+    // =======================================================
+    // 1. CONFIGURATION (Gviz Method for Live Sync)
+    // =======================================================
+    const SHEET_ID = '1pnHNbmUETs4Mve_jVGENUiY8PEoaKWkc988tOdt3RA8';
+    // GID is the ID of the specific sheet tab (0 is usually the first tab)
+    const SHEET_GID = '0'; 
+    const LEADERBOARD_API_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&tq&gid=${SHEET_GID}`;
 
-        const translations = {
-            en: {
-                pageTitle: "Daily Turnover Challenge Leaderboard", headerTitle: "Daily Turnover Challenge", description: "Challenge and win up to USD100 every day!", turnoverLabel: "Turnover:", payoutLabel: "Next Rewards Payout in:", searchUsername: "Search Username", refreshLabel: "Data Refresh in: ", ctaPlay: "Start Playing", ctaHowItWorks: "How It Works (FAQ & T&C)", eventRunning: "Event Running Whole December", modalTitle: "❓ How It Works: Challenge Details", modalTncHeader: "General Terms & Conditions", modalTncBody: "Participation is open to all registered users in the specified markets (BR/MX). Rankings are based purely on aggregated daily turnover. All times are based on UTC-6.", modalFaqHeader: "Frequently Asked Questions (FAQ)", faq1Q: "What is the Daily Turnover Challenge?", faq1A: "It's a daily competition where players are ranked based on their total turnover in USD equivalent within a 24-hour period (1:00 AM UTC-6 to 1:00 AM UTC-6 the next day).", faq2Q: "How is Turnover calculated?", faq2A: "Turnover is the total amount wagered or traded by the user. It is converted to USD using the daily exchange rate determined at 1:00 AM UTC-6.", faq3Q: "When is the Leaderboard updated?", faq3A: "The leaderboard is **manually updated every 30 minutes** throughout the day. The timer at the top reflects the approximate time until the next manual data refresh.", faq4Q: "What are the prize tiers?", faq4A1: "Prizes are awarded daily based on the final ranking at the end of the 24-hour cycle:", faq4A2: ["Rank 1: USD 100", "Rank 2: USD 50", "Rank 3: USD 30", "Rank 4-10: USD 20", "Prizes are credited within 24 hours of the challenge end."], faq5Q: "How can I find my rank if I am not in the Top 20?", faq5A: "Use the **Username Search** bar above the leaderboard. If you enter your exact username, the system will pull your specific rank and turnover from the full dataset, even if you are ranked 50th.", msgTop3: (username, rank) => `🎉 Found **${username}**! You are Rank **${rank}**! (Check the podium above)`, msg4to20: (username, rank) => `Found **${username}** at Rank **${rank}**!`, msgOutOf20: (username, rank) => `Found **${username}** at Rank **${rank}**! (Your result is displayed below)`, msgNotFound: "❌ Username not found in the current ranking. Please check your spelling."
-            },
-            pt: {
-                pageTitle: "Classificação Diária do Desafio de Volume de Negócios", headerTitle: "Desafio Diário de Volume de Negócios", description: "Desafie e ganhe até US$100 todos os dias!", turnoverLabel: "Volume de Negócios:", payoutLabel: "Próximo Pagamento de Prêmios em:", searchUsername: "Buscar Nome de Usuário", refreshLabel: "Atualização de Dados em: ", ctaPlay: "Começar a Jogar", ctaHowItWorks: "Como Funciona (FAQ & T&C)", eventRunning: "Evento em Duração Durante Todo o Dezembro", modalTitle: "❓ Como Funciona: Detalhes do Desafio", modalTncHeader: "Termos e Condições Gerais", modalTncBody: "A participação está aberta a todos os usuários registados nos mercados especificados (BR/MX). As classificações baseiam-se unicamente no volume de negócios diário agregado. Todos os horários são baseados em UTC-6.", modalFaqHeader: "Perguntas Frequentes (FAQ)", faq1Q: "O que é o Desafio Diário de Volume de Negócios?", faq1A: "É uma competição diária onde os jogadores são classificados com base no seu volume de negócios total em equivalente a USD dentro de um período de 24 horas (1:00 AM UTC-6 a 1:00 AM UTC-6 do dia seguinte).", faq2Q: "Como é calculado o Volume de Negócios?", faq2A: "O volume de negócios é o montante total apostado ou negociado pelo usuário. É convertido para USD usando a taxa de câmbio diária determinada às 1:00 AM UTC-6.", faq3Q: "Quando a Classificação é atualizada?", faq3A: "A classificação é **manualmente atualizada a cada 30 minutos** ao longo do dia. O temporizador no topo reflete o tempo aproximado até a próxima atualização manual dos dados.", faq4Q: "Quais são os escalões de prêmios?", faq4A1: "Os prêmios são atribuídos diariamente com base na classificação final no final do ciclo de 24 horas:", faq4A2: ["Posição 1: USD 100", "Posição 2: USD 50", "Posição 3: USD 30", "Posição 4-10: USD 20", "Os prêmios são creditados dentro de 24 horas após o término do desafio."], faq5Q: "Como posso encontrar a minha posição se não estiver no Top 20?", faq5A: "Utilize a barra de **Buscar Nome de Usuário** acima da classificação. Se inserir o seu nome de usuário exato, o sistema irá buscar a sua posição e volume de negócios específicos do conjunto de dados completo, mesmo que esteja na 50ª posição.", msgTop3: (username, rank) => `🎉 Encontrado **${username}**! Você está na Posição **${rank}**! (Verifique o pódio acima)`, msg4to20: (username, rank) => `Encontrado **${username}** na Posição **${rank}**!`, msgOutOf20: (username, rank) => `Encontrado **${username}** na Posição **${rank}**! (Seu resultado é exibido abaixo)`, msgNotFound: "❌ Nome de usuário não encontrado na classificação atual. Por favor, verifique a ortografia."
-            },
-            es: {
-                pageTitle: "Tabla de Clasificación Diaria del Reto de Facturación", headerTitle: "Reto Diario de Facturación", description: "¡Desafía y gana hasta $100 USD cada día!", turnoverLabel: "Facturación:", payoutLabel: "Próximo Pago de Premios en:", searchUsername: "Buscar Nombre de Usuario", refreshLabel: "Actualización de Datos en: ", ctaPlay: "Empezar a Jugar", ctaHowItWorks: "Cómo Funciona (FAQ y T&C)", eventRunning: "Evento en Curso Durante Todo Diciembre", modalTitle: "❓ Cómo Funciona: Detalles del Reto", modalTncHeader: "Términos y Condiciones Generales", modalTncBody: "La participación está abierta a todos los usuarios registrados en los mercados especificados (BR/MX). Las clasificaciones se basan únicamente en la facturación diaria agregada. Todos los horarios se basan en UTC-6.", modalFaqHeader: "Preguntas Frecuentes (FAQ)", faq1Q: "¿Qué es el Reto Diario de Facturación?", faq1A: "Es una competición diaria donde los jugadores se clasifican en función de su facturación total equivalente en USD dentro de un período de 24 horas (1:00 AM UTC-6 a 1:00 AM UTC-6 del día siguiente).", faq2Q: "¿Cómo se calcula la Facturación?", faq2A: "La facturación es la cantidad total apostada o negociada por el usuario. Es convertida a USD utilizando el tipo de cambio diario determinado a la 1:00 AM UTC-6.", faq3Q: "¿Cuándo se actualiza la Clasificación?", faq3A: "La clasificación se **actualiza manualmente cada 30 minutos** a lo largo del día. El temporizador en la parte superior refleja el tiempo aproximado hasta la próxima actualización manual de los datos.", faq4Q: "¿Cuáles son los niveles de premios?", faq4A1: "Los premios se otorgan diariamente según la clasificación final al finalizar el ciclo de 24 horas:", faq4A2: ["Rango 1: USD 100", "Rango 2: USD 50", "Rango 3: USD 30", "Rango 4-10: USD 20", "Los premios se acreditan dentro de las 24 horas posteriores a la finalización del reto."], faq5Q: "¿Cómo puedo encontrar mi rango si no estoy en el Top 20?", faq5A: "Utilice la barra de **Buscar Nombre de Usuario** encima de la clasificación. Si introduce su nombre de usuario exacto, el sistema obtendrá su rango y facturación específicos del conjunto de datos completo, incluso si está en el puesto 50.", msgTop3: (username, rank) => `🎉 ¡Encontrado **${username}**! Estás en el Rango **${rank}**! (Revisa el podio de arriba)`, msg4to20: (username, rank) => `¡Encontrado **${username}** en el Rango **${rank}**!`, msgOutOf20: (username, rank) => `¡Encontrado **${username}** en el Rango **${rank}**! (Tu resultado se muestra a continuación)`, msgNotFound: "❌ Nombre de usuario no encontrado en la clasificación actual. Por favor, verifica la ortografía."
-            }
-        };
-
-        function getMockData(date) { 
-            let data = [];
-            
-            if (date === '2025-12-01') {
-                data = [
-                    { Rank: 1, Name: "Tomato", Turnover: 12680, Prize: 100, Country: 'BR', AvatarURL: "https://ricobr.ft-crm.com/media-api/serve/b132c7fc-2f90-4bda-82de-78223c5c3725_mexico.png" },
-                    { Rank: 2, Name: "Mei", Turnover: 12200, Prize: 50, Country: 'MX', AvatarURL: "https://ricobr.ft-crm.com/media-api/serve/f6b3499e-2692-4d6e-b86d-58d1c55b6d5f_brazil.png" },
-                    { Rank: 3, Name: "Amélie", Turnover: 12200, Prize: 30, Country: 'BR', AvatarURL: "https://ricobr.ft-crm.com/media-api/serve/b132c7fc-2f90-4bda-82de-78223c5c3725_mexico.png" },
-                    { Rank: 4, Name: "D.Va", Turnover: 8682, Prize: 20, Country: 'MX', AvatarURL: "https://ricobr.ft-crm.com/media-api/serve/f6b3499e-2692-4d6e-b86d-58d1c55b6d5f_brazil.png" },
-                    { Rank: 5, Name: "Mercy", Turnover: 6264, Prize: 20, Country: 'BR', AvatarURL: "https://ricobr.ft-crm.com/media-api/serve/f6b3499e-2692-4d6e-b86d-58d1c55b6d5f_brazil.png" },
-                    { Rank: 6, Name: "Pharah", Turnover: 4624, Prize: 20, Country: 'US', AvatarURL: "https://ricobr.ft-crm.com/media-api/serve/b132c7fc-2f90-4bda-82de-78223c5c3725_mexico.png" },
-                    { Rank: 7, Name: "Sombra", Turnover: 3890, Prize: 0, Country: 'MX', AvatarURL: "https://ricobr.ft-crm.com/media-api/serve/b132c7fc-2f90-4bda-82de-78223c5c3725_mexico.png" },
-                    { Rank: 8, Name: "Reinhardt", Turnover: 3500, Prize: 0, Country: 'BR', AvatarURL: "https://ricobr.ft-crm.com/media-api/serve/f6b3499e-2692-4d6e-b86d-58d1c55b6d5f_brazil.png" },
-                    { Rank: 9, Name: "Zarya", Turnover: 3100, Prize: 0, Country: 'MX', AvatarURL: "https://ricobr.ft-crm.com/media-api/serve/f6b3499e-2692-4d6e-b86d-58d1c55b6d5f_brazil.png" },
-                    { Rank: 10, Name: "Genji", Turnover: 2800, Prize: 0, Country: 'US', AvatarURL: "https://ricobr.ft-crm.com/media-api/serve/b132c7fc-2f90-4bda-82de-78223c5c3725_mexico.png" },
-                ];
-            } else {
-                 data = [ 
-                    { Rank: 1, Name: "Junkrat", Turnover: 15120, Prize: 100, Country: 'MX', AvatarURL: "https://i.imgur.com/uR7D9Qh.png" },
-                    { Rank: 2, Name: "Winston", Turnover: 13900, Prize: 50, Country: 'BR', AvatarURL: "https://i.imgur.com/0Yy8P5H.png" },
-                    { Rank: 3, Name: "Echo", Turnover: 11050, Prize: 30, Country: 'MX', AvatarURL: "https://i.imgur.com/vH1WjYn.png" },
-                    { Rank: 4, Name: "Bastion", Turnover: 9100, Prize: 20, Country: 'BR', AvatarURL: "https://i.imgur.com/p1QZ2hU.png" },
-                    { Rank: 5, Name: "Lucio", Turnover: 8850, Prize: 20, Country: 'US', AvatarURL: "https://i.imgur.com/4q7P68x.png" },
-                    { Rank: 6, Name: "Symmetra", Turnover: 7200, Prize: 20, Country: 'MX', AvatarURL: "https://i.imgur.com/G5yUa2T.png" },
-                    { Rank: 7, Name: "Hanzo", Turnover: 6100, Prize: 0, Country: 'BR', AvatarURL: "https://i.imgur.com/H1XyE5w.png" },
-                    { Rank: 8, Name: "Torbjorn", Turnover: 5000, Prize: 0, Country: 'US', AvatarURL: "https://i.imgur.com/r6hV8e3.png" },
-                    { Rank: 9, Name: "Zenyatta", Turnover: 4500, Prize: 0, Country: 'MX', AvatarURL: "https://i.imgur.com/R3O7iYm.png" },
-                    { Rank: 10, Name: "Doomfist", Turnover: 4200, Prize: 0, Country: 'BR', AvatarURL: "https://i.imgur.com/Jv1k7eY.png" },
-                ];
-            }
-            return data;
+    let fullLeaderboardData = []; 
+    const DEFAULT_AVATAR = 'https://i.imgur.com/vH1WjYn.png'; 
+    const FALLBACK_FLAG = 'https://i.imgur.com/4gS1s1j.png';
+    
+    // --- Translations (Keep your original translation data here) ---
+    const translations = {
+        'en': {
+            // ... your English text ...
+            'header_rank': 'Rank',
+            'header_name': 'Username',
+            'header_turnover': 'Turnover',
+            'header_prize': 'Prize',
+            'select_language': 'Select Language',
+            'select_date': 'Select Date',
+            'prize_usd': 'USD',
+            'payout_in': 'Payout in',
+            'update_in': 'Update in',
+            // ...
+        },
+        'pt': {
+            // ... your Portuguese text ...
+            'header_rank': 'Classificação',
+            'header_name': 'Usuário',
+            'header_turnover': 'Volume de Negócios',
+            'header_prize': 'Prêmio',
+            'select_language': 'Selecione o Idioma',
+            'select_date': 'Selecione a Data',
+            'prize_usd': 'USD',
+            'payout_in': 'Pagamento em',
+            'update_in': 'Atualização em',
+            // ...
         }
+    };
+    
+    let currentLanguage = 'en';
 
-        function getFlagUrl(countryCode) {
-            switch (countryCode) {
-                case 'BR': return FLAG_BR;
-                case 'MX': return FLAG_MX;
-                default: return FLAG_DEFAULT; 
-            }
-        }
+    // =======================================================
+    // 2. LIVE DATA FETCH AND PARSING FUNCTION
+    // =======================================================
 
-        function getPrizeDisplay(prizeAmount) {
-             return prizeAmount > 0 ? `$${prizeAmount} USD` : '';
-        }
-
-        function getCurrentLanguage() { return localStorage.getItem('leaderboardLang') || 'en'; }
-        function formatNumber(num) { return new Intl.NumberFormat().format(num); }
+    async function fetchDataForDate(date) {
+        const selectedDate = date || getTodayDateString(); 
+        document.getElementById('leaderboardDate').value = selectedDate; 
         
-        async function getLanguageByGeoIP() {
-            const savedLang = localStorage.getItem('leaderboardLang');
-            if (savedLang) return savedLang;
-            const simulatedCountry = 'MX'; 
+        try {
+            const response = await fetch(LEADERBOARD_API_URL);
+            const text = await response.text();
             
-            switch (simulatedCountry) {
-                case 'BR': return 'pt';
-                case 'MX': return 'es';
-                default: return 'en';
-            }
-        }
-        
-        function applyTranslations(lang) {
-            const dictionary = translations[lang];
-            if (!dictionary) return;
+            // Clean the JSONP wrapper (strips the outer garbage: /*O_o*/google.visualization.Query.setResponse( and the final );)
+            const cleanText = text.substring(text.indexOf('{'), text.lastIndexOf('}') + 1);
 
-            document.getElementById('pageTitle').textContent = dictionary.pageTitle;
-            document.getElementById('headerTitle').textContent = dictionary.headerTitle;
-
-            document.querySelectorAll('[data-translate]').forEach(el => {
-                const key = el.getAttribute('data-translate');
-                if (key === 'faq4A2') {
-                    el.innerHTML = dictionary[key].map(item => `<li>${item}</li>`).join('');
-                } else if (dictionary[key]) {
-                    el.textContent = dictionary[key];
-                }
-            });
-
-            document.querySelectorAll('[data-translate-placeholder]').forEach(el => {
-                const key = el.getAttribute('data-translate-placeholder');
-                if (dictionary[key]) {
-                    el.setAttribute('placeholder', dictionary[key]);
-                }
-            });
+            const gvizData = JSON.parse(cleanText);
             
-            renderPodium(fullLeaderboardData.slice(0, 3));
-            renderList(fullLeaderboardData);
-            filterLeaderboard(true); 
-        }
-
-        function setLanguage(lang) {
-            localStorage.setItem('leaderboardLang', lang);
-            document.getElementById('languageSelect').value = lang;
-            applyTranslations(lang);
-        }
-        
-        function getTodayDateString() {
-            const now = new Date();
-            const year = now.getFullYear();
-            const month = String(now.getMonth() + 1).padStart(2, '0');
-            const day = String(now.getDate()).padStart(2, '0');
-            return `${year}-${month}-${day}`;
-        }
-        
-        function fetchDataForDate(date) {
-            const selectedDate = date || getTodayDateString(); 
-            document.getElementById('leaderboardDate').value = selectedDate; 
+            // Extract headers (column labels) and rows
+            const headers = gvizData.table.cols.map(col => col.label);
+            const rawRows = gvizData.table.rows;
             
-            fullLeaderboardData = getMockData(selectedDate);
+            fullLeaderboardData = rawRows.map(row => {
+                const player = {};
+                
+                // Process each cell in the row
+                row.c.forEach((cell, index) => {
+                    const header = headers[index];
+                    // Get the raw value (v) or the formatted value (f)
+                    let value = cell ? (cell.f !== null && cell.f !== undefined ? cell.f : cell.v) : ''; 
 
-            renderPodium(fullLeaderboardData.slice(0, 3));
-            renderList(fullLeaderboardData);
-            filterLeaderboard(); 
-        }
-
-        function renderPodium(data) {
-            document.querySelectorAll('.podium-bar').forEach(p => p.classList.remove('highlight-row'));
-
-            data.forEach(player => {
-                const rank = player.Rank;
-                if (rank >= 1 && rank <= 3) {
-                    document.getElementById(`avatar-${rank}`).src = player.AvatarURL;
-                    document.getElementById(`name-${rank}`).textContent = player.Name;
-                    document.getElementById(`flag-${rank}`).src = getFlagUrl(player.Country);
-                    document.getElementById(`turnover-${rank}`).textContent = formatNumber(player.Turnover);
-                    document.getElementById(`prize-${rank}`).textContent = getPrizeDisplay(player.Prize);
-                }
-            });
-        }
-
-        function renderList(data) {
-            const listContainer = document.getElementById('leaderboardList');
-            listContainer.innerHTML = ''; 
-            const listPlayers = data.filter(player => player.Rank >= 4);
-
-            listPlayers.forEach(player => {
-                const listItem = document.createElement('div');
-                listItem.classList.add('list-item');
-                listItem.id = `user-${player.Name.replace(/\s/g, '')}`; 
-
-                listItem.innerHTML = `
-                    <div class="list-rank">${player.Rank}</div>
-                    <div class="list-player-info">
-                        <img src="${player.AvatarURL}" class="avatar-list" alt="Avatar ${player.Name}">
-                        <div class="list-name-flag">
-                            <span class="list-name">${player.Name}</span>
-                            <img src="${getFlagUrl(player.Country)}" class="flag-icon" alt="Flag">
-                        </div>
-                    </div>
-                    <div class="list-turnover">
-                        ${formatNumber(player.Turnover)}
-                    </div>
-                    <div class="list-prize">
-                        ${getPrizeDisplay(player.Prize)}
-                    </div>
-                `;
-                listContainer.appendChild(listItem);
-            });
-        }
-        
-        function filterLeaderboard(silent = false) {
-            const searchInput = document.getElementById('usernameSearch').value.toLowerCase().trim();
-            const messageDiv = document.getElementById('searchMessage');
-            const dictionary = translations[getCurrentLanguage()];
-
-            if (!silent) {
-                document.querySelectorAll('.highlight-row').forEach(row => row.classList.remove('highlight-row'));
-                messageDiv.style.display = 'none';
-            }
-
-            if (searchInput === '' && !silent) return;
-
-            const foundUser = fullLeaderboardData.find(p => p.Name.toLowerCase() === searchInput);
-            
-            if (foundUser) {
-                if (!silent) {
-                    if (foundUser.Rank <= 3) {
-                        document.getElementById(`rank${foundUser.Rank}`).classList.add('highlight-row');
-                    } else {
-                         setTimeout(() => {
-                            const userRow = document.getElementById(`user-${foundUser.Name.replace(/\s/g, '')}`);
-                            if (userRow) userRow.classList.add('highlight-row');
-                        }, 50);
+                    // Map value to player object, handling types and fallbacks
+                    if (header === 'Rank' || header === 'Turnover' || header === 'Prize') {
+                         player[header] = parseInt(String(value).replace(/[^0-9]/g, '')) || 0;
+                    } else if (header) {
+                         player[header] = String(value || '');
                     }
-                }
+                });
                 
-                if (!silent) {
-                    messageDiv.innerHTML = foundUser.Rank <= 3 ? 
-                        dictionary.msgTop3(foundUser.Name, foundUser.Rank) :
-                        dictionary.msg4to20(foundUser.Name, foundUser.Rank);
-                    messageDiv.style.display = 'block';
-                }
+                // Ensure required fields exist with fallbacks
+                player.Rank = player.Rank || 0;
+                player.Name = player.Name || 'Unknown User';
+                player.Turnover = player.Turnover || 0;
+                player.Prize = player.Prize || 0;
+                player.Country = player.Country || 'ZZ';
+                player.AvatarURL = player.AvatarURL || DEFAULT_AVATAR;
+                player.FlagURL = player.FlagURL || FALLBACK_FLAG; 
 
-            } else if (!silent) {
-                messageDiv.innerHTML = dictionary.msgNotFound;
-                messageDiv.style.display = 'block';
-            }
+                return player;
+            }).filter(player => player.Rank > 0); // Only keep rows with a valid Rank
+
+            // Re-sort data by Rank to ensure display order is correct
+            fullLeaderboardData.sort((a, b) => a.Rank - b.Rank); 
+
+        } catch (error) {
+            console.error("Error fetching leaderboard data from Google Sheet (Gviz):", error);
+            // Optional: Implement a static fallback data load here if the API fails
+            // fullLeaderboardData = getMockDataFallback(selectedDate); 
         }
 
+        renderPodium(fullLeaderboardData.slice(0, 3));
+        renderList(fullLeaderboardData);
+        filterLeaderboard(); 
+    }
+    
+    // =======================================================
+    // 3. CORE LOGIC AND UTILITIES
+    // =======================================================
 
-        function startPayoutCountdown() {
-            const targetHourUTC = 7; 
-            const timer = setInterval(() => {
-                const now = new Date();
-                const nowUTC = now.getTime() + (now.getTimezoneOffset() * 60000);
-                let target = new Date(nowUTC);
-                target.setUTCFullYear(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate());
-                target.setUTCHours(targetHourUTC, 0, 0, 0);
+    function getTodayDateString() {
+        const today = new Date();
+        const year = today.getFullYear();
+        // Month and day need to be padded with zero if single digit
+        const month = String(today.getMonth() + 1).padStart(2, '0');
+        const day = String(today.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    }
 
-                if (nowUTC >= target.getTime()) {
-                    target.setUTCDate(target.getUTCDate() + 1);
-                }
-                
-                const distance = target.getTime() - nowUTC;
-                if (distance < 0) {
-                    clearInterval(timer);
-                    document.getElementById("payout-timer").innerHTML = "PAYOUT IN PROGRESS!";
-                    return;
-                }
+    function getFlagUrl(player) {
+        // Use the FlagURL read directly from the player object (from the sheet)
+        return player.FlagURL || FALLBACK_FLAG; 
+    }
 
-                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-                
-                document.getElementById("payout-timer").innerHTML = 
-                    String(hours).padStart(2, '0') + ":" + 
-                    String(minutes).padStart(2, '0') + ":" + 
-                    String(seconds).padStart(2, '0');
-
-            }, 1000);
+    function getPrizeDisplay(prize) {
+        if (prize > 0) {
+            return `<div class="prize-tag"><span class="prize-amount">${prize}</span> <span class="prize-currency">${translations[currentLanguage].prize_usd}</span></div>`;
         }
+        return '';
+    }
 
-        function startUpdateCountdown() {
-            let refreshMinutes = 30;
-            let totalSeconds = refreshMinutes * 60;
-            const timerElement = document.getElementById("update-countdown");
+    function formatNumber(num) {
+        return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    }
+    
+    // ... (Your other utility functions like applyTranslations, startPayoutCountdown, startUpdateCountdown, etc.) ...
+    
+    // =======================================================
+    // 4. RENDER FUNCTIONS (Adjusted to use the sheet data keys)
+    // =======================================================
+
+    function renderPodium(data) {
+        const podiumData = [
+            data.find(p => p.Rank === 2), // Rank 2 for the left
+            data.find(p => p.Rank === 1), // Rank 1 for the center
+            data.find(p => p.Rank === 3)  // Rank 3 for the right
+        ].filter(p => p); // Filter out undefined if less than 3 players
+
+        podiumData.forEach(player => {
+            const rank = player.Rank;
+            const rankMap = { 1: 'center', 2: 'left', 3: 'right' };
+            const pos = rankMap[rank];
             
-            const updateTimer = setInterval(() => {
-                const dictionary = translations[getCurrentLanguage()];
-                const minutes = Math.floor(totalSeconds / 60);
-                const seconds = totalSeconds % 60;
-                
-                timerElement.innerHTML = dictionary.refreshLabel + `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
-                
-                totalSeconds--;
-                if (totalSeconds < 0) {
-                    totalSeconds = refreshMinutes * 60; 
-                }
-            }, 1000);
-        }
-        
-        function openModal() { document.getElementById('howItWorksModal').style.display = 'block'; document.body.style.overflow = 'hidden'; }
-        function closeModal() { document.getElementById('howItWorksModal').style.display = 'none'; document.body.style.overflow = ''; }
-        function toggleFAQ(element) {
-            const answer = element.nextElementSibling;
-            document.querySelectorAll('.faq-question.active').forEach(activeQuestion => {
-                if (activeQuestion !== element) {
-                    activeQuestion.classList.remove('active');
-                    activeQuestion.nextElementSibling.classList.remove('open');
-                }
-            });
-            element.classList.toggle('active');
-            answer.classList.toggle('open');
-        }
-        window.onclick = function(event) { if (event.target === document.getElementById('howItWorksModal')) { closeModal(); } }
-
-        document.addEventListener('DOMContentLoaded', async () => {
-            document.getElementById('leaderboardDate').value = getTodayDateString();
-            
-            await getLanguageByGeoIP().then(lang => setLanguage(lang)); 
-
-            fetchDataForDate(getTodayDateString()); 
-
-            startPayoutCountdown(); 
-            startUpdateCountdown(); 
+            document.getElementById(`avatar-${pos}`).src = player.AvatarURL;
+            document.getElementById(`flag-${pos}`).src = getFlagUrl(player);
+            document.getElementById(`name-${pos}`).textContent = player.Name;
+            document.getElementById(`turnover-${pos}`).textContent = formatNumber(player.Turnover);
+            document.getElementById(`prize-${pos}`).innerHTML = getPrizeDisplay(player.Prize);
         });
-    </script>
+    }
+
+    function renderList(data) {
+        const listContainer = document.getElementById('leaderboard-list');
+        listContainer.innerHTML = '';
+        const listPlayers = data.filter(p => p.Rank >= 4 && p.Rank <= 50); // Display ranks 4 to 50
+
+        listPlayers.forEach(player => {
+            const listItem = document.createElement('li');
+            listItem.className = 'list-item';
+
+            listItem.innerHTML = `
+                <div class="list-rank">${player.Rank}</div>
+                <div class="list-player-info">
+                    <img src="${player.AvatarURL}" class="avatar-list" alt="Avatar ${player.Name}">
+                    <div class="list-name-flag">
+                        <span class="list-name">${player.Name}</span>
+                        <img src="${getFlagUrl(player)}" class="flag-icon" alt="Flag">
+                    </div>
+                </div>
+                <div class="list-turnover">
+                    ${formatNumber(player.Turnover)}
+                </div>
+                <div class="list-prize">
+                    ${getPrizeDisplay(player.Prize)}
+                </div>
+            `;
+            listContainer.appendChild(listItem);
+        });
+    }
+
+    function filterLeaderboard() {
+        // ... (Your existing filter logic remains the same, it uses fullLeaderboardData) ...
+        // ... (Make sure it calls renderPodium and renderList with the filtered results) ...
+    }
+
+    // =======================================================
+    // 5. INITIALIZATION AND AUTO-REFRESH
+    // =======================================================
+
+    document.addEventListener('DOMContentLoaded', async () => {
+        // Initial load
+        applyTranslations(currentLanguage);
+        await fetchDataForDate(getTodayDateString()); 
+        
+        // Setup language selection listener
+        document.getElementById('language-select').addEventListener('change', (e) => {
+            currentLanguage = e.target.value;
+            applyTranslations(currentLanguage);
+            renderPodium(fullLeaderboardData.slice(0, 3)); // Re-render to update prize text
+            renderList(fullLeaderboardData); // Re-render to update prize text
+        });
+
+        // Auto-refresh the leaderboard data every 60 seconds
+        setInterval(() => {
+             fetchDataForDate(getTodayDateString());
+             console.log("Leaderboard data refreshed from Google Sheet.");
+        }, 60000); // 60000 milliseconds = 1 minute
+
+        startPayoutCountdown(); 
+        startUpdateCountdown(); 
+    });
+
+</script>
 </body>
 </html>
