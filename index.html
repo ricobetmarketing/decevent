@@ -1157,7 +1157,7 @@
       dateFromPicker ||
       new Date().toISOString().slice(0, 10);
 
-    fetch("/api/leaderboard?date=" + encodeURIComponent(targetDate))
+    fetch("/api-leaderboard?date=" + encodeURIComponent(targetDate))
       .then((res) => res.json())
       .then((data) => {
         const date = data.date || targetDate;
