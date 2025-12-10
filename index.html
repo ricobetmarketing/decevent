@@ -888,1103 +888,583 @@
 
   <div id="toast" class="toast">Done!</div>
 
-  <script>
-    /* ========== SNOW ========== */
-    function createSnowflakes(count = 40) {
-      for (let i = 0; i < count; i++) {
-        const el = document.createElement("div");
-        el.className = "snowflake";
-        el.textContent = "✻";
-        const left = Math.random() * 100;
-        const duration = 8 + Math.random() * 8;
-        const delay = Math.random() * -duration;
-        const size = 7 + Math.random() * 6;
-        el.style.left = left + "vw";
-        el.style.fontSize = size + "px";
-        el.style.animationDuration = duration + "s";
-        el.style.animationDelay = delay + "s";
-        document.body.appendChild(el);
-      }
+<script>
+  /* ========== SNOW ========== */
+  function createSnowflakes(count = 40) {
+    for (let i = 0; i < count; i++) {
+      const el = document.createElement("div");
+      el.className = "snowflake";
+      el.textContent = "✻";
+      const left = Math.random() * 100;
+      const duration = 8 + Math.random() * 8;
+      const delay = Math.random() * -duration;
+      const size = 7 + Math.random() * 6;
+      el.style.left = left + "vw";
+      el.style.fontSize = size + "px";
+      el.style.animationDuration = duration + "s";
+      el.style.animationDelay = delay + "s";
+      document.body.appendChild(el);
     }
-    createSnowflakes();
+  }
+  createSnowflakes();
 
-    /* ========== CONFIG FOR GOOGLE SHEET ========== */
-    const GOOGLE_SHEET_ID = "14R8r4m2R4nVJLsYDtCD5JjgtSV-LIjOxZkCiUaohnls";
-    const SHEET_NAME = "Leaderboard";
-    const SHEET_URL =
-      "https://docs.google.com/spreadsheets/d/" +
-      GOOGLE_SHEET_ID +
-      "/gviz/tq?tqx=out:json&sheet=" +
-      encodeURIComponent(SHEET_NAME);
+  /* FLAG URL MAPPING */
+  const BR_FLAG_URL = "https://ricobr.ft-crm.com/media-api/serve/f6b3499e-2692-4d6e-b86d-58d1c55b6d5f_brazil.png";
+  const MX_FLAG_URL = "https://ricobr.ft-crm.com/media-api/serve/b132c7fc-2f90-4bda-82de-78223c5c3725_mexico.png";
 
-    /* FLAG URL MAPPING */
-    const BR_FLAG_URL = "https://ricobr.ft-crm.com/media-api/serve/f6b3499e-2692-4d6e-b86d-58d1c55b6d5f_brazil.png";
-    const MX_FLAG_URL = "https://ricobr.ft-crm.com/media-api/serve/b132c7fc-2f90-4bda-82de-78223c5c3725_mexico.png";
+  /* BANNER URLS */
+  const BANNER_EN = "https://ricobr.ft-crm.com/media-api/serve/bf286818-b2a5-4b37-b39c-90ba577a1480_en.png";
+  const BANNER_BR = "https://ricobr.ft-crm.com/media-api/serve/b2f0e72e-e6d4-4058-8529-5740305cd6e2_br.png";
+  const BANNER_MX = "https://ricobr.ft-crm.com/media-api/serve/2cef786e-6407-4c59-bc62-eb6f7f254c76_MX.png";
 
-    /* BANNER URLS */
-    const BANNER_EN = "https://ricobr.ft-crm.com/media-api/serve/bf286818-b2a5-4b37-b39c-90ba577a1480_en.png";
-    const BANNER_BR = "https://ricobr.ft-crm.com/media-api/serve/b2f0e72e-e6d4-4058-8529-5740305cd6e2_br.png";
-    const BANNER_MX = "https://ricobr.ft-crm.com/media-api/serve/2cef786e-6407-4c59-bc62-eb6f7f254c76_MX.png";
+  const bannerImg = document.querySelector(".hero-banner");
 
-    const bannerImg = document.querySelector(".hero-banner");
+  function updateBanner(lang) {
+    if (!bannerImg) return;
+    if (lang === "pt") bannerImg.src = BANNER_BR;
+    else if (lang === "es") bannerImg.src = BANNER_MX;
+    else bannerImg.src = BANNER_EN;
+  }
 
-    function updateBanner(lang) {
-      if (!bannerImg) return;
-      if (lang === "pt") bannerImg.src = BANNER_BR;
-      else if (lang === "es") bannerImg.src = BANNER_MX;
-      else bannerImg.src = BANNER_EN;
+  /* TOAST */
+  const toastEl = document.getElementById("toast");
+  function showToast(msg) {
+    if (!toastEl) return;
+    toastEl.textContent = msg;
+    toastEl.classList.add("show");
+    setTimeout(() => toastEl.classList.remove("show"), 1800);
+  }
+
+  /* ========== DAILY PAYOUT COUNTDOWN (UTC-6 logic) ========== */
+  const nextRewardTimeEl = document.getElementById("nextRewardTime");
+
+  function getNextMexicoPayoutUtcMs(nowUtcMs) {
+    const offsetMs = -6 * 60 * 60 * 1000; // UTC-6
+    const mexNow = new Date(nowUtcMs + offsetMs);
+    let target = new Date(
+      mexNow.getFullYear(),
+      mexNow.getMonth(),
+      mexNow.getDate(),
+      1,
+      0,
+      0,
+      0
+    );
+    if (target <= mexNow) {
+      target.setDate(target.getDate() + 1);
     }
+    return target.getTime() - offsetMs;
+  }
 
-    /* TOAST */
-    const toastEl = document.getElementById("toast");
-    function showToast(msg) {
-      if (!toastEl) return;
-      toastEl.textContent = msg;
-      toastEl.classList.add("show");
-      setTimeout(() => toastEl.classList.remove("show"), 1800);
+  function updatePayoutCountdown() {
+    if (!nextRewardTimeEl) return;
+    const now = new Date();
+    const nowUtcMs = now.getTime();
+    const targetUtcMs = getNextMexicoPayoutUtcMs(nowUtcMs);
+    let diff = targetUtcMs - nowUtcMs;
+    if (diff <= 0) diff = 0;
+    const h = String(Math.floor(diff / (1000 * 60 * 60))).padStart(2, "0");
+    const m = String(Math.floor((diff / (1000 * 60)) % 60)).padStart(2, "0");
+    const s = String(Math.floor((diff / 1000) % 60)).padStart(2, "0");
+    nextRewardTimeEl.textContent = h + ":" + m + ":" + s;
+  }
+
+  updatePayoutCountdown();
+  setInterval(updatePayoutCountdown, 1000);
+
+  /* ========== LEADERBOARD UPDATE COUNTDOWN – EVERY 2 HOURS (UTC-6) ========== */
+  const lbCountdownEl = document.getElementById("lbCountdown");
+
+  function getNextBoardUpdateUtcMs() {
+    const nowUtcMs = Date.now();
+    const offsetMs = -6 * 60 * 60 * 1000; // Mexico UTC-6
+    const mexNow = new Date(nowUtcMs + offsetMs);
+
+    const minutesSinceMidnight =
+      mexNow.getHours() * 60 + mexNow.getMinutes() + mexNow.getSeconds() / 60;
+    const slotMinutes = 120; // 2 hours
+    const nextSlotIndex = Math.floor(minutesSinceMidnight / slotMinutes) + 1;
+    const nextSlotMinutes = nextSlotIndex * slotMinutes;
+
+    const mexTarget = new Date(mexNow);
+    mexTarget.setHours(0, 0, 0, 0);
+    mexTarget.setMinutes(nextSlotMinutes); // can overflow into next day
+
+    return mexTarget.getTime() - offsetMs;
+  }
+
+  let nextLbUpdateUtcMs = getNextBoardUpdateUtcMs();
+
+  function updateLbCountdown() {
+    if (!lbCountdownEl) return;
+    const nowUtcMs = Date.now();
+    let diff = nextLbUpdateUtcMs - nowUtcMs;
+    if (diff <= 0) {
+      nextLbUpdateUtcMs = getNextBoardUpdateUtcMs();
+      diff = nextLbUpdateUtcMs - Date.now();
     }
+    const totalSeconds = Math.floor(diff / 1000);
+    const mins = Math.floor(totalSeconds / 60);
+    const secs = totalSeconds % 60;
+    lbCountdownEl.textContent =
+      String(mins).padStart(2, "0") + ":" + String(secs).padStart(2, "0");
+  }
 
-    /* ========== DAILY PAYOUT COUNTDOWN (UTC-6 logic) ========== */
-    const nextRewardTimeEl = document.getElementById("nextRewardTime");
+  updateLbCountdown();
+  setInterval(updateLbCountdown, 1000);
 
-    function getNextMexicoPayoutUtcMs(nowUtcMs) {
-      const offsetMs = -6 * 60 * 60 * 1000; // UTC-6
-      const mexNow = new Date(nowUtcMs + offsetMs);
-      let target = new Date(
-        mexNow.getFullYear(),
-        mexNow.getMonth(),
-        mexNow.getDate(),
-        1,
-        0,
-        0,
-        0
-      );
-      if (target <= mexNow) {
-        target.setDate(target.getDate() + 1);
-      }
-      return target.getTime() - offsetMs;
+  /* ========== LEADERBOARD DATA (FROM /api/leaderboard) ========== */
+  const podiumGrid = document.getElementById("podiumGrid");
+  const rankingList = document.getElementById("rankingList");
+  const searchInput = document.getElementById("searchInput");
+  const searchBtn = document.getElementById("searchBtn");
+  const searchResult = document.getElementById("searchResult");
+  const searchDateInput = document.getElementById("searchDate");
+
+  let allRows = []; // [{ date, rank, username, turnover, flagUrl }]
+  let currentLeaderboardDate = null;
+
+  function flagInner(flagUrl) {
+    if (flagUrl) {
+      const safe = String(flagUrl).replace(/"/g, "&quot;");
+      return '<img src="' + safe + '" alt="flag" />';
     }
+    return "<span>🌐</span>";
+  }
 
-    function updatePayoutCountdown() {
-      if (!nextRewardTimeEl) return;
-      const now = new Date();
-      const nowUtcMs = now.getTime();
-      const targetUtcMs = getNextMexicoPayoutUtcMs(nowUtcMs);
-      let diff = targetUtcMs - nowUtcMs;
-      if (diff <= 0) diff = 0;
-      const h = String(Math.floor(diff / (1000 * 60 * 60))).padStart(2, "0");
-      const m = String(Math.floor((diff / (1000 * 60)) % 60)).padStart(2, "0");
-      const s = String(Math.floor((diff / 1000) % 60)).padStart(2, "0");
-      nextRewardTimeEl.textContent = h + ":" + m + ":" + s;
+  function shortNum(n) {
+    let num = Number(n);
+    if (!isFinite(num)) return "-";
+
+    num = Math.round(num * 100) / 100;
+
+    if (Math.abs(num) >= 1_000_000) {
+      return (num / 1_000_000).toFixed(2) + "M";
     }
-
-    updatePayoutCountdown();
-    setInterval(updatePayoutCountdown, 1000);
-
-    /* ========== LEADERBOARD UPDATE COUNTDOWN – EVERY 2 HOURS (UTC-6) ========== */
-    const lbCountdownEl = document.getElementById("lbCountdown");
-
-    function getNextBoardUpdateUtcMs() {
-      const nowUtcMs = Date.now();
-      const offsetMs = -6 * 60 * 60 * 1000; // Mexico UTC-6
-      const mexNow = new Date(nowUtcMs + offsetMs);
-
-      const minutesSinceMidnight =
-        mexNow.getHours() * 60 + mexNow.getMinutes() + mexNow.getSeconds() / 60;
-      const slotMinutes = 120; // 2 hours
-      const nextSlotIndex = Math.floor(minutesSinceMidnight / slotMinutes) + 1;
-      const nextSlotMinutes = nextSlotIndex * slotMinutes;
-
-      const mexTarget = new Date(mexNow);
-      mexTarget.setHours(0, 0, 0, 0);
-      mexTarget.setMinutes(nextSlotMinutes); // can overflow into next day
-
-      return mexTarget.getTime() - offsetMs;
-    }
-
-    let nextLbUpdateUtcMs = getNextBoardUpdateUtcMs();
-
-    function updateLbCountdown() {
-      if (!lbCountdownEl) return;
-      const nowUtcMs = Date.now();
-      let diff = nextLbUpdateUtcMs - nowUtcMs;
-      if (diff <= 0) {
-        nextLbUpdateUtcMs = getNextBoardUpdateUtcMs();
-        diff = nextLbUpdateUtcMs - Date.now();
-      }
-      const totalSeconds = Math.floor(diff / 1000);
-      const mins = Math.floor(totalSeconds / 60);
-      const secs = totalSeconds % 60;
-      lbCountdownEl.textContent =
-        String(mins).padStart(2, "0") + ":" + String(secs).padStart(2, "0");
-    }
-
-    updateLbCountdown();
-    setInterval(updateLbCountdown, 1000);
-
-    /* ========== GOOGLE SHEET → LEADERBOARD DATA ========== */
-    const podiumGrid = document.getElementById("podiumGrid");
-    const rankingList = document.getElementById("rankingList");
-    const searchInput = document.getElementById("searchInput");
-    const searchBtn = document.getElementById("searchBtn");
-    const searchResult = document.getElementById("searchResult");
-    const searchDateInput = document.getElementById("searchDate");
-
-    let allRows = [];
-    let currentLeaderboardDate = null;
-
-    function flagInner(flagUrl) {
-      if (flagUrl) {
-        const safe = String(flagUrl).replace(/"/g, "&quot;");
-        return '<img src="' + safe + '" alt="flag" />';
-      }
-      return "<span>🌐</span>";
-    }
-
-    function shortNum(n) {
-      let num = Number(n);
-      if (!isFinite(num)) return "-";
-
-      num = Math.round(num * 100) / 100;
-
-      if (Math.abs(num) >= 1_000_000) {
-        return (num / 1_000_000).toFixed(2) + "M";
-      }
-      if (Math.abs(num) >= 1_000) {
-        return (num / 1_000).toFixed(2) + "K";
-      }
-
-      return num.toFixed(2);
+    if (Math.abs(num) >= 1_000) {
+      return (num / 1_000).toFixed(2) + "K";
     }
 
-    function prizeForRank(rank) {
-      const r = Number(rank);
-      if (r === 1) return "$100";
-      if (r === 2) return "$70";
-      if (r === 3) return "$50";
-      if (r === 4) return "$45";
-      if (r === 5) return "$40";
-      if (r === 6) return "$30";
-      if (r === 7) return "$25";
-      if (r === 8) return "$20";
-      if (r === 9) return "$15";
-      if (r === 10) return "$10";
-      if (r >= 11 && r <= 20) return "$5";
-      return "-";
-    }
+    return num.toFixed(2);
+  }
 
-    function clearPodiumAndList() {
-      if (podiumGrid) podiumGrid.innerHTML = "";
-      if (rankingList) rankingList.innerHTML = "";
-    }
+  function prizeForRank(rank) {
+    const r = Number(rank);
+    if (r === 1) return "$100";
+    if (r === 2) return "$70";
+    if (r === 3) return "$50";
+    if (r === 4) return "$45";
+    if (r === 5) return "$40";
+    if (r === 6) return "$30";
+    if (r === 7) return "$25";
+    if (r === 8) return "$20";
+    if (r === 9) return "$15";
+    if (r === 10) return "$10";
+    if (r >= 11 && r <= 20) return "$5";
+    return "-";
+  }
 
-    /* Convert various Google date formats -> YYYY-MM-DD */
-    function toIsoDate(raw) {
-      if (raw == null) return "";
-      if (typeof raw === "number") {
-        const base = new Date(1899, 11, 30);
-        const d = new Date(base.getTime() + raw * 86400000);
-        return d.toISOString().slice(0, 10);
-      }
-      if (typeof raw === "string") {
-        const v = raw.trim();
-        const m = v.match(/^Date\((\d+),\s*(\d+),\s*(\d+)\)$/);
-        if (m) {
-          const year = parseInt(m[1], 10);
-          const month = parseInt(m[2], 10);
-          const day = parseInt(m[3], 10);
-          const d = new Date(year, month, day);
-          return d.toISOString().slice(0, 10);
-        }
-        const d2 = new Date(v);
-        if (!isNaN(d2)) return d2.toISOString().slice(0, 10);
-        return v;
-      }
-      return "";
-    }
+  function clearPodiumAndList() {
+    if (podiumGrid) podiumGrid.innerHTML = "";
+    if (rankingList) rankingList.innerHTML = "";
+  }
 
-    function parseSheetResponse(text) {
-      const match = text.match(/\{.*\}/s);
-      if (!match) throw new Error("Invalid sheet format");
-      const json = JSON.parse(match[0]);
-
-      const rows = [];
-      const tableRows = json.table.rows || [];
-
-      tableRows.forEach((r) => {
-        if (!r.c) return;
-
-        const cellDate = r.c[0];
-        let date = "";
-        if (cellDate) {
-          const raw =
-            typeof cellDate.f !== "undefined" && cellDate.f !== null
-              ? cellDate.f
-              : cellDate.v;
-          date = toIsoDate(raw);
-        }
-
-        const rank = r.c[1]?.v;
-        const username = r.c[2]?.v ? String(r.c[2].v).trim() : "";
-        const turnover = r.c[3]?.v;
-
-        let flagCode = r.c[4]?.v ? String(r.c[4].v).trim() : "";
-        let flagUrl = "";
-        if (flagCode) {
-          const upper = flagCode.toUpperCase();
-          if (upper === "BR") flagUrl = BR_FLAG_URL;
-          else if (upper === "MX") flagUrl = MX_FLAG_URL;
-          else flagUrl = flagCode;
-        }
-
-        if (!date || !rank || !username) return;
-
-        rows.push({ date, rank, username, turnover, flagUrl });
-      });
-
-      return rows;
-    }
-
-    function renderForDate(dateStr) {
-      clearPodiumAndList();
-      if (!allRows.length) {
-        if (searchResult) {
-          searchResult.innerHTML = "Leaderboard data is not loaded yet.";
-        }
-        return;
-      }
-
-      const targetDate = dateStr || (allRows[0] && allRows[0].date);
-      if (!targetDate) return;
-
-      const rowsForDate = allRows
-        .filter((r) => r.date === targetDate)
-        .sort((a, b) => Number(a.rank) - Number(b.rank));
-
-      if (!rowsForDate.length) {
-        if (searchResult) {
-          searchResult.innerHTML =
-            'No leaderboard found for <strong>' + targetDate + "</strong>.";
-        }
-        return;
-      }
-
-      /* Podium – ranks 1–3 */
-      if (podiumGrid) {
-        const top3 = rowsForDate.filter(
-          (r) => Number(r.rank) >= 1 && Number(r.rank) <= 3
-        );
-        const desiredOrder = [2, 1, 3];
-        desiredOrder.forEach((rank) => {
-          const player = top3.find((r) => Number(r.rank) === rank);
-          if (!player) return;
-          const card = document.createElement("div");
-          card.className = "podium-item rank-" + rank;
-          const prize = prizeForRank(rank);
-          const trophyEmoji = rank === 1 ? "🏆" : rank === 2 ? "🥈" : "🥉";
-          card.innerHTML = `
-            <div class="podium-rank">
-              <span class="podium-trophy">${trophyEmoji}</span>
-              <span>#${rank}</span>
-            </div>
-            <div class="podium-avatar">${flagInner(player.flagUrl)}</div>
-            <div class="podium-name">${player.username}</div>
-            <div class="podium-turnover">💰 ${shortNum(player.turnover)}</div>
-            <div class="podium-prize">Prize: ${prize}</div>
-          `;
-          podiumGrid.appendChild(card);
-        });
-      }
-
-      /* List – ranks 4–20 */
-      if (rankingList) {
-        rowsForDate
-          .filter((r) => Number(r.rank) >= 4 && Number(r.rank) <= 20)
-          .forEach((player) => {
-            const rank = Number(player.rank);
-            const row = document.createElement("div");
-            row.className = "ranking-row";
-            row.dataset.rank = rank;
-            const prize = prizeForRank(rank);
-            row.innerHTML = `
-              <div class="rank-badge">${rank}</div>
-              <div class="rank-main">
-                <div class="rank-avatar">${flagInner(player.flagUrl)}</div>
-                <div class="rank-name">${player.username}</div>
-              </div>
-              <div class="rank-turnover">${shortNum(player.turnover)}</div>
-              <div class="rank-prize">${prize}</div>
-            `;
-            rankingList.appendChild(row);
-          });
-      }
-
+  function renderForDate(dateStr) {
+    clearPodiumAndList();
+    if (!allRows.length) {
       if (searchResult) {
-        searchResult.innerHTML = "";
+        searchResult.innerHTML = "Leaderboard data is not loaded yet.";
       }
+      return;
     }
 
- function loadSheetData(preferredDate) {
-  const dateFromPicker = (searchDateInput && searchDateInput.value) || "";
-  const targetDate =
-    preferredDate ||
-    dateFromPicker ||
-    new Date().toISOString().slice(0, 10);
+    const targetDate = dateStr || (allRows[0] && allRows[0].date);
+    if (!targetDate) return;
 
-  fetch("/api/leaderboard?date=" + encodeURIComponent(targetDate))
-    .then((res) => res.json())
-    .then((data) => {
-      allRows = data.rows || [];
+    const rowsForDate = allRows
+      .filter((r) => r.date === targetDate)
+      .sort((a, b) => Number(a.rank) - Number(b.rank));
 
-      if (searchDateInput && data.date) {
-        searchDateInput.value = data.date;
+    if (!rowsForDate.length) {
+      if (searchResult) {
+        searchResult.innerHTML =
+          'No leaderboard found for <strong>' + targetDate + "</strong>.";
       }
+      return;
+    }
 
-      if (!allRows.length) {
-        clearPodiumAndList();
-        if (searchResult) {
-          searchResult.innerHTML =
-            'No leaderboard found for <strong>' + data.date + "</strong> yet.";
-        }
-        return;
-      }
-
-      // allRows is already [{ date, rank, username, turnover, flagUrl }]
-      renderForDate(data.date);
-    })
-    .catch((err) => {
-      console.error(err);
-      showToast("Error loading leaderboard");
-    });
-}
-
-
-    /* ========== SEARCH BY USERNAME + DATE ========== */
-    function findRankForDate(usernameRaw, dateStr) {
-      const username = usernameRaw.trim().toLowerCase();
-      if (!username) return null;
-      const dateRows = allRows.filter((r) => r.date === dateStr);
-      if (!dateRows.length) return null;
-      const userRow = dateRows.find(
-        (r) => String(r.username).toLowerCase() === username
+    /* Podium – ranks 1–3 */
+    if (podiumGrid) {
+      const top3 = rowsForDate.filter(
+        (r) => Number(r.rank) >= 1 && Number(r.rank) <= 3
       );
-      if (!userRow) return null;
-      const rank = Number(userRow.rank);
-      const inTop20 = rank >= 1 && rank <= 20;
-      const turnover = userRow.turnover;
-      return { ...userRow, rank, turnover, inTop20 };
-    }
-
-    function handleSearch() {
-      if (!searchInput || !searchResult) return;
-      const q = searchInput.value;
-      const dateValue =
-        (searchDateInput && searchDateInput.value) ||
-        (allRows[0] && allRows[0].date);
-      const displayDate = dateValue || "this date";
-
-      if (!q.trim()) {
-        searchResult.textContent = "";
-        return;
-      }
-
-      if (!allRows.length) {
-        searchResult.innerHTML =
-          "Leaderboard not loaded yet. Please try again shortly.";
-        return;
-      }
-
-      const result = findRankForDate(q, displayDate);
-      if (!result) {
-        const dict = translations[currentLang];
-        searchResult.innerHTML = dict.noUserFound
-          .replace("{user}", q)
-          .replace("{date}", displayDate);
-        return;
-      }
-
-      const rankPrize = prizeForRank(result.rank);
-      const baseText =
-        "<strong>" +
-        result.username +
-        "</strong> is currently <strong># " +
-        result.rank +
-        "</strong> on <strong>" +
-        displayDate +
-        "</strong>.";
-      const turnoverText =
-        " Score (USD): <strong>" + shortNum(result.turnover) + "</strong>.";
-      const prizeText =
-        rankPrize !== "-"
-          ? " Prize for this rank: <strong>" + rankPrize + "</strong>."
-          : "";
-
-      if (result.inTop20) {
-        searchResult.innerHTML = baseText + prizeText + turnoverText;
-
-        if (result.rank >= 4 && result.rank <= 20 && rankingList) {
-          const rows = Array.from(rankingList.children);
-          rows.forEach((r) => r.classList.remove("highlight"));
-          const row = rows.find(
-            (r) => Number(r.dataset.rank) === result.rank
-          );
-          if (row) {
-            row.classList.add("highlight");
-            row.scrollIntoView({ behavior: "smooth", block: "center" });
-          }
-        }
-      } else {
-        searchResult.innerHTML =
-          baseText +
-          " (outside Top 20 list)." +
-          prizeText +
-          turnoverText;
-      }
-    }
-
-    if (searchBtn && searchInput) {
-      searchBtn.addEventListener("click", handleSearch);
-      searchInput.addEventListener("keydown", (e) => {
-        if (e.key === "Enter") handleSearch();
-      });
-    }
-
-    /* ========== CTAS & FAQ MODAL ========== */
-    const startPlayingBtn = document.getElementById("startPlayingBtn");
-    const howWorksBtn = document.getElementById("howWorksBtn");
-    const faqModal = document.getElementById("faqModal");
-    const faqCloseBtn = document.getElementById("faqCloseBtn");
-
-    if (startPlayingBtn) {
-      startPlayingBtn.addEventListener("click", () => {
-        const selfOrigin = window.location.origin || "";
-
-        const parentOrigin = (() => {
-          try {
-            if (!document.referrer) return "";
-            const u = new URL(document.referrer);
-            return u.origin;
-          } catch (e) {
-            return "";
-          }
-        })();
-
-        const ricoDomains = [
-          "https://www.rico.bet",
-          "https://www.ricobet.com.mx",
-          "https://www.ricobet.net"
-        ];
-
-        let baseOrigin = "";
-        let finalUrl = "";
-
-        if (ricoDomains.includes(parentOrigin)) {
-          baseOrigin = parentOrigin;
-        } else if (ricoDomains.includes(selfOrigin)) {
-          baseOrigin = selfOrigin;
-        }
-
-        if (baseOrigin) {
-          finalUrl = baseOrigin + "/slots";
-        } else {
-          if (currentLang === "es") {
-            finalUrl = "https://www.ricobet.com.mx/slots";
-          } else {
-            finalUrl = "https://www.rico.bet/slots";
-          }
-        }
-
-        (window.top || window).location.href = finalUrl;
-      });
-    }
-
-    if (howWorksBtn && faqModal) {
-      howWorksBtn.addEventListener("click", () => {
-        faqModal.classList.add("show");
-      });
-    }
-
-    if (faqCloseBtn && faqModal) {
-      faqCloseBtn.addEventListener("click", () => {
-        faqModal.classList.remove("show");
-      });
-    }
-
-    if (faqModal) {
-      faqModal.addEventListener("click", (e) => {
-        if (e.target === faqModal) faqModal.classList.remove("show");
-      });
-    }
-
-    /* ========== TRANSLATIONS (EN / PT / ES) ========== */
-    const translations = {
-      en: {
-        countdownLabel1: "Next rewards payout in",
-        countdownMeta1: "Countdown timer based on UTC-6",
-        lbTopLabel: "Results update in",
-        searchBtn: "Find",
-        noUserFound: "No username found for <strong>{user}</strong> on <strong>{date}</strong> in the leaderboard yet.",
-        searchPlaceholder: "Search your username…",
-        btnPlay: "Start Playing",
-        btnHow: "How it works / T&C",
-        colRank: "Rank",
-        colUser: "Username",
-        colTurnover: "Score (USD)",
-        colPrize: "Prize",
-        faqTitle: "The Daily Ranking – FAQ",
-        faqSub: "Tap on each question to expand and read the details.",
-        faqItems: [
-          {
-            q: "What is The Daily Ranking?",
-            a: `
-              <p>The Daily Ranking is a daily leaderboard event where players from Rico.bet Brazil and Rico.bet Mexico compete together based on their total Score earned each day. The Top 20 players win guaranteed prizes daily.</p>
-            `
-          },
-          {
-            q: "Which game categories are included?",
-            a: `
-              <p>All game categories count toward your Score , including:</p>
-              <ul>
-                <li>• Slots</li>
-                <li>• Aviator / Crash</li>
-                <li>• Live Casino</li>
-                <li>• Table Games</li>
-                <li>• Sportsbook</li>
-                <li>• Virtual Sports</li>
-                <li>• Bingo / Keno</li>
-                <li>• Any other game available on Rico.bet</li>
-              </ul>
-              <p>If you can wager on it, it contributes to your score.</p>
-            `
-          },
-          {
-            q: "How do I participate?",
-            a: `
-              <p>Simply play any game during the event period. Your score is tracked automatically and added to the leaderboard.</p>
-            `
-          },
-          {
-            q: "How is the Score calculated?",
-            a: `
-              <p>Your Score is based on your total turnover from all categories, converted to USD for fairness between Brazil and Mexico.</p>
-              <p><strong>Currency Conversion:</strong></p>
-              <ul>
-                <li>• 1 USD = BRL 5</li>
-                <li>• 1 USD = MXN 18</li>
-              </ul>
-              <p><strong>Point Formula:</strong> 1 USD in turnover = 1 Point</p>
-              <p><strong>Examples:</strong></p>
-              <ul>
-                <li>• BRL 500 wagered → 100 Score</li>
-                <li>• MXN 1800 wagered → 100 Score</li>
-                <li>• USD 250 wagered → 250 Score</li>
-              </ul>
-            `
-          }, 
-          {
-            q: "What is the event time zone?",
-            a: `
-              <p>The event follows Mexico Time (UTC-6).</p>
-              <p><strong>Daily turnover window:</strong> 00:00 – 23:59 (UTC-6)</p>
-            `
-          },
-          {
-            q: "Why is Mexico time used for all players?",
-            a: `
-              <p>This is a combined Brazil vs Mexico event, so using one consistent timezone ensures fairness. All bets are recorded in UTC, then converted to UTC-6 for ranking.</p>
-            `
-          },
-          {
-            q: "When are prizes credited?",
-            a: `
-              <p>Prizes are issued automatically the next day between:</p>
-              <p><strong>01:00 – 02:00 (UTC-6)</strong></p>
-            `
-          },
-          {
-            q: "What are the daily prizes?",
-            a: `
-              <p>The Top 20 players win the following prizes every day:</p>
-              <ul>
-                <li>• 1 → US$100</li>
-                <li>• 2 → US$70</li>
-                <li>• 3 → US$50</li>
-                <li>• 4 → US$45</li>
-                <li>• 5 → US$40</li>
-                <li>• 6 → US$30</li>
-                <li>• 7 → US$25</li>
-                <li>• 8 → US$20</li>
-                <li>• 9 → US$15</li>
-                <li>• 10 → US$10</li>
-                <li>• 11–20 → US$5 each</li>
-              </ul>
-            `
-          },
-          {
-            q: "How often is the ranking updated?",
-            a: `
-              <p>The leaderboard refreshes every 2 hours (UTC-6).</p>
-            `
-          },
-          {
-            q: "Do cancelled or void bets count?",
-            a: `
-              <p>No. Only settled and valid wagers contribute to your Score. </p>
-            `
-          },
-          {
-            q: "Can I win multiple days?",
-            a: `
-              <p>Yes. This is a daily event, so you can win every day as long as you reach the Top 20.</p>
-            `
-          },
-          {
-            q: "What happens if two players have the same turnover?",
-            a: `
-              <p>The player who reached the Score earlier (based on UTC timestamp) will be placed higher.</p>
-            `
-          },
-          {
-            q: "Are there any restrictions or anti-abuse rules?",
-            a: `
-              <p>Yes. To ensure fairness, the following may lead to disqualification:</p>
-              <ul>
-                <li>• Multi-accounting</li>
-                <li>• Irregular betting patterns</li>
-                <li>• Bonus abuse</li>
-                <li>• Fraud or suspicious behavior</li>
-              </ul>
-            `
-          },
-          {
-            q: "Where do I receive my prize?",
-            a: `
-              <p>Prizes are credited directly into your Rico.bet wallet in game credits.</p>
-            `
-          },
-          {
-            q: "Do I need to contact support to claim the prize?",
-            a: `
-              <p>No. Prizes are automatically issued. You only need to check your wallet after 01:00–02:00 (UTC-6).</p>
-            `
-          },
-          {
-            q: "Can the event be changed or cancelled?",
-            a: `
-              <p>Rico.bet may adjust, pause, or cancel the event if necessary for fairness or technical reasons.</p>
-            `
-          }
-        ]
-      },
-      pt: {
-        countdownLabel1: "Próximo pagamento de prêmios em",
-        noUserFound: "Nenhum usuário encontrado para <strong>{user}</strong> em <strong>{date}</strong> no ranking ainda.",
-        countdownMeta1: "Cronômetro baseado em UTC-6",
-        lbTopLabel: "Atualização dos resultados em",
-        searchBtn: "Procurar",
-        searchPlaceholder: "Busque seu usuário…",
-        btnPlay: "Começar a jogar",
-        btnHow: "Como funciona / T&C",
-        colRank: "Posição",
-        colUser: "Usuário",
-        colTurnover: "Pontuação (USD)",
-        colPrize: "Prêmio",
-        faqTitle: "The Daily Ranking – FAQ",
-        faqSub: "Toque em cada pergunta para expandir e ver os detalhes.",
-        faqItems: [
-          {
-            q: "O que é o The Daily Ranking?",
-            a: `
-              <p>O The Daily Ranking é um evento diário de leaderboard onde jogadores da Rico.bet Brasil e Rico.bet México competem juntos com base na Pontuação total acumulada no dia. Os 20 melhores jogadores recebem prêmios garantidos diariamente.</p>
-            `
-          },
-          {
-            q: "Quais categorias de jogos estão incluídas?",
-            a: `
-              <p>Todas as categorias contam para a sua Pontuação, incluindo:</p>
-              <ul>
-                <li>• Slots</li>
-                <li>• Aviator / Crash</li>
-                <li>• Cassino ao Vivo</li>
-                <li>• Jogos de Mesa</li>
-                <li>• Esportes / Sportsbook</li>
-                <li>• Esportes Virtuais</li>
-                <li>• Bingo / Keno</li>
-                <li>• Todos os outros jogos disponíveis na Rico.bet</li>
-              </ul>
-              <p>Se você pode apostar, conta.</p>
-            `
-          },
-          {
-            q: "Como posso participar? ",
-            a: `
-              <p>Basta jogar qualquer jogo durante o evento. Sua Pontuação é registrada automaticamente no leaderboard.</p>
-            `
-          },
-          {
-            q: "Como a Pontuação é calculada?",
-            a: `
-              <p>Sua Pontuação é baseada no total apostado em todas as categorias, convertido para USD para garantir justiça entre Brasil e México.</p>
-              <p><strong>Conversão:</strong></p>
-              <ul>
-                <li>• 1 USD = BRL 5</li>
-              </ul>
-              <p><strong>Fórmula:</strong> 1 USD apostado = 1 ponto</p>
-              <p><strong>Exemplo:</strong></p>
-              <ul>
-                    <li>• BRL 500 apostados → 100 Pontuação</li>
-                <li>• MXN 1800 apostados → 100 Pontuação</li>
-                <li>• USD 250 apostados → 250 Pontuação</li>
-              </ul>
-            `
-          },
-          {
-            q: "Qual é o fuso horário do evento?",
-            a: `
-              <p>O evento segue o horário do México (UTC-6).</p>
-              <p><strong>Período diário:</strong> 00:00 – 23:59 (UTC-6).</p>
-            `
-          },
-          {
-            q: "Por que usar o horário do México?",
-            a: `
-              <p>Como é uma competição entre Brasil e México, usar um horário unificado garante justiça. As apostas são registradas em UTC e convertidas para UTC-6 para cálculo da Pontuação e do ranking.</p>
-            `
-          },
-          {
-            q: " Quando os prêmios são creditados?",
-            a: `
-              <p>Os prêmios são creditados automaticamente no dia seguinte, entre:</p>
-              <p><strong>01:00 – 02:00 (UTC-6)</strong></p>
-            `
-          },
-          {
-            q: "Quais são os prêmios diários?",
-            a: `
-              <p>Os Top 20 recebem:</p>
-              <ul>
-                <li>• 1º → US$100</li>
-                <li>• 2º → US$70</li>
-                <li>• 3º → US$50</li>
-                <li>• 4º → US$45</li>
-                <li>• 5º → US$40</li>
-                <li>• 6º → US$30</li>
-                <li>• 7º → US$25</li>
-                <li>• 8º → US$20</li>
-                <li>• 9º → US$15</li>
-                <li>• 10º → US$10</li>
-                <li>• 11º–20º → US$5 cada</li>
-              </ul>
-            `
-          },
-          {
-            q: "Com que frequência o ranking é atualizado?",
-            a: `
-              <p>A cada 2 horas (UTC-6).</p>
-            `
-          },
-          {
-            q: "Apostas canceladas contam?",
-            a: `
-              <p>Não. Somente apostas válidas e liquidadas contam para sua Pontuação.</p>
-            `
-          },
-          {
-            q: "Posso ganhar vários dias?",
-            a: `
-              <p>Sim! Este é um evento diário, então você pode ganhar todos os dias.</p>
-            `
-          },
-          {
-            q: "O que acontece se dois jogadores tiverem a mesma Pontuação?",
-            a: `
-              <p>Quem atingir a Pontuação primeiro (de acordo com UTC) ficará acima no ranking. </p>
-            `
-          },
-          {
-            q: "Existem regras contra abuso?",
-            a: `
-              <p>Sim. A Rico.bet pode desclassificar jogadores por:</p>
-              <ul>
-                <li>• Multi-contas</li>
-                <li>• Apostas irregulares</li>
-                <li>• Abuso de bônus</li>
-                <li>• Fraude ou comportamento suspeito</li>
-              </ul>
-            `
-          },
-          {
-            q: "Onde recebo meu prêmio?",
-            a: `
-              <p>Diretamente na sua carteira Rico.bet, em créditos de jogo.</p>
-            `
-          },
-          {
-            q: "Preciso contatar o suporte para receber?",
-            a: `
-              <p>Não. Os prêmios são automáticos. Basta verificar sua carteira após 01:00–02:00 (UTC-6).</p>
-            `
-          },
-          {
-            q: "O evento pode ser alterado ou cancelado?",
-            a: `
-              <p>Sim, caso necessário para manter justiça e estabilidade.</p>
-            `
-          }
-        ]
-      },
-      es: {
-        countdownLabel1: "Próximo pago de premios en",
-        noUserFound: "No se encontró el usuario <strong>{user}</strong> en <strong>{date}</strong> en la tabla de posiciones.",
-        countdownMeta1: "Contador basado en UTC-6",
-        lbTopLabel: "Actualización de resultados en",
-        searchBtn: "Buscar",
-        searchPlaceholder: "Busca tu usuario…",
-        btnPlay: "Empezar a jugar",
-        btnHow: "Cómo funciona / T&C",
-        colRank: "Posición",
-        colUser: "Usuario",
-        colTurnover: "Puntuación (USD) ",
-        colPrize: "Premio",
-        faqTitle: "The Daily Ranking – FAQ",
-        faqSub: "Toca cada pregunta para expandir y ver los detalles.",
-        faqItems: [
-          {
-            q: "¿Qué es The Daily Ranking?",
-            a: `
-              <p>The Daily Ranking es un evento diario de leaderboard donde jugadores de Rico.bet Brasil y Rico.bet México compiten según su Puntuación total acumulada cada día. Los Top 20 jugadores reciben premios garantizados diariamente.</p>
-            `
-          },
-          {
-            q: "¿Qué categorías de juegos están incluidas?",
-            a: `
-              <p>Todas las categorías suman a tu Puntuación, incluyendo:</p>
-              <ul>
-                <li>• Slots</li>
-                <li>• Aviator / Crash</li>
-                <li>• Casino en Vivo</li>
-                <li>• Juegos de Mesa</li>
-                <li>• Sportsbook / Apuestas Deportivas</li>
-                <li>• Deportes Virtuales</li>
-                <li>• Bingo / Keno</li>
-                <li>• Cualquier juego disponible en Rico.bet</li>
-              </ul>
-              <p>Si puedes apostar, genera Puntuación.</p>
-            `
-          },
-          {
-            q: "¿Cómo participo?",
-            a: `
-              <p>Juega cualquier juego durante el evento. Tu Puntuación se registra automáticamente en el leaderboard.</p>
-            `
-          },
-          {
-            q: "¿Cómo se calcula la Puntuación?",
-            a: `
-              <p>Tu Puntuación se basa en el total apostado en todas las categorías, convertido a USD para mantener justicia entre Brasil y México.</p>
-              <p><strong>Conversión:</strong></p>
-              <ul>
-                <li>• 1 USD = MXN 18</li>
-              </ul>
-              <p><strong>Fórmula:</strong> 1 USD apostado = 1 Puntuación</p>
-              <p><strong>Ejemplo:</strong></p>
-              <ul>
-                <li>• BRL 500 apostados → 100 Puntuación</li>
-                <li>• MXN 1800 apostados → 100 Puntuación</li>
-                <li>• USD 250 apostados → 250 Puntuación</li>
-              </ul>
-            `
-          },
-          {
-            q: "¿Cuál es el horario del evento?",
-            a: `
-              <p>El evento sigue el horario de México (UTC-6).</p>
-              <p><strong>Período diario:</strong> 00:00 – 23:59 (UTC-6).</p>
-            `
-          },
-          {
-            q: "¿Por qué se usa el horario de México?",
-            a: `
-              <p>Como es una competencia entre Brasil y México, usar un horario unificado garantiza igualdad. Las apuestas se registran en UTC y se convierten a UTC-6 para calcular la Puntuación y el ranking.</p>
-            `
-          },
-          {
-            q: "¿Cuándo se acreditan los premios?",
-            a: `
-              <p>Los premios se acreditan automáticamente al día siguiente entre:</p>
-              <p><strong>01:00 – 02:00 (UTC-6)</strong></p>
-            `
-          },
-          {
-            q: "¿Cuáles son los premios diarios?",
-            a: `
-              <p>Los Top 20 reciben:</p>
-              <ul>
-                <li>• 1 → US$100</li>
-                <li>• 2 → US$70</li>
-                <li>• 3 → US$50</li>
-                <li>• 4 → US$45</li>
-                <li>• 5 → US$40</li>
-                <li>• 6 → US$30</li>
-                <li>• 7 → US$25</li>
-                <li>• 8 → US$20</li>
-                <li>• 9 → US$15</li>
-                <li>• 10 → US$10</li>
-                <li>• 11–20 → US$5 cada uno</li>
-              </ul>
-            `
-          },
-          {
-            q: "¿Cada cuánto se actualiza el ranking?",
-            a: `
-              <p>Cada 2 horas (UTC-6).</p>
-            `
-          },
-          {
-            q: "¿Cuentan las apuestas canceladas?",
-            a: `
-              <p>No. Solo las apuestas válidas y liquidadas generan Puntuación.</p>
-            `
-          },
-          {
-            q: "¿Puedo ganar varios días?",
-            a: `
-              <p>Sí, es un evento diario, puedes ganar todos los días.</p>
-            `
-          },
-          {
-            q: "¿Qué pasa si dos jugadores tienen la misma Puntuación?",
-            a: `
-              <p>Quien alcance esa Puntuación primero (según UTC) estará más arriba en el ranking.</p>
-            `
-          },
-          {
-            q: "¿¿Hay reglas de abuso o fraude?",
-            a: `
-              <p>Sí. Se puede descalificar por:</p>
-              <ul>
-                <li>• Multi-cuentas</li>
-                <li>• Apuestas irregulares</li>
-                <li>• Abuso de bonos</li>
-                <li>• Fraude o actividad sospechosa</li>
-              </ul>
-            `
-          },
-          {
-            q: "¿Dónde recibo mi premio?",
-            a: `
-              <p>Directamente en tu billetera Rico.bet como créditos de juego.</p>
-            `
-          },
-          {
-            q: "¿Debo contactar soporte para recibirlo?",
-            a: `
-              <p>No. Los premios se acreditan automáticamente. Solo necesitas revisar tu billetera después de las 01:00–02:00 (UTC-6).</p>
-            `
-          },
-          {
-            q: "¿El evento puede cambiar o cancelarse?",
-            a: `
-              <p>Sí, si es necesario para mantener justicia y estabilidad.</p>
-            `
-          }
-        ]
-      }
-    };
-
-    const langSelect = document.getElementById("langSelect");
-    const faqListEl = document.getElementById("faqList");
-    let currentLang = "en";
-
-    function renderFaq(lang) {
-      if (!faqListEl) return;
-      const dict = translations[lang] || translations.en;
-      faqListEl.innerHTML = "";
-      (dict.faqItems || []).forEach((item, idx) => {
-        const article = document.createElement("article");
-        article.className = "faq-item";
-        article.innerHTML = `
-          <button class="faq-question">
-            <div class="faq-question-text">
-              <span class="faq-question-index">${idx + 1}</span>
-              <span>${item.q}</span>
-            </div>
-            <span class="faq-icon">+</span>
-          </button>
-          <div class="faq-answer">${item.a}</div>
+      const desiredOrder = [2, 1, 3];
+      desiredOrder.forEach((rank) => {
+        const player = top3.find((r) => Number(r.rank) === rank);
+        if (!player) return;
+        const card = document.createElement("div");
+        card.className = "podium-item rank-" + rank;
+        const prize = prizeForRank(rank);
+        const trophyEmoji = rank === 1 ? "🏆" : rank === 2 ? "🥈" : "🥉";
+        card.innerHTML = `
+          <div class="podium-rank">
+            <span class="podium-trophy">${trophyEmoji}</span>
+            <span>#${rank}</span>
+          </div>
+          <div class="podium-avatar">${flagInner(player.flagUrl)}</div>
+          <div class="podium-name">${player.username}</div>
+          <div class="podium-turnover">💰 ${shortNum(player.turnover)}</div>
+          <div class="podium-prize">Prize: ${prize}</div>
         `;
-        faqListEl.appendChild(article);
-      });
-
-      faqListEl.querySelectorAll(".faq-item").forEach((item) => {
-        const btn = item.querySelector(".faq-question");
-        if (!btn) return;
-        btn.addEventListener("click", () => {
-          const isOpen = item.classList.contains("open");
-          faqListEl.querySelectorAll(".faq-item").forEach((i) => {
-            i.classList.remove("open");
-          });
-          if (!isOpen) item.classList.add("open");
-        });
+        podiumGrid.appendChild(card);
       });
     }
 
-    function applyLanguage(lang) {
-      const dict = translations[lang] || translations.en;
-      currentLang = lang;
-      document.documentElement.setAttribute("data-lang", lang);
-      if (langSelect && langSelect.value !== lang) {
-        langSelect.value = lang;
-      }
+    /* List – ranks 4–20 */
+    if (rankingList) {
+      rowsForDate
+        .filter((r) => Number(r.rank) >= 4 && Number(r.rank) <= 20)
+        .forEach((player) => {
+          const rank = Number(player.rank);
+          const row = document.createElement("div");
+          row.className = "ranking-row";
+          row.dataset.rank = rank;
+          const prize = prizeForRank(rank);
+          row.innerHTML = `
+            <div class="rank-badge">${rank}</div>
+            <div class="rank-main">
+              <div class="rank-avatar">${flagInner(player.flagUrl)}</div>
+              <div class="rank-name">${player.username}</div>
+            </div>
+            <div class="rank-turnover">${shortNum(player.turnover)}</div>
+            <div class="rank-prize">${prize}</div>
+          `;
+          rankingList.appendChild(row);
+        });
+    }
 
-      document.querySelectorAll("[data-i18n]").forEach((el) => {
-        const key = el.getAttribute("data-i18n");
-        if (dict[key]) {
-          if (key === "colTurnover") {
-            el.innerHTML = dict[key]; // allow <br> for multi-line header
-          } else {
-            el.textContent = dict[key];
-          }
+    currentLeaderboardDate = targetDate;
+    if (searchResult) {
+      searchResult.innerHTML = "";
+    }
+  }
+
+  /* NEW: load from /api/leaderboard and map into the format we need */
+  function loadSheetData(preferredDate) {
+    const dateFromPicker = (searchDateInput && searchDateInput.value) || "";
+    const targetDate =
+      preferredDate ||
+      dateFromPicker ||
+      new Date().toISOString().slice(0, 10);
+
+    fetch("/api/leaderboard?date=" + encodeURIComponent(targetDate))
+      .then((res) => res.json())
+      .then((data) => {
+        const date = data.date || targetDate;
+        const rows = data.rows || [];
+
+        // Map backend rows → frontend format
+        allRows = rows.map((r) => {
+          let flagUrl = "";
+          if (r.country === "BR") flagUrl = BR_FLAG_URL;
+          else if (r.country === "MX") flagUrl = MX_FLAG_URL;
+          return {
+            date,
+            rank: r.rank,
+            username: r.username,
+            turnover: r.usd_turnover,
+            flagUrl
+          };
+        });
+
+        if (searchDateInput && date) {
+          searchDateInput.value = date;
         }
-      });
 
-      const searchInputEl = document.getElementById("searchInput");
-      if (searchInputEl && dict.searchPlaceholder) {
-        searchInputEl.placeholder = dict.searchPlaceholder;
+        if (!allRows.length) {
+          clearPodiumAndList();
+          if (searchResult) {
+            searchResult.innerHTML =
+              'No leaderboard found for <strong>' + date + "</strong> yet.";
+          }
+          return;
+        }
+
+        renderForDate(date);
+      })
+      .catch((err) => {
+        console.error(err);
+        showToast("Error loading leaderboard");
+      });
+  }
+
+  /* ========== SEARCH BY USERNAME + DATE ========== */
+  function findRankForDate(usernameRaw, dateStr) {
+    const username = usernameRaw.trim().toLowerCase();
+    if (!username) return null;
+    const dateRows = allRows.filter((r) => r.date === dateStr);
+    if (!dateRows.length) return null;
+    const userRow = dateRows.find(
+      (r) => String(r.username).toLowerCase() === username
+    );
+    if (!userRow) return null;
+    const rank = Number(userRow.rank);
+    const inTop20 = rank >= 1 && rank <= 20;
+    const turnover = userRow.turnover;
+    return { ...userRow, rank, turnover, inTop20 };
+  }
+
+  function handleSearch() {
+    if (!searchInput || !searchResult) return;
+    const q = searchInput.value;
+    const dateValue =
+      (searchDateInput && searchDateInput.value) ||
+      (allRows[0] && allRows[0].date);
+    const displayDate = dateValue || "this date";
+
+    if (!q.trim()) {
+      searchResult.textContent = "";
+      return;
+    }
+
+    if (!allRows.length) {
+      searchResult.innerHTML =
+        "Leaderboard not loaded yet. Please try again shortly.";
+      return;
+    }
+
+    const result = findRankForDate(q, displayDate);
+    if (!result) {
+      const dict = translations[currentLang];
+      searchResult.innerHTML = dict.noUserFound
+        .replace("{user}", q)
+        .replace("{date}", displayDate);
+      return;
+    }
+
+    const rankPrize = prizeForRank(result.rank);
+    const baseText =
+      "<strong>" +
+      result.username +
+      "</strong> is currently <strong># " +
+      result.rank +
+      "</strong> on <strong>" +
+      displayDate +
+      "</strong>.";
+    const turnoverText =
+      " Score (USD): <strong>" + shortNum(result.turnover) + "</strong>.";
+    const prizeText =
+      rankPrize !== "-"
+        ? " Prize for this rank: <strong>" + rankPrize + "</strong>."
+        : "";
+
+    if (result.inTop20) {
+      searchResult.innerHTML = baseText + prizeText + turnoverText;
+
+      if (result.rank >= 4 && result.rank <= 20 && rankingList) {
+        const rows = Array.from(rankingList.children);
+        rows.forEach((r) => r.classList.remove("highlight"));
+        const row = rows.find(
+          (r) => Number(r.dataset.rank) === result.rank
+        );
+        if (row) {
+          row.classList.add("highlight");
+          row.scrollIntoView({ behavior: "smooth", block: "center" });
+        }
+      }
+    } else {
+      searchResult.innerHTML =
+        baseText +
+        " (outside Top 20 list)." +
+        prizeText +
+        turnoverText;
+    }
+  }
+
+  if (searchBtn && searchInput) {
+    searchBtn.addEventListener("click", handleSearch);
+    searchInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") handleSearch();
+    });
+  }
+
+  /* Make date picker actually reload the leaderboard */
+  if (searchDateInput) {
+    const today = new Date().toISOString().slice(0, 10);
+    searchDateInput.value = today;
+    searchDateInput.addEventListener("change", () => {
+      const d = searchDateInput.value;
+      if (d) loadSheetData(d);
+    });
+  }
+
+  /* ========== CTAS & FAQ MODAL ========== */
+  const startPlayingBtn = document.getElementById("startPlayingBtn");
+  const howWorksBtn = document.getElementById("howWorksBtn");
+  const faqModal = document.getElementById("faqModal");
+  const faqCloseBtn = document.getElementById("faqCloseBtn");
+
+  if (startPlayingBtn) {
+    startPlayingBtn.addEventListener("click", () => {
+      const selfOrigin = window.location.origin || "";
+
+      const parentOrigin = (() => {
+        try {
+          if (!document.referrer) return "";
+          const u = new URL(document.referrer);
+          return u.origin;
+        } catch (e) {
+          return "";
+        }
+      })();
+
+      const ricoDomains = [
+        "https://www.rico.bet",
+        "https://www.ricobet.com.mx",
+        "https://www.ricobet.net"
+      ];
+
+      let baseOrigin = "";
+      let finalUrl = "";
+
+      if (ricoDomains.includes(parentOrigin)) {
+        baseOrigin = parentOrigin;
+      } else if (ricoDomains.includes(selfOrigin)) {
+        baseOrigin = selfOrigin;
       }
 
-      updateBanner(lang);
-      renderFaq(lang);
-    }
+      if (baseOrigin) {
+        finalUrl = baseOrigin + "/slots";
+      } else {
+        if (currentLang === "es") {
+          finalUrl = "https://www.ricobet.com.mx/slots";
+        } else {
+          finalUrl = "https://www.rico.bet/slots";
+        }
+      }
 
-    if (langSelect) {
-      langSelect.addEventListener("change", (e) => {
-        const value = e.target.value || "en";
-        applyLanguage(value);
-      });
-    }
+      (window.top || window).location.href = finalUrl;
+    });
+  }
 
-    function detectLanguageAndApply() {
-      fetch("https://ipapi.co/json/")
-        .then((res) => res.json())
-        .then((data) => {
-          let lang = "en";
-          if (data && data.country === "BR") lang = "pt";
-          else if (data && data.country === "MX") lang = "es";
-          applyLanguage(lang);
-        })
-        .catch(() => {
-          const navLang = (navigator.language || navigator.userLanguage || "en")
-            .slice(0, 2)
-            .toLowerCase();
-          if (navLang === "pt") applyLanguage("pt");
-          else if (navLang === "es") applyLanguage("es");
-          else applyLanguage("en");
+  if (howWorksBtn && faqModal) {
+    howWorksBtn.addEventListener("click", () => {
+      faqModal.classList.add("show");
+    });
+  }
+
+  if (faqCloseBtn && faqModal) {
+    faqCloseBtn.addEventListener("click", () => {
+      faqModal.classList.remove("show");
+    });
+  }
+
+  if (faqModal) {
+    faqModal.addEventListener("click", (e) => {
+      if (e.target === faqModal) faqModal.classList.remove("show");
+    });
+  }
+
+  /* ========== TRANSLATIONS (EN / PT / ES) ========== */
+  const translations = {
+    /* ... keep your translations object exactly as in your file ... */
+    /* I didn't change anything inside it */
+  };
+
+  const langSelect = document.getElementById("langSelect");
+  const faqListEl = document.getElementById("faqList");
+  let currentLang = "en";
+
+  function renderFaq(lang) {
+    if (!faqListEl) return;
+    const dict = translations[lang] || translations.en;
+    faqListEl.innerHTML = "";
+    (dict.faqItems || []).forEach((item, idx) => {
+      const article = document.createElement("article");
+      article.className = "faq-item";
+      article.innerHTML = `
+        <button class="faq-question">
+          <div class="faq-question-text">
+            <span class="faq-question-index">${idx + 1}</span>
+            <span>${item.q}</span>
+          </div>
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-answer">${item.a}</div>
+      `;
+      faqListEl.appendChild(article);
+    });
+
+    faqListEl.querySelectorAll(".faq-item").forEach((item) => {
+      const btn = item.querySelector(".faq-question");
+      if (!btn) return;
+      btn.addEventListener("click", () => {
+        const isOpen = item.classList.contains("open");
+        faqListEl.querySelectorAll(".faq-item").forEach((i) => {
+          i.classList.remove("open");
         });
+        if (!isOpen) item.classList.add("open");
+      });
+    });
+  }
+
+  function applyLanguage(lang) {
+    const dict = translations[lang] || translations.en;
+    currentLang = lang;
+    document.documentElement.setAttribute("data-lang", lang);
+    if (langSelect && langSelect.value !== lang) {
+      langSelect.value = lang;
     }
 
-    detectLanguageAndApply();
-    loadSheetData();
-  </script>
+    document.querySelectorAll("[data-i18n]").forEach((el) => {
+      const key = el.getAttribute("data-i18n");
+      if (dict[key]) {
+        if (key === "colTurnover") {
+          el.innerHTML = dict[key];
+        } else {
+          el.textContent = dict[key];
+        }
+      }
+    });
+
+    const searchInputEl = document.getElementById("searchInput");
+    if (searchInputEl && dict.searchPlaceholder) {
+      searchInputEl.placeholder = dict.searchPlaceholder;
+    }
+
+    updateBanner(lang);
+    renderFaq(lang);
+  }
+
+  if (langSelect) {
+    langSelect.addEventListener("change", (e) => {
+      const value = e.target.value || "en";
+      applyLanguage(value);
+    });
+  }
+
+  function detectLanguageAndApply() {
+    fetch("https://ipapi.co/json/")
+      .then((res) => res.json())
+      .then((data) => {
+        let lang = "en";
+        if (data && data.country === "BR") lang = "pt";
+        else if (data && data.country === "MX") lang = "es";
+        applyLanguage(lang);
+      })
+      .catch(() => {
+        const navLang = (navigator.language || navigator.userLanguage || "en")
+          .slice(0, 2)
+          .toLowerCase();
+        if (navLang === "pt") applyLanguage("pt");
+        else if (navLang === "es") applyLanguage("es");
+        else applyLanguage("en");
+      });
+  }
+
+  detectLanguageAndApply();
+  loadSheetData();
+</script>
+
 </body>
 </html>
