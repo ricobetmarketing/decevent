@@ -1,0 +1,25 @@
+export async function onRequestPost(context) {
+  const DB = context.env.DB;
+  const data = await context.request.json();
+
+  const { date, country, slot, records } = data;
+
+  // records = [{ username, turnover }]
+
+  const timestamp = new Date().toISOString();
+
+  const stmt = `
+    INSERT INTO turnover_updates (date, username, country, raw_turnover, timestamp, slot)
+    VALUES (?1, ?2, ?3, ?4, ?5, ?6)
+  `;
+
+  for (const r of records) {
+    await DB.prepare(stmt)
+      .bind(date, r.username, country, r.turnover, timestamp, slot)
+      .run();
+  }
+
+  return new Response(JSON.stringify({ ok: true }), {
+    headers: { "Content-Type": "application/json" }
+  });
+}
