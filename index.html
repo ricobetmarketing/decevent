@@ -1224,50 +1224,40 @@
       }
     }
 
-    function loadSheetData(preferredDate) {
-      fetch(SHEET_URL)
-        .then((res) => res.text())
-        .then((text) => {
-          allRows = parseSheetResponse(text);
-          if (!allRows.length) {
-            showToast("No data in sheet");
-            return;
-          }
+ function loadSheetData(preferredDate) {
+  const dateFromPicker = (searchDateInput && searchDateInput.value) || "";
+  const targetDate =
+    preferredDate ||
+    dateFromPicker ||
+    new Date().toISOString().slice(0, 10);
 
-          const uniqueDates = Array.from(
-            new Set(allRows.map((r) => r.date))
-          ).sort();
-          const fromPicker = (searchDateInput && searchDateInput.value) || "";
-          let target =
-            preferredDate || fromPicker || uniqueDates[uniqueDates.length - 1];
+  fetch("/api/leaderboard?date=" + encodeURIComponent(targetDate))
+    .then((res) => res.json())
+    .then((data) => {
+      allRows = data.rows || [];
 
-          if (target && !uniqueDates.includes(target)) {
-            target = uniqueDates[uniqueDates.length - 1];
-          }
+      if (searchDateInput && data.date) {
+        searchDateInput.value = data.date;
+      }
 
-          if (searchDateInput && target) {
-            searchDateInput.value = target;
-          }
+      if (!allRows.length) {
+        clearPodiumAndList();
+        if (searchResult) {
+          searchResult.innerHTML =
+            'No leaderboard found for <strong>' + data.date + "</strong> yet.";
+        }
+        return;
+      }
 
-          renderForDate(target);
-        })
-        .catch((err) => {
-          console.error(err);
-          showToast("Error loading leaderboard");
-        });
-    }
+      // allRows is already [{ date, rank, username, turnover, flagUrl }]
+      renderForDate(data.date);
+    })
+    .catch((err) => {
+      console.error(err);
+      showToast("Error loading leaderboard");
+    });
+}
 
-    if (searchDateInput) {
-      const today = new Date();
-      const isoToday = today.toISOString().slice(0, 10);
-      searchDateInput.value = isoToday;
-
-      searchDateInput.addEventListener("change", () => {
-        const d = searchDateInput.value;
-        if (!d) return;
-        loadSheetData(d);
-      });
-    }
 
     /* ========== SEARCH BY USERNAME + DATE ========== */
     function findRankForDate(usernameRaw, dateStr) {
