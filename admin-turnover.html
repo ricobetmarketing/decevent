@@ -5,497 +5,557 @@
   <title>Turnover Backend – Daily Leaderboard</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
+    :root {
+      --bg: #020617;
+      --panel: #020617;
+      --panel-soft: #030712;
+      --border: #1f2937;
+      --accent: #22c55e;
+      --accent-soft: rgba(34,197,94,0.2);
+      --accent-red: #f9735b;
+      --text: #e5e7eb;
+      --muted: #9ca3af;
+      --danger: #f97373;
+    }
+
+    * { box-sizing: border-box; }
+
     body {
       margin: 0;
-      padding: 16px;
+      min-height: 100vh;
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background: #020617;
-      color: #e5e7eb;
+      background: radial-gradient(circle at 0 0, #111827 0%, #020617 55%, #000 100%);
+      color: var(--text);
+      padding: 16px;
     }
+
     .page {
-      max-width: 960px;
+      max-width: 1080px;
       margin: 0 auto;
     }
+
     h1 {
+      margin: 0 0 4px;
       font-size: 22px;
-      margin: 4px 0 12px;
     }
-    .sub {
+
+    .subtitle {
       font-size: 13px;
-      color: #9ca3af;
+      color: var(--muted);
       margin-bottom: 16px;
     }
+
+    .card {
+      background: var(--panel);
+      border-radius: 18px;
+      border: 1px solid var(--border);
+      box-shadow: 0 16px 32px rgba(0,0,0,0.75);
+      padding: 14px 16px 16px;
+    }
+
     .tabs {
       display: inline-flex;
-      border-radius: 999px;
-      border: 1px solid #4b5563;
+      gap: 6px;
+      margin-bottom: 12px;
       padding: 3px;
-      margin-bottom: 16px;
-      background: #020617;
+      border-radius: 999px;
+      background: var(--panel-soft);
+      border: 1px solid var(--border);
     }
-    .tab {
+
+    .tab-btn {
+      border: 0;
       border-radius: 999px;
       padding: 6px 16px;
       font-size: 13px;
       cursor: pointer;
-      border: none;
       background: transparent;
-      color: #9ca3af;
+      color: var(--muted);
     }
-    .tab.active {
-      background: linear-gradient(135deg, #22c55e, #4ade80);
-      color: #022c22;
+
+    .tab-btn.active {
+      background: var(--accent-soft);
+      color: var(--accent);
       font-weight: 600;
     }
-    .card {
-      border-radius: 18px;
-      border: 1px solid #374151;
-      background: #020617;
-      box-shadow: 0 10px 28px rgba(0, 0, 0, 0.9);
-      padding: 16px;
-    }
+
     .row {
       display: flex;
       flex-wrap: wrap;
-      gap: 12px;
-      margin-bottom: 10px;
+      gap: 10px;
+      margin-bottom: 8px;
     }
-    label {
-      font-size: 13px;
+
+    .field {
       display: flex;
       flex-direction: column;
       gap: 4px;
+      font-size: 12px;
+      min-width: 140px;
     }
+
+    label {
+      color: var(--muted);
+    }
+
     input[type="date"],
     select {
-      padding: 6px 8px;
-      border-radius: 8px;
-      border: 1px solid #4b5563;
-      background: #020617;
-      color: #e5e7eb;
-      min-width: 160px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      padding: 6px 10px;
+      background: var(--panel-soft);
+      color: var(--text);
+      font-size: 12px;
+      outline: none;
     }
+
     textarea {
       width: 100%;
-      min-height: 140px;
-      border-radius: 10px;
-      border: 1px solid #4b5563;
-      background: #020617;
-      color: #e5e7eb;
-      font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco,
-        Consolas, "Liberation Mono", "Courier New", monospace;
-      font-size: 12px;
-      padding: 8px;
+      min-height: 220px;
       resize: vertical;
-    }
-    .hint {
-      font-size: 12px;
-      color: #9ca3af;
-      margin: 4px 0 8px;
-    }
-    .btn-row {
-      margin-top: 10px;
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-      align-items: center;
-    }
-    button {
-      cursor: pointer;
-    }
-    button.primary {
-      border-radius: 999px;
-      border: none;
-      padding: 8px 18px;
-      font-size: 13px;
-      font-weight: 600;
-      background: linear-gradient(135deg, #22c55e, #4ade80);
-      color: #022c22;
-      box-shadow: 0 10px 20px rgba(34, 197, 94, 0.8);
-    }
-    button.outline {
-      border-radius: 999px;
-      border: 1px solid #4b5563;
-      padding: 8px 16px;
-      font-size: 13px;
+      border-radius: 14px;
+      border: 1px solid var(--border);
       background: #020617;
-      color: #e5e7eb;
-    }
-    .status {
-      font-size: 13px;
-      color: #e5e7eb;
-    }
-    .status.error {
-      color: #fecaca;
-    }
-    .status.ok {
-      color: #bbf7d0;
-    }
-    .small {
-      font-size: 11px;
-      color: #9ca3af;
-    }
-    .mode-toggle {
-      display: inline-flex;
-      border-radius: 999px;
-      border: 1px solid #4b5563;
-      overflow: hidden;
-    }
-    .mode-toggle button {
-      border: none;
-      padding: 4px 12px;
+      color: var(--text);
+      padding: 10px;
       font-size: 12px;
-      background: transparent;
-      color: #9ca3af;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
     }
-    .mode-toggle button.active {
-      background: #111827;
-      color: #e5e7eb;
+
+    .hint {
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 4px;
+      line-height: 1.4;
     }
-    .section-title {
+
+    .btn-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      margin-top: 8px;
+    }
+
+    button {
+      font-family: inherit;
+    }
+
+    .btn {
+      border-radius: 999px;
+      border: 0;
+      padding: 7px 16px;
       font-size: 13px;
-      font-weight: 600;
-      margin-top: 10px;
-      margin-bottom: 4px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap;
     }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #22c55e, #16a34a);
+      color: #022c22;
+      box-shadow: 0 10px 20px rgba(34,197,94,0.6);
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    .btn-secondary {
+      background: #0b1120;
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    .status {
+      font-size: 12px;
+      margin-top: 4px;
+      min-height: 18px;
+    }
+
+    .status.ok { color: var(--accent); }
+    .status.error { color: var(--danger); }
+
     table {
       width: 100%;
       border-collapse: collapse;
-      margin-top: 8px;
+      margin-top: 10px;
       font-size: 12px;
     }
-    thead {
-      background: #020617;
-    }
+
     th, td {
-      border: 1px solid #374151;
-      padding: 6px;
-      text-align: left;
+      padding: 4px 6px;
+      border-bottom: 1px solid #020617;
     }
+
     th {
-      font-weight: 500;
-      color: #9ca3af;
-    }
-    td input {
-      width: 100%;
-      border-radius: 6px;
-      border: 1px solid #4b5563;
+      text-align: left;
+      color: var(--muted);
       background: #020617;
-      color: #e5e7eb;
-      padding: 3px 6px;
-      font-size: 12px;
+      position: sticky;
+      top: 0;
     }
-    #csvInput {
-      font-size: 12px;
-      color: #e5e7eb;
+
+    tbody tr:nth-child(even) {
+      background: #020617;
     }
-    .br-note {
+
+    .footer-note {
       font-size: 11px;
-      color: #f97316;
-      margin-top: 4px;
+      color: var(--muted);
+      margin-top: 8px;
+      line-height: 1.5;
     }
-    @media (max-width: 600px) {
-      .card { padding: 12px; }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      border-radius: 999px;
+      padding: 3px 8px;
+      background: rgba(148,163,184,0.1);
+      font-size: 11px;
+      margin-left: 4px;
+    }
+
+    .pill.green {
+      background: rgba(34,197,94,0.18);
+      color: #bbf7d0;
+    }
+
+    .pill.red {
+      background: rgba(248,113,113,0.18);
+      color: #fecaca;
+    }
+
+    input[type="file"] {
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    @media (max-width: 640px) {
+      .row {
+        flex-direction: column;
+      }
     }
   </style>
 </head>
 <body>
   <div class="page">
     <h1>Turnover Backend – Daily Leaderboard</h1>
-    <p class="sub">
-      Update the combined Brazil + Mexico leaderboard every 2 hours.<br />
-      Paste or upload <strong>Username, Turnover</strong>. For Brazil you can add
-      the 00:00–03:00 turnover per player in the table; it will be auto-subtracted.
-    </p>
+    <div class="subtitle">
+      Paste <strong>Username, Turnover</strong> for each 2-hour cumulative update.<br>
+      Brazil has an extra option for <strong>00:00–03:00 (local)</strong> which will be auto-subtracted.
+    </div>
 
     <div class="tabs">
-      <button class="tab active" data-country="BR">Brazil</button>
-      <button class="tab" data-country="MX">Mexico</button>
+      <button class="tab-btn active" data-country="BR" id="tabBR">Brazil</button>
+      <button class="tab-btn" data-country="MX" id="tabMX">Mexico</button>
     </div>
 
     <div class="card">
       <div class="row">
-        <label>
-          Leaderboard Date (Mexico day)
-          <input type="date" id="lbDate" />
+        <div class="field">
+          <label for="dateInput">
+            Leaderboard Date (Mexico day)
+          </label>
+          <input id="dateInput" type="date">
+        </div>
+
+        <div class="field">
+          <label for="slotSelect">
+            Time Slot / Type
+            <span class="pill green" id="countryPill">BR</span>
+          </label>
+          <select id="slotSelect"></select>
+        </div>
+
+        <div class="field">
+          <label>
+            CSV Upload (optional)
+          </label>
+          <input type="file" id="csvInput" accept=".csv,text/csv">
+          <span class="hint">
+            If you upload a CSV, its content will replace the textbox below.
+          </span>
+        </div>
+      </div>
+
+      <div class="field" style="margin-top:8px;">
+        <label for="rawInput">
+          Data input
+          <span class="pill">Format: username, turnover</span>
         </label>
-
-        <label>
-          Time Slot (cumulative from 00:00 Mexico)
-          <select id="slotSelect">
-            <option value="00-02">00:00 – 02:00</option>
-            <option value="00-04">00:00 – 04:00</option>
-            <option value="00-06">00:00 – 06:00</option>
-            <option value="00-08">00:00 – 08:00</option>
-            <option value="00-10">00:00 – 10:00</option>
-            <option value="00-12">00:00 – 12:00</option>
-            <option value="00-14">00:00 – 14:00</option>
-            <option value="00-16">00:00 – 16:00</option>
-            <option value="00-18">00:00 – 18:00</option>
-            <option value="00-20">00:00 – 20:00</option>
-            <option value="00-22">00:00 – 22:00</option>
-            <option value="00-24">00:00 – 24:00</option>
-          </select>
-        </label>
-      </div>
-
-      <div class="row" style="align-items:flex-end; justify-content:space-between;">
-        <div>
-          <div class="section-title">Input method</div>
-          <div class="mode-toggle">
-            <button type="button" class="active" id="modePasteBtn">Paste</button>
-            <button type="button" id="modeCsvBtn">CSV Upload</button>
-          </div>
-        </div>
-        <div id="brExtraNote" class="br-note">
-          Brazil only: use the third column in the table for <strong>00:00–03:00</strong> turnover (optional).
+        <textarea id="rawInput" spellcheck="false"
+          placeholder="fabiano199, 2500.50&#10;anotheruser, 1800"></textarea>
+        <div class="hint">
+          • You can paste from Excel – comma, semicolon or TAB are accepted.<br>
+          • For <strong>Brazil BR 00:00–03:00</strong>, paste the turnover for that local time only.
         </div>
       </div>
 
-      <div id="pasteContainer">
-        <p class="hint">
-          Paste lines in the format:
-          <br />
-          <code>username,turnover</code><br />
-          Example:<br />
-          <code>eviegan,1222</code><br />
-          <code>ninjademo,454654</code>
-        </p>
-        <textarea
-          id="rawInput"
-          placeholder="username,turnover&#10;eviegan,1222&#10;ninjademo,454654"
-        ></textarea>
-        <div class="btn-row">
-          <button class="outline" id="parseBtn">Parse pasted data</button>
-        </div>
+      <div class="btn-row">
+        <button class="btn btn-secondary" id="btnPreview">Preview parsed rows</button>
+        <button class="btn btn-primary" id="btnSave">Save records to D1</button>
+        <span class="status" id="statusText"></span>
       </div>
 
-      <div id="csvContainer" style="display:none; margin-top:8px;">
-        <p class="hint">
-          Upload a CSV with columns: <code>username,turnover</code>. First row can be a header.
-        </p>
-        <input type="file" id="csvInput" accept=".csv" />
+      <div id="previewWrapper" style="max-height:260px; overflow:auto; margin-top:8px; display:none;">
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Username</th>
+              <th>Turnover (local currency)</th>
+            </tr>
+          </thead>
+          <tbody id="previewBody"></tbody>
+        </table>
       </div>
 
-      <div class="section-title">Preview & edit rows</div>
-      <p class="small">
-        • Column 3 is used for Brazil only (00:00–03:00 turnover, if you track it).<br />
-        • You can fix usernames or numbers directly in this table before saving.<br />
-        • To correct a mistake later, choose the same <strong>date + country + slot</strong> and save again; it overwrites.
-      </p>
-
-      <table>
-        <thead>
-          <tr>
-            <th style="width:40%;">Username</th>
-            <th style="width:30%;">Turnover (local)</th>
-            <th style="width:30%;">BR 00:00–03:00 (optional)</th>
-          </tr>
-        </thead>
-        <tbody id="recordsTableBody">
-          <!-- rows go here -->
-        </tbody>
-      </table>
-
-      <div class="btn-row" style="margin-top:10px;">
-        <button class="outline" id="clearTableBtn">Clear table</button>
-        <button class="primary" id="saveBtn">Save to backend</button>
-        <span id="status" class="status small"></span>
+      <div class="footer-note">
+        • Saving uses <strong>country + date + slot</strong> as a key.<br>
+        • If someone uploads wrong data: pick the same country, date &amp; slot, paste the corrected lines, then click <strong>Save</strong> – the old rows will be replaced.<br>
+        • Brazil <span class="pill red">BR 00:00–03:00 (local)</span> is automatically <strong>subtracted</strong> from Brazil’s daily total before converting to USD.
       </div>
 
-      <p class="small" style="margin-top:10px;">
-        • Backend keeps full history per date / country / slot.<br />
-        • The leaderboard always uses the <strong>latest cumulative slot</strong> per player.<br />
-        • Brazil's 00:00–03:00 turnover (if filled) is auto-subtracted before converting to USD.
-      </p>
+      <div class="footer-note">
+        Network debug: <span id="networkDebug" style="color:#facc15;"></span>
+      </div>
     </div>
   </div>
 
   <script>
-    const tabs = document.querySelectorAll(".tab");
-    const lbDate = document.getElementById("lbDate");
-    const slotSelect = document.getElementById("slotSelect");
-    const rawInput = document.getElementById("rawInput");
-    const parseBtn = document.getElementById("parseBtn");
-    const csvInput = document.getElementById("csvInput");
-    const recordsTableBody = document.getElementById("recordsTableBody");
-    const clearTableBtn = document.getElementById("clearTableBtn");
-    const saveBtn = document.getElementById("saveBtn");
-    const statusEl = document.getElementById("status");
-
-    const pasteContainer = document.getElementById("pasteContainer");
-    const csvContainer = document.getElementById("csvContainer");
-    const modePasteBtn = document.getElementById("modePasteBtn");
-    const modeCsvBtn = document.getElementById("modeCsvBtn");
-    const brExtraNote = document.getElementById("brExtraNote");
-
+    // --- State ---
     let currentCountry = "BR";
 
-    lbDate.value = new Date().toISOString().slice(0, 10);
+    const dateInput = document.getElementById("dateInput");
+    const slotSelect = document.getElementById("slotSelect");
+    const rawInput = document.getElementById("rawInput");
+    const statusText = document.getElementById("statusText");
+    const previewWrapper = document.getElementById("previewWrapper");
+    const previewBody = document.getElementById("previewBody");
+    const networkDebug = document.getElementById("networkDebug");
+    const countryPill = document.getElementById("countryPill");
+    const csvInput = document.getElementById("csvInput");
 
-    tabs.forEach((tab) => {
-      tab.addEventListener("click", () => {
-        tabs.forEach((t) => t.classList.remove("active"));
-        tab.classList.add("active");
-        currentCountry = tab.getAttribute("data-country") || "BR";
-        brExtraNote.style.display = currentCountry === "BR" ? "block" : "none";
+    const tabBR = document.getElementById("tabBR");
+    const tabMX = document.getElementById("tabMX");
+
+    const SLOT_OPTIONS = {
+      BR: [
+        { value: "00_02", label: "00:00 – 02:00 (cumulative from 00:00 Mexico)" },
+        { value: "00_04", label: "00:00 – 04:00" },
+        { value: "00_06", label: "00:00 – 06:00" },
+        { value: "00_08", label: "00:00 – 08:00" },
+        { value: "00_10", label: "00:00 – 10:00" },
+        { value: "00_12", label: "00:00 – 12:00" },
+        { value: "00_14", label: "00:00 – 14:00" },
+        { value: "00_16", label: "00:00 – 16:00" },
+        { value: "00_18", label: "00:00 – 18:00" },
+        { value: "00_20", label: "00:00 – 20:00" },
+        { value: "00_22", label: "00:00 – 22:00" },
+        { value: "00_24", label: "00:00 – 24:00 (full day cumulative)" },
+        { value: "BR_00_03", label: "BR 00:00 – 03:00 (local Brazil – deduct from day)" }
+      ],
+      MX: [
+        { value: "00_02", label: "00:00 – 02:00 (cumulative from 00:00 Mexico)" },
+        { value: "00_04", label: "00:00 – 04:00" },
+        { value: "00_06", label: "00:00 – 06:00" },
+        { value: "00_08", label: "00:00 – 08:00" },
+        { value: "00_10", label: "00:00 – 10:00" },
+        { value: "00_12", label: "00:00 – 12:00" },
+        { value: "00_14", label: "00:00 – 14:00" },
+        { value: "00_16", label: "00:00 – 16:00" },
+        { value: "00_18", label: "00:00 – 18:00" },
+        { value: "00_20", label: "00:00 – 20:00" },
+        { value: "00_22", label: "00:00 – 22:00" },
+        { value: "00_24", label: "00:00 – 24:00 (full day cumulative)" }
+      ]
+    };
+
+    function setStatus(msg, type) {
+      statusText.textContent = msg || "";
+      statusText.className = "status " + (type || "");
+    }
+
+    function setNetworkDebug(msg) {
+      networkDebug.textContent = msg || "";
+    }
+
+    function populateSlots() {
+      const opts = SLOT_OPTIONS[currentCountry] || [];
+      slotSelect.innerHTML = "";
+      opts.forEach((opt) => {
+        const o = document.createElement("option");
+        o.value = opt.value;
+        o.textContent = opt.label;
+        slotSelect.appendChild(o);
       });
-    });
+      countryPill.textContent = currentCountry;
+    }
 
-    function setMode(mode) {
-      if (mode === "paste") {
-        modePasteBtn.classList.add("active");
-        modeCsvBtn.classList.remove("active");
-        pasteContainer.style.display = "block";
-        csvContainer.style.display = "none";
+    function setCountry(country) {
+      currentCountry = country;
+      if (country === "BR") {
+        tabBR.classList.add("active");
+        tabMX.classList.remove("active");
       } else {
-        modeCsvBtn.classList.add("active");
-        modePasteBtn.classList.remove("active");
-        pasteContainer.style.display = "none";
-        csvContainer.style.display = "block";
+        tabMX.classList.add("active");
+        tabBR.classList.remove("active");
       }
+      populateSlots();
+      setStatus("", "");
+      setNetworkDebug("");
+      previewWrapper.style.display = "none";
     }
 
-    modePasteBtn.addEventListener("click", () => setMode("paste"));
-    modeCsvBtn.addEventListener("click", () => setMode("csv"));
+    tabBR.addEventListener("click", () => setCountry("BR"));
+    tabMX.addEventListener("click", () => setCountry("MX"));
 
-    function addRow(username, turnover, earlyAdjust) {
-      const tr = document.createElement("tr");
-      tr.className = "record-row";
-      tr.innerHTML = `
-        <td><input class="u" value="${username || ""}" /></td>
-        <td><input class="t" value="${turnover || ""}" /></td>
-        <td><input class="e" value="${earlyAdjust || ""}" /></td>
-      `;
-      recordsTableBody.appendChild(tr);
-    }
+    // Default date: today (Mexico day not needed here, just local)
+    (function initDate() {
+      const today = new Date();
+      const y = today.getFullYear();
+      const m = String(today.getMonth() + 1).padStart(2, "0");
+      const d = String(today.getDate()).padStart(2, "0");
+      dateInput.value = `${y}-${m}-${d}`;
+    })();
 
-    function clearTable() {
-      recordsTableBody.innerHTML = "";
-    }
+    populateSlots();
 
-    function parseText(text) {
-      const lines = text.split(/\r?\n/).map((l) => l.trim()).filter(Boolean);
-      const rows = [];
-      for (const line of lines) {
-        const parts = line.split(",").map((p) => p.trim());
-        if (parts.length < 2) continue;
-        const username = parts[0];
-        const turnover = parts[1];
-        rows.push({ username, turnover });
-      }
-      return rows;
-    }
-
-    parseBtn.addEventListener("click", () => {
-      const txt = rawInput.value;
-      if (!txt.trim()) {
-        statusEl.textContent = "Nothing to parse.";
-        statusEl.className = "status small";
-        return;
-      }
-      const rows = parseText(txt);
-      clearTable();
-      rows.forEach((r) => addRow(r.username, r.turnover, ""));
-      statusEl.textContent = `Parsed ${rows.length} rows. You can edit them below.`;
-      statusEl.className = "status small";
-    });
-
+    // --- CSV upload: read and dump into textarea ---
     csvInput.addEventListener("change", () => {
       const file = csvInput.files && csvInput.files[0];
       if (!file) return;
       const reader = new FileReader();
       reader.onload = (e) => {
-        const text = e.target.result || "";
-        const lines = text.split(/\r?\n/).filter(Boolean);
-        const rows = [];
-        lines.forEach((line, idx) => {
-          const parts = line.split(",").map((p) => p.trim());
-          if (!parts.length) return;
-          if (idx === 0 && /user/i.test(parts[0])) return; // header
-          if (parts.length < 2) return;
-          rows.push({ username: parts[0], turnover: parts[1] });
-        });
-        clearTable();
-        rows.forEach((r) => addRow(r.username, r.turnover, ""));
-        statusEl.textContent = `Loaded ${rows.length} rows from CSV.`;
-        statusEl.className = "status small";
+        rawInput.value = e.target.result || "";
+        setStatus("CSV loaded into textbox. Click Preview to check.", "ok");
+      };
+      reader.onerror = () => {
+        setStatus("Failed to read CSV file.", "error");
       };
       reader.readAsText(file);
     });
 
-    clearTableBtn.addEventListener("click", () => {
-      clearTable();
-      statusEl.textContent = "Table cleared.";
-      statusEl.className = "status small";
+    // --- Parsing ---
+    function parseInput() {
+      const text = rawInput.value || "";
+      const lines = text.split(/\r?\n/);
+      const rows = [];
+      const errors = [];
+
+      lines.forEach((line, index) => {
+        const trimmed = line.trim();
+        if (!trimmed) return;
+        const parts = trimmed.split(/[,;\t]/).map(p => p.trim()).filter(Boolean);
+        if (parts.length < 2) {
+          errors.push(`Line ${index + 1}: not enough values.`);
+          return;
+        }
+        const username = parts[0];
+        const numStr = parts[1].replace(/,/g, "");
+        const turnover = Number(numStr);
+        if (!username) {
+          errors.push(`Line ${index + 1}: missing username.`);
+          return;
+        }
+        if (!Number.isFinite(turnover)) {
+          errors.push(`Line ${index + 1}: invalid turnover "${parts[1]}".`);
+          return;
+        }
+        rows.push({ username, turnover });
+      });
+
+      return { rows, errors };
+    }
+
+    function renderPreview() {
+      const { rows, errors } = parseInput();
+
+      if (errors.length) {
+        setStatus(errors[0] + (errors.length > 1 ? ` (+${errors.length - 1} more)` : ""), "error");
+      } else {
+        setStatus(`Parsed ${rows.length} rows.`, rows.length ? "ok" : "");
+      }
+
+      previewBody.innerHTML = "";
+      rows.forEach((r, idx) => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>${idx + 1}</td>
+          <td>${r.username}</td>
+          <td>${r.turnover}</td>
+        `;
+        previewBody.appendChild(tr);
+      });
+
+      previewWrapper.style.display = rows.length ? "block" : "none";
+    }
+
+    document.getElementById("btnPreview").addEventListener("click", () => {
+      setNetworkDebug("");
+      renderPreview();
     });
 
-    saveBtn.addEventListener("click", () => {
-      const date = lbDate.value;
-      const slot = slotSelect.value;
+    // --- Save to /api-admin-save ---
+    document.getElementById("btnSave").addEventListener("click", async () => {
+      setNetworkDebug("");
+      const date = dateInput.value;
+      const slotKey = slotSelect.value;
 
       if (!date) {
-        statusEl.textContent = "Please select a date.";
-        statusEl.className = "status error";
+        setStatus("Please choose a date.", "error");
         return;
       }
 
-      const rowEls = Array.from(document.querySelectorAll(".record-row"));
-      if (!rowEls.length) {
-        statusEl.textContent = "No rows to save. Paste or upload data first.";
-        statusEl.className = "status error";
+      const parsed = parseInput();
+      if (parsed.errors.length) {
+        setStatus(parsed.errors[0], "error");
+        previewWrapper.style.display = "none";
+        return;
+      }
+      if (!parsed.rows.length) {
+        setStatus("No rows to save.", "error");
         return;
       }
 
-      const records = [];
-      for (const row of rowEls) {
-        const u = row.querySelector(".u").value.trim();
-        const t = Number(row.querySelector(".t").value || 0);
-        const e = Number(row.querySelector(".e").value || 0);
-        if (!u) continue;
-        records.push({ username: u, turnover: t, earlyAdjust: e });
-      }
-
-      if (!records.length) {
-        statusEl.textContent = "All rows are empty.";
-        statusEl.className = "status error";
-        return;
-      }
-
+      setStatus("Saving to D1…", "");
       const payload = {
-        date,
         country: currentCountry,
-        slot,
-        records
+        date,
+        slotKey,
+        rows: parsed.rows
       };
 
-      statusEl.textContent = "Saving...";
-      statusEl.className = "status small";
-
-      fetch("/admin/leaderboard", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload)
-      })
-        .then((res) => res.json())
-        .then((data) => {
-          if (data.error) {
-            statusEl.textContent = "Error: " + data.error;
-            statusEl.className = "status error";
-          } else {
-            statusEl.textContent =
-              `Saved ${records.length} rows for ${date} [${currentCountry}] slot ${slot}.` +
-              (data.totalPlayers != null
-                ? ` Players in daily board: ${data.totalPlayers}.`
-                : "");
-            statusEl.className = "status ok";
-          }
-        })
-        .catch((err) => {
-          console.error(err);
-          statusEl.textContent = "Network error.";
-          statusEl.className = "status error";
+      try {
+        const res = await fetch("/api-admin-save", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
         });
+
+        const text = await res.text();
+        setNetworkDebug(`HTTP ${res.status}: ${text.slice(0, 120)}…`);
+
+        let json = {};
+        try { json = JSON.parse(text); } catch (e) {}
+
+        if (!res.ok || !json.ok) {
+          setStatus(json.error || `Save failed with status ${res.status}.`, "error");
+        } else {
+          setStatus(`Saved ${json.inserted || 0} rows for ${currentCountry} – ${date} – ${slotKey}.`, "ok");
+          renderPreview();
+        }
+      } catch (e) {
+        setStatus("Network error while saving.", "error");
+        setNetworkDebug(String(e));
+      }
     });
   </script>
 </body>
