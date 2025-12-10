@@ -12,7 +12,7 @@ export async function onRequest(context) {
     const m = String(mexNow.getMonth() + 1).padStart(2, "0");
     const d = String(mexNow.getDate()).padStart(2, "0");
     date = `${y}-${m}-${d}`;
-  }
+  } 
 
   let result;
   try {
