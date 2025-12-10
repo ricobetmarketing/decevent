@@ -226,7 +226,7 @@ export async function onRequest(context) {
   }
 
   if (request.method === "POST" && url.pathname === "/admin/leaderboard") {
-    // Protect with Cloudflare Access in dashboard (emails) – we’ll do after deploy
+    // Protect with Cloudflare Access in dashboard (emails) later
     return handlePostAdmin(request);
   }
 
