@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Turnover Backend – Brazil & Mexico</title>
+  <title>Turnover Backend – Daily Leaderboard</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
     body {
@@ -77,7 +77,7 @@
     }
     textarea {
       width: 100%;
-      min-height: 260px;
+      min-height: 140px;
       border-radius: 10px;
       border: 1px solid #4b5563;
       background: #020617;
@@ -100,23 +100,24 @@
       flex-wrap: wrap;
       align-items: center;
     }
-    button.save-btn {
+    button {
+      cursor: pointer;
+    }
+    button.primary {
       border-radius: 999px;
       border: none;
       padding: 8px 18px;
       font-size: 13px;
       font-weight: 600;
-      cursor: pointer;
       background: linear-gradient(135deg, #22c55e, #4ade80);
       color: #022c22;
       box-shadow: 0 10px 20px rgba(34, 197, 94, 0.8);
     }
-    button.preview-btn {
+    button.outline {
       border-radius: 999px;
       border: 1px solid #4b5563;
       padding: 8px 16px;
       font-size: 13px;
-      cursor: pointer;
       background: #020617;
       color: #e5e7eb;
     }
@@ -134,6 +135,65 @@
       font-size: 11px;
       color: #9ca3af;
     }
+    .mode-toggle {
+      display: inline-flex;
+      border-radius: 999px;
+      border: 1px solid #4b5563;
+      overflow: hidden;
+    }
+    .mode-toggle button {
+      border: none;
+      padding: 4px 12px;
+      font-size: 12px;
+      background: transparent;
+      color: #9ca3af;
+    }
+    .mode-toggle button.active {
+      background: #111827;
+      color: #e5e7eb;
+    }
+    .section-title {
+      font-size: 13px;
+      font-weight: 600;
+      margin-top: 10px;
+      margin-bottom: 4px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 8px;
+      font-size: 12px;
+    }
+    thead {
+      background: #020617;
+    }
+    th, td {
+      border: 1px solid #374151;
+      padding: 6px;
+      text-align: left;
+    }
+    th {
+      font-weight: 500;
+      color: #9ca3af;
+    }
+    td input {
+      width: 100%;
+      border-radius: 6px;
+      border: 1px solid #4b5563;
+      background: #020617;
+      color: #e5e7eb;
+      padding: 3px 6px;
+      font-size: 12px;
+    }
+    #csvInput {
+      font-size: 12px;
+      color: #e5e7eb;
+    }
+    .br-note {
+      font-size: 11px;
+      color: #f97316;
+      margin-top: 4px;
+    }
     @media (max-width: 600px) {
       .card { padding: 12px; }
     }
@@ -143,10 +203,9 @@
   <div class="page">
     <h1>Turnover Backend – Daily Leaderboard</h1>
     <p class="sub">
-      Paste <strong>Username, Turnover</strong> for each 2-hour cumulative update
-      (00:00–02:00, 00:00–04:00, 00:00–06:00... Mexico time).<br />
-      For Brazil you can optionally add a 3rd column
-      <strong>00:00–03:00 (Brazil local)</strong> and it will be auto-subtracted.
+      Update the combined Brazil + Mexico leaderboard every 2 hours.<br />
+      Paste or upload <strong>Username, Turnover</strong>. For Brazil you can add
+      the 00:00–03:00 turnover per player in the table; it will be auto-subtracted.
     </p>
 
     <div class="tabs">
@@ -180,32 +239,74 @@
         </label>
       </div>
 
-      <p class="hint">
-        Format per line:<br />
-        <code>username,turnover</code> or<br />
-        <code>username,turnover,turnover_00_03</code> (Brazil).<br />
-        Examples:<br />
-        <code>fabiano199,2500.50</code><br />
-        <code>fabiano199,2500.50,200.00</code>
+      <div class="row" style="align-items:flex-end; justify-content:space-between;">
+        <div>
+          <div class="section-title">Input method</div>
+          <div class="mode-toggle">
+            <button type="button" class="active" id="modePasteBtn">Paste</button>
+            <button type="button" id="modeCsvBtn">CSV Upload</button>
+          </div>
+        </div>
+        <div id="brExtraNote" class="br-note">
+          Brazil only: use the third column in the table for <strong>00:00–03:00</strong> turnover (optional).
+        </div>
+      </div>
+
+      <div id="pasteContainer">
+        <p class="hint">
+          Paste lines in the format:
+          <br />
+          <code>username,turnover</code><br />
+          Example:<br />
+          <code>eviegan,1222</code><br />
+          <code>ninjademo,454654</code>
+        </p>
+        <textarea
+          id="rawInput"
+          placeholder="username,turnover&#10;eviegan,1222&#10;ninjademo,454654"
+        ></textarea>
+        <div class="btn-row">
+          <button class="outline" id="parseBtn">Parse pasted data</button>
+        </div>
+      </div>
+
+      <div id="csvContainer" style="display:none; margin-top:8px;">
+        <p class="hint">
+          Upload a CSV with columns: <code>username,turnover</code>. First row can be a header.
+        </p>
+        <input type="file" id="csvInput" accept=".csv" />
+      </div>
+
+      <div class="section-title">Preview & edit rows</div>
+      <p class="small">
+        • Column 3 is used for Brazil only (00:00–03:00 turnover, if you track it).<br />
+        • You can fix usernames or numbers directly in this table before saving.<br />
+        • To correct a mistake later, choose the same <strong>date + country + slot</strong> and save again; it overwrites.
       </p>
 
-      <textarea
-        id="rawInput"
-        placeholder="username,turnover&#10;fabiano199,2500.50&#10;user2,100"
-      ></textarea>
+      <table>
+        <thead>
+          <tr>
+            <th style="width:40%;">Username</th>
+            <th style="width:30%;">Turnover (local)</th>
+            <th style="width:30%;">BR 00:00–03:00 (optional)</th>
+          </tr>
+        </thead>
+        <tbody id="recordsTableBody">
+          <!-- rows go here -->
+        </tbody>
+      </table>
 
-      <div class="btn-row">
-        <button class="save-btn" id="saveBtn">Save Records</button>
-        <button class="preview-btn" id="previewBtn" type="button">
-          Preview parsed rows
-        </button>
+      <div class="btn-row" style="margin-top:10px;">
+        <button class="outline" id="clearTableBtn">Clear table</button>
+        <button class="primary" id="saveBtn">Save to backend</button>
         <span id="status" class="status small"></span>
       </div>
 
       <p class="small" style="margin-top:10px;">
         • Backend keeps full history per date / country / slot.<br />
         • The leaderboard always uses the <strong>latest cumulative slot</strong> per player.<br />
-        • Brazil's 00:00–03:00 turnover (if provided) is auto-subtracted before converting to USD.
+        • Brazil's 00:00–03:00 turnover (if filled) is auto-subtracted before converting to USD.
       </p>
     </div>
   </div>
@@ -215,13 +316,21 @@
     const lbDate = document.getElementById("lbDate");
     const slotSelect = document.getElementById("slotSelect");
     const rawInput = document.getElementById("rawInput");
+    const parseBtn = document.getElementById("parseBtn");
+    const csvInput = document.getElementById("csvInput");
+    const recordsTableBody = document.getElementById("recordsTableBody");
+    const clearTableBtn = document.getElementById("clearTableBtn");
     const saveBtn = document.getElementById("saveBtn");
-    const previewBtn = document.getElementById("previewBtn");
     const statusEl = document.getElementById("status");
+
+    const pasteContainer = document.getElementById("pasteContainer");
+    const csvContainer = document.getElementById("csvContainer");
+    const modePasteBtn = document.getElementById("modePasteBtn");
+    const modeCsvBtn = document.getElementById("modeCsvBtn");
+    const brExtraNote = document.getElementById("brExtraNote");
 
     let currentCountry = "BR";
 
-    // Default to today
     lbDate.value = new Date().toISOString().slice(0, 10);
 
     tabs.forEach((tab) => {
@@ -229,57 +338,126 @@
         tabs.forEach((t) => t.classList.remove("active"));
         tab.classList.add("active");
         currentCountry = tab.getAttribute("data-country") || "BR";
+        brExtraNote.style.display = currentCountry === "BR" ? "block" : "none";
       });
     });
 
-    function parseLines(text) {
-      const lines = text.split(/\r?\n/).map((l) => l.trim()).filter(Boolean);
-      const records = [];
-      for (const line of lines) {
-        const parts = line.split(",").map((s) => (s || "").trim());
-        if (parts.length < 2) continue;
-        const username = parts[0];
-        const turnover = Number(parts[1] || 0);
-        const earlyAdjust = parts.length >= 3 ? Number(parts[2] || 0) : 0;
-        if (!username) continue;
-        records.push({ username, turnover, earlyAdjust });
+    function setMode(mode) {
+      if (mode === "paste") {
+        modePasteBtn.classList.add("active");
+        modeCsvBtn.classList.remove("active");
+        pasteContainer.style.display = "block";
+        csvContainer.style.display = "none";
+      } else {
+        modeCsvBtn.classList.add("active");
+        modePasteBtn.classList.remove("active");
+        pasteContainer.style.display = "none";
+        csvContainer.style.display = "block";
       }
-      return records;
     }
 
-    previewBtn.addEventListener("click", () => {
+    modePasteBtn.addEventListener("click", () => setMode("paste"));
+    modeCsvBtn.addEventListener("click", () => setMode("csv"));
+
+    function addRow(username, turnover, earlyAdjust) {
+      const tr = document.createElement("tr");
+      tr.className = "record-row";
+      tr.innerHTML = `
+        <td><input class="u" value="${username || ""}" /></td>
+        <td><input class="t" value="${turnover || ""}" /></td>
+        <td><input class="e" value="${earlyAdjust || ""}" /></td>
+      `;
+      recordsTableBody.appendChild(tr);
+    }
+
+    function clearTable() {
+      recordsTableBody.innerHTML = "";
+    }
+
+    function parseText(text) {
+      const lines = text.split(/\r?\n/).map((l) => l.trim()).filter(Boolean);
+      const rows = [];
+      for (const line of lines) {
+        const parts = line.split(",").map((p) => p.trim());
+        if (parts.length < 2) continue;
+        const username = parts[0];
+        const turnover = parts[1];
+        rows.push({ username, turnover });
+      }
+      return rows;
+    }
+
+    parseBtn.addEventListener("click", () => {
       const txt = rawInput.value;
       if (!txt.trim()) {
-        statusEl.textContent = "Nothing to preview.";
+        statusEl.textContent = "Nothing to parse.";
         statusEl.className = "status small";
         return;
       }
-      const records = parseLines(txt);
-      statusEl.textContent =
-        `Preview: ${records.length} rows parsed. ` +
-        (records[0] ? `First: ${JSON.stringify(records[0])}` : "");
+      const rows = parseText(txt);
+      clearTable();
+      rows.forEach((r) => addRow(r.username, r.turnover, ""));
+      statusEl.textContent = `Parsed ${rows.length} rows. You can edit them below.`;
+      statusEl.className = "status small";
+    });
+
+    csvInput.addEventListener("change", () => {
+      const file = csvInput.files && csvInput.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const text = e.target.result || "";
+        const lines = text.split(/\r?\n/).filter(Boolean);
+        const rows = [];
+        lines.forEach((line, idx) => {
+          const parts = line.split(",").map((p) => p.trim());
+          if (!parts.length) return;
+          if (idx === 0 && /user/i.test(parts[0])) return; // header
+          if (parts.length < 2) return;
+          rows.push({ username: parts[0], turnover: parts[1] });
+        });
+        clearTable();
+        rows.forEach((r) => addRow(r.username, r.turnover, ""));
+        statusEl.textContent = `Loaded ${rows.length} rows from CSV.`;
+        statusEl.className = "status small";
+      };
+      reader.readAsText(file);
+    });
+
+    clearTableBtn.addEventListener("click", () => {
+      clearTable();
+      statusEl.textContent = "Table cleared.";
       statusEl.className = "status small";
     });
 
     saveBtn.addEventListener("click", () => {
       const date = lbDate.value;
       const slot = slotSelect.value;
-      const txt = rawInput.value;
 
       if (!date) {
         statusEl.textContent = "Please select a date.";
         statusEl.className = "status error";
         return;
       }
-      if (!txt.trim()) {
-        statusEl.textContent = "Please paste some data.";
+
+      const rowEls = Array.from(document.querySelectorAll(".record-row"));
+      if (!rowEls.length) {
+        statusEl.textContent = "No rows to save. Paste or upload data first.";
         statusEl.className = "status error";
         return;
       }
 
-      const records = parseLines(txt);
+      const records = [];
+      for (const row of rowEls) {
+        const u = row.querySelector(".u").value.trim();
+        const t = Number(row.querySelector(".t").value || 0);
+        const e = Number(row.querySelector(".e").value || 0);
+        if (!u) continue;
+        records.push({ username: u, turnover: t, earlyAdjust: e });
+      }
+
       if (!records.length) {
-        statusEl.textContent = "No valid rows found in input.";
+        statusEl.textContent = "All rows are empty.";
         statusEl.className = "status error";
         return;
       }
@@ -306,9 +484,10 @@
             statusEl.className = "status error";
           } else {
             statusEl.textContent =
-              `Saved ${records.length} rows for ${data.date} ` +
-              `[${data.country}] slot ${data.slot}. ` +
-              `Players in daily board: ${data.totalPlayers}.`;
+              `Saved ${records.length} rows for ${date} [${currentCountry}] slot ${slot}.` +
+              (data.totalPlayers != null
+                ? ` Players in daily board: ${data.totalPlayers}.`
+                : "");
             statusEl.className = "status ok";
           }
         })
