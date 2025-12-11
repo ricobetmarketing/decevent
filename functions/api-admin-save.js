@@ -1,3 +1,5 @@
+// functions/api-admin-save.js
+
 export async function onRequestPost(context) {
   const db = context.env.DB;
   let body;
@@ -45,20 +47,20 @@ export async function onRequestPost(context) {
     cleanRows.push({ username, turnover: t });
   }
 
-  const now = Date.now();
+  const now = Date.now(); // store as timestamp (ms)
 
   try {
-    // Overwrite: same date + country + slotKey
+    // Overwrite: same date + country + slot
     await db
       .prepare(
-        "DELETE FROM raw_turnover WHERE date = ? AND country = ? AND slot_key = ?"
+        "DELETE FROM turnover_updates WHERE date = ? AND country = ? AND slot = ?"
       )
       .bind(date, country, slotKey)
       .run();
 
     if (cleanRows.length) {
       const insert = db.prepare(
-        "INSERT INTO raw_turnover (country,date,slot_key,username,local_turnover,created_at) VALUES (?,?,?,?,?,?)"
+        "INSERT INTO turnover_updates (country,date,slot,username,raw_turnover,timestamp) VALUES (?,?,?,?,?,?)"
       );
 
       const batch = cleanRows.map((r) =>
