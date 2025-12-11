@@ -1,3 +1,5 @@
+// functions/api-leaderboard.js
+
 export async function onRequest(context) {
   const db = context.env.DB;
   const url = new URL(context.request.url);
@@ -12,13 +14,13 @@ export async function onRequest(context) {
     const m = String(mexNow.getMonth() + 1).padStart(2, "0");
     const d = String(mexNow.getDate()).padStart(2, "0");
     date = `${y}-${m}-${d}`;
-  } 
+  }
 
   let result;
   try {
     result = await db
       .prepare(
-        "SELECT country,date,slot_key,username,local_turnover,created_at FROM raw_turnover WHERE date = ?"
+        "SELECT country,date,slot,username,raw_turnover,timestamp FROM turnover_updates WHERE date = ?"
       )
       .bind(date)
       .all();
@@ -75,19 +77,19 @@ export async function onRequest(context) {
     }
 
     const rec = agg[key];
-    const slotKey = r.slot_key;
+    const slotKey = r.slot; // comes from <select value="00_02" etc>
 
     if (slotKey === "BR_00_03") {
       // Special Brazil 00:00–03:00 local – keep latest
-      if (r.created_at > rec.brDeductTime) {
-        rec.brDeductTime = r.created_at;
-        rec.brDeduct = Number(r.local_turnover) || 0;
+      if (r.timestamp > rec.brDeductTime) {
+        rec.brDeductTime = r.timestamp;
+        rec.brDeduct = Number(r.raw_turnover) || 0;
       }
     } else {
       const so = SLOT_ORDER[slotKey] ?? 0;
       if (so >= rec.lastSlotOrder) {
         rec.lastSlotOrder = so;
-        rec.cumLocal = Number(r.local_turnover) || 0;
+        rec.cumLocal = Number(r.raw_turnover) || 0;
       }
     }
   }
@@ -123,7 +125,6 @@ export async function onRequest(context) {
   return new Response(JSON.stringify({ ok: true, date, rows: top20 }), {
     headers: {
       "Content-Type": "application/json",
-      // Safe even if admin is on another subdomain
       "Access-Control-Allow-Origin": "*"
     }
   });
