@@ -1,65 +1,90 @@
 import puppeteer from "@cloudflare/puppeteer";
 
-async function sendTelegramPhoto(env, pngBytes, caption) {
-  const token = env.TELEGRAM_BOT_TOKEN;
-  const chatId = env.TELEGRAM_CHAT_ID;
-  const topicId = env.TELEGRAM_TOPIC_ID;
-  
-  if (!token || !chatId) return;
-
-  const form = new FormData();
-  form.append("chat_id", String(chatId));
-  if (topicId) form.append("message_thread_id", String(topicId));
-  if (caption) form.append("caption", caption);
-
-  form.append("photo", new Blob([pngBytes], { type: "image/png" }), "share.png");
-
-  const r = await fetch(`https://api.telegram.org/bot${token}/sendPhoto`, {
-    method: "POST",
-    body: form
-  });
-
-  const t = await r.text();
-  if (!r.ok) throw new Error("Telegram sendPhoto failed: " + t);
+function u8ToBase64(u8) {
+  let s = "";
+  for (let i = 0; i < u8.length; i++) s += String.fromCharCode(u8[i]);
+  return btoa(s);
 }
 
-export async function onRequest(context) {
-  const { request, env } = context;
-  const url = new URL(request.url);
+/**
+ * Returns PNG bytes of the leaderboard ranking list framed into /frame.png
+ */
+export async function makeFramedRankingPng(env) {
+  const TARGET_URL = "https://decevent.pages.dev/";         // your frontend
+  const FRAME_URL  = "https://decevent.pages.dev/frame.png"; // already in your repo
 
-  const date = url.searchParams.get("date");      // YYYY-MM-DD
-  const limit = url.searchParams.get("limit") || "10";
+  // 1) capture ranking only
+  const browser1 = await puppeteer.launch(env.BROWSER);
+  const page1 = await browser1.newPage();
 
-  // Use your production domain here (recommended),
-  // or build from request origin:
-  const origin = url.origin;
+  await page1.setViewport({ width: 1200, height: 900, deviceScaleFactor: 1 });
+  await page1.goto(TARGET_URL, { waitUntil: "domcontentloaded" });
+  await page1.waitForTimeout(1200);
 
-  const shareUrl = `${origin}/share-card.html?date=${encodeURIComponent(date || "")}&limit=${encodeURIComponent(limit)}`;
-
-  const browser = await puppeteer.launch(env.BROWSER);
-  const page = await browser.newPage();
-
-  // MATCH your frame image size (your PNG is 1080x1483)
-  await page.setViewport({ width: 1080, height: 1483, deviceScaleFactor: 2 });
-
-  await page.goto(shareUrl, { waitUntil: "networkidle0" });
-
-  // Small wait to ensure fonts/table render
-  await page.waitForTimeout(300);
-
-  const png = await page.screenshot({ type: "png" });
-
-  await page.close();
-  await browser.close();
-
-  const caption =
-    `📊 Daily Turnover Challenge\n` +
-    `Date (UTC-6): ${date || "today"}\n` +
-    `Top ${limit} updated ✅`;
-
-  await sendTelegramPhoto(env, png, caption);
-
-  return new Response(JSON.stringify({ ok: true, shareUrl }), {
-    headers: { "Content-Type": "application/json" }
+  // freeze animations
+  await page1.addStyleTag({
+    content: `*,*::before,*::after{animation:none!important;transition:none!important;}`
   });
+
+  const rankingEl = await page1.waitForSelector("#rankingList", { timeout: 15000 });
+  const rankingPng = await rankingEl.screenshot({ type: "png" });
+
+  await browser1.close();
+
+  // 2) compose into frame (1080x1350)
+  const browser2 = await puppeteer.launch(env.BROWSER);
+  const page2 = await browser2.newPage();
+
+  await page2.setViewport({ width: 1080, height: 1350, deviceScaleFactor: 1 });
+
+  const rankingBase64 = u8ToBase64(new Uint8Array(rankingPng));
+  const rankingDataUrl = `data:image/png;base64,${rankingBase64}`;
+
+  // Adjust these if you want the ranking image bigger/smaller inside the frame.
+  const SLOT = { x: 160, y: 380, w: 760, h: 900 };
+
+  const html = `
+  <!doctype html>
+  <html>
+  <head>
+    <meta charset="utf-8" />
+    <style>
+      html, body { margin:0; padding:0; width:1080px; height:1350px; overflow:hidden; background:#000; }
+      .stage { position:relative; width:1080px; height:1350px; }
+      .frame { position:absolute; inset:0; width:1080px; height:1350px; }
+      .slot {
+        position:absolute;
+        left:${SLOT.x}px; top:${SLOT.y}px;
+        width:${SLOT.w}px; height:${SLOT.h}px;
+        display:flex; align-items:center; justify-content:center;
+        overflow:hidden;
+        border-radius:40px;
+      }
+      .slot img { width:100%; height:100%; object-fit:contain; }
+    </style>
+  </head>
+  <body>
+    <div class="stage">
+      <div class="slot"><img src="${rankingDataUrl}"></div>
+      <img class="frame" src="${FRAME_URL}">
+    </div>
+  </body>
+  </html>
+  `;
+
+  await page2.setContent(html, { waitUntil: "load" });
+  await page2.waitForTimeout(200);
+
+  const finalPng = await page2.screenshot({ type: "png" });
+
+  await browser2.close();
+  return finalPng; // Uint8Array
+}
+
+/**
+ * (Optional endpoint) If you visit /api-share-screenshot it returns the framed image
+ */
+export async function onRequestGet(context) {
+  const png = await makeFramedRankingPng(context.env);
+  return new Response(png, { headers: { "Content-Type": "image/png" } });
 }
