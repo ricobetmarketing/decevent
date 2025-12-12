@@ -708,7 +708,7 @@
     a.click();
     URL.revokeObjectURL(url);
   });
-
+ 
   // PDF export (simple)
   document.getElementById('btnExportPdf').addEventListener('click', () => {
     if (!lastStats) { alert('No stats loaded yet.'); return; }
