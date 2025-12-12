@@ -22,7 +22,9 @@ async function telegramSendPhoto({ token, chatId, threadId, caption, photoBytes 
   if (threadId) form.append("message_thread_id", String(threadId));
   if (caption) form.append("caption", caption);
 
-  form.append("photo", new File([photoBytes], "leaderboard.png", { type: "image/png" }));
+  const blob = new Blob([photoBytes], { type: "image/png" });
+  // ✅ filename provided as 3rd argument (no File() needed)
+  form.append("photo", blob, "leaderboard.png");
 
   const res = await fetch(`https://api.telegram.org/bot${token}/sendPhoto`, {
     method: "POST",
@@ -33,6 +35,7 @@ async function telegramSendPhoto({ token, chatId, threadId, caption, photoBytes 
   if (!json.ok) throw new Error(`Telegram sendPhoto failed: ${JSON.stringify(json)}`);
   return json;
 }
+
 
 export async function onRequestPost(context) {
   const DB = context.env.DB;
