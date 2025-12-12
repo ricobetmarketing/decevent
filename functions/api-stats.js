@@ -2,23 +2,13 @@ export async function onRequest(context) {
   const db = context.env.DB;
   const url = new URL(context.request.url);
 
-  // CORS / preflight
-  if (context.request.method === "OPTIONS") {
-    return new Response(null, {
-      headers: {
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Methods": "GET,OPTIONS",
-        "Access-Control-Allow-Headers": "Content-Type"
-      }
-    });
-  }
-
-  const modeRaw = (url.searchParams.get("mode") || "daily").toLowerCase(); // daily|weekly|monthly
-  const countryFilter = (url.searchParams.get("country") || "ALL").toUpperCase(); // ALL|BR|MX
-  const dateParam = url.searchParams.get("date"); // YYYY-MM-DD
-
+  const modeRaw = (url.searchParams.get("mode") || "daily").toLowerCase();
   const mode = ["daily", "weekly", "monthly"].includes(modeRaw) ? modeRaw : "daily";
-  const country = ["ALL", "BR", "MX"].includes(countryFilter) ? countryFilter : "ALL";
+
+  const countryFilter = (url.searchParams.get("country") || "ALL").toUpperCase();
+  const allowedCountry = ["ALL", "BR", "MX"].includes(countryFilter) ? countryFilter : "ALL";
+
+  const dateParam = url.searchParams.get("date");
 
   function getMexicoTodayISO() {
     const nowUtcMs = Date.now();
@@ -54,7 +44,9 @@ export async function onRequest(context) {
 
   async function computeDailyStats(date) {
     const result = await db
-      .prepare("SELECT country,date,slot_key,username,local_turnover,created_at FROM raw_turnover WHERE date = ?")
+      .prepare(
+        "SELECT country,date,slot_key,username,local_turnover,created_at FROM raw_turnover WHERE date = ?"
+      )
       .bind(date)
       .all();
 
@@ -65,20 +57,20 @@ export async function onRequest(context) {
       "00_14": 7, "00_16": 8, "00_18": 9, "00_20": 10, "00_22": 11, "00_24": 12
     };
 
-    const agg = {}; // key: country:username(lower)
+    const agg = {};
 
     for (const r of rows) {
-      const c = (r.country || "").toUpperCase();
-      if (country !== "ALL" && c !== country) continue;
+      const country = (r.country || "").toUpperCase();
+      if (allowedCountry !== "ALL" && country !== allowedCountry) continue;
 
       const username = String(r.username || "").trim();
       if (!username) continue;
 
-      const key = `${c}:${username.toLowerCase()}`;
+      const key = `${country}:${username.toLowerCase()}`;
 
       if (!agg[key]) {
         agg[key] = {
-          country: c,
+          country,
           username,
           cumLocal: 0,
           lastSlotOrder: -1,
@@ -91,8 +83,8 @@ export async function onRequest(context) {
       const slotKey = r.slot_key;
 
       if (slotKey === "BR_00_03") {
-        if ((r.created_at || 0) > rec.brDeductTime) {
-          rec.brDeductTime = r.created_at || 0;
+        if (Number(r.created_at) > rec.brDeductTime) {
+          rec.brDeductTime = Number(r.created_at) || 0;
           rec.brDeduct = Number(r.local_turnover) || 0;
         }
       } else {
@@ -127,7 +119,12 @@ export async function onRequest(context) {
 
     const top20 = players.slice(0, 20).map((p, idx) => ({ rank: idx + 1, ...p }));
 
-    return { date, totalUsd: Number(totalUsd.toFixed(2)), players, top20 };
+    return {
+      date,
+      totalUsd: Number(totalUsd.toFixed(2)),
+      players,
+      top20
+    };
   }
 
   try {
@@ -136,13 +133,17 @@ export async function onRequest(context) {
 
     const chartSeries = perDay.map((d) => ({ date: d.date, totalUsd: d.totalUsd }));
 
-    const playerAgg = new Map(); // country:username -> totals
+    const playerAgg = new Map();
+
     for (const d of perDay) {
       for (const p of d.players) {
         const key = `${p.country}:${p.username.toLowerCase()}`;
-        if (!playerAgg.has(key)) playerAgg.set(key, { username: p.username, country: p.country, totalUsd: 0, daysInTop20: 0 });
+        if (!playerAgg.has(key)) {
+          playerAgg.set(key, { username: p.username, country: p.country, totalUsd: 0, daysInTop20: 0 });
+        }
         playerAgg.get(key).totalUsd += p.usd_turnover;
       }
+
       for (const tp of d.top20) {
         const key = `${tp.country}:${tp.username.toLowerCase()}`;
         if (playerAgg.has(key)) playerAgg.get(key).daysInTop20 += 1;
@@ -160,26 +161,34 @@ export async function onRequest(context) {
         daysInTop20: p.daysInTop20
       }));
 
-    return new Response(JSON.stringify({
-      ok: true,
-      mode,
-      country,
-      baseDate,
-      fromDate: dates[0],
-      toDate: dates[dates.length - 1],
-      chartSeries,
-      perDay,
-      topPlayersOverall
-    }), {
-      headers: {
-        "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*"
-      }
-    });
+    const overallTop = topPlayersOverall[0] || null;
+
+    // Most consistent = max daysInTop20 (tie-break totalUsd)
+    const consistent = [...topPlayersOverall].sort((a, b) => {
+      if (b.daysInTop20 !== a.daysInTop20) return b.daysInTop20 - a.daysInTop20;
+      return b.totalUsd - a.totalUsd;
+    })[0] || null;
+
+    return new Response(
+      JSON.stringify({
+        ok: true,
+        mode,
+        country: allowedCountry,
+        baseDate,
+        fromDate: dates[0],
+        toDate: dates[dates.length - 1],
+        chartSeries,
+        perDay,
+        topPlayersOverall,
+        overallTop,
+        consistent
+      }),
+      { headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" } }
+    );
   } catch (e) {
-    return new Response(JSON.stringify({ ok: false, error: e.message || String(e) }), {
-      status: 500,
-      headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" }
-    });
+    return new Response(
+      JSON.stringify({ ok: false, error: e.message || String(e) }),
+      { status: 500, headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" } }
+    );
   }
 }
