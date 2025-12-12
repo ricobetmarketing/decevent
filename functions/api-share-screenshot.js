@@ -4,7 +4,7 @@ async function sendTelegramPhoto(env, pngBytes, caption) {
   const token = env.TELEGRAM_BOT_TOKEN;
   const chatId = env.TELEGRAM_CHAT_ID;
   const topicId = env.TELEGRAM_TOPIC_ID;
-
+ 
   if (!token || !chatId) return;
 
   const form = new FormData();
