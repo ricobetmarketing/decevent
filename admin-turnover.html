@@ -144,6 +144,10 @@
     <a class="nav-link" id="mexico-tab" href="#mexico" onclick="showTab('mexico')">
       🇲🇽 Mexico
     </a>
+    <a class="nav-link" id="data-tab" href="#data" onclick="showTab('data')">
+  <i class="fas fa-chart-line"></i> DATA / Analytics
+</a>
+
   </nav>
 </div>
 
@@ -156,6 +160,115 @@
   <hr>
 
   <div class="tab-content">
+<div class="tab-pane" id="data">
+  <div class="card shadow-sm mb-4">
+    <div class="card-header bg-white text-dark d-flex justify-content-between align-items-center">
+      <span><i class="fas fa-chart-bar me-2"></i>Turnover Analytics (USD)</span>
+      <div class="d-flex gap-2">
+        <button id="btnExportCsv" class="btn btn-sm btn-outline-secondary">
+          <i class="fas fa-file-csv"></i> CSV
+        </button>
+        <button id="btnExportPdf" class="btn btn-sm btn-outline-secondary">
+          <i class="fas fa-file-pdf"></i> PDF
+        </button>
+      </div>
+    </div>
+    <div class="card-body">
+
+      <!-- Filters row -->
+      <div class="row g-3 mb-3">
+        <div class="col-md-3">
+          <label class="form-label">Range</label>
+          <select id="dataMode" class="form-select">
+            <option value="daily">Today (Daily)</option>
+            <option value="weekly" selected>This Week (7 days)</option>
+            <option value="monthly">Last 30 Days</option>
+          </select>
+        </div>
+        <div class="col-md-3">
+          <label class="form-label">Country</label>
+          <select id="dataCountry" class="form-select">
+            <option value="ALL">Combined (BR + MX)</option>
+            <option value="BR">Brazil Only</option>
+            <option value="MX">Mexico Only</option>
+          </select>
+        </div>
+        <div class="col-md-3">
+          <label class="form-label">Base Date (UTC-6)</label>
+          <input type="date" id="dataBaseDate" class="form-control">
+        </div>
+        <div class="col-md-3 d-flex align-items-end">
+          <button id="btnReloadStats" class="btn btn-primary w-100">
+            <i class="fas fa-sync-alt"></i> Refresh
+          </button>
+        </div>
+      </div>
+
+      <!-- Summary cards -->
+      <div class="row g-3 mb-3">
+        <div class="col-md-4">
+          <div class="card border-0 shadow-sm">
+            <div class="card-body">
+              <div class="text-muted small">Total Turnover (USD)</div>
+              <div id="summaryTotalUsd" class="h4 mb-0">-</div>
+              <div class="text-muted small" id="summaryRangeLabel"></div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card border-0 shadow-sm">
+            <div class="card-body">
+              <div class="text-muted small">Top Player (by USD)</div>
+              <div id="summaryTopPlayer" class="h5 mb-0">-</div>
+              <div class="text-muted small" id="summaryTopPlayerUsd"></div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card border-0 shadow-sm">
+            <div class="card-body">
+              <div class="text-muted small">Most Consistent (Days in Top 20)</div>
+              <div id="summaryConsistentPlayer" class="h5 mb-0">-</div>
+              <div class="text-muted small" id="summaryConsistentDays"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Chart -->
+      <div class="card border-0 shadow-sm mb-3">
+        <div class="card-body">
+          <h6 class="mb-2">Daily Turnover Trend (USD)</h6>
+          <div id="chartTurnover" style="height: 300px;"></div>
+        </div>
+      </div>
+
+      <!-- Table: Top players -->
+      <div class="card border-0 shadow-sm">
+        <div class="card-body">
+          <h6 class="mb-2">Top Players (Selected Range)</h6>
+          <div class="table-responsive">
+            <table class="table table-sm table-hover align-middle" id="tblTopPlayers">
+              <thead class="table-light">
+                <tr>
+                  <th>Rank</th>
+                  <th>Username</th>
+                  <th>Country</th>
+                  <th>Total USD (Range)</th>
+                  <th>Days in Top 20</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- filled by JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
 
     <!-- GLOBAL TAB -->
     <div class="tab-pane active" id="global">
@@ -425,6 +538,9 @@ mxplayer02, 12000.00"></textarea>
 
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"></script>
+  
+<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
 <script>
   // ------- TAB SWITCHING -------
@@ -694,6 +810,195 @@ mxplayer02, 12000.00"></textarea>
     return `${y}-${m}-${d}`;
   }
 
+  // ===================== DATA / ANALYTICS =====================
+let statsChart = null;
+let lastStatsPayload = null;
+
+function formatUsd(n) {
+  if (n == null || isNaN(n)) return "-";
+  const num = Number(n);
+  if (Math.abs(num) >= 1_000_000) return "$" + (num / 1_000_000).toFixed(2) + "M";
+  if (Math.abs(num) >= 1_000) return "$" + (num / 1_000).toFixed(2) + "K";
+  return "$" + num.toFixed(2);
+}
+
+async function loadStatsFromServer() {
+  const mode = document.getElementById("dataMode")?.value || "weekly";
+  const country = document.getElementById("dataCountry")?.value || "ALL";
+  const baseDate = document.getElementById("dataBaseDate")?.value || "";
+
+  const params = new URLSearchParams();
+  params.set("mode", mode);
+  params.set("country", country);
+  if (baseDate) params.set("date", baseDate);
+
+  try {
+    const res = await fetch("/api-stats?" + params.toString());
+    const json = await res.json();
+    if (!res.ok || !json.ok) {
+      alert("Stats error: " + (json.error || ("HTTP " + res.status)));
+      return;
+    }
+    lastStatsPayload = json;
+    renderStatsDashboard(json);
+  } catch (e) {
+    console.error(e);
+    alert("Failed to load stats (network / worker error).");
+  }
+}
+
+function renderStatsDashboard(data) {
+  const { chartSeries = [], topPlayersOverall = [], fromDate, toDate, mode, country } = data;
+
+  // Summary: total range USD
+  const totalRangeUsd = chartSeries.reduce((sum, d) => sum + (Number(d.totalUsd) || 0), 0);
+  document.getElementById("summaryTotalUsd").textContent = formatUsd(totalRangeUsd);
+  document.getElementById("summaryRangeLabel").textContent = `${fromDate} → ${toDate} (${mode}, ${country})`;
+
+  // Top player by USD
+  if (topPlayersOverall.length > 0) {
+    const tp = topPlayersOverall[0];
+    document.getElementById("summaryTopPlayer").textContent = `${tp.username} (${tp.country})`;
+    document.getElementById("summaryTopPlayerUsd").textContent = formatUsd(tp.totalUsd);
+  } else {
+    document.getElementById("summaryTopPlayer").textContent = "-";
+    document.getElementById("summaryTopPlayerUsd").textContent = "";
+  }
+
+  // Most consistent (days in top20)
+  if (topPlayersOverall.length > 0) {
+    const cp = [...topPlayersOverall].sort((a, b) => (b.daysInTop20 || 0) - (a.daysInTop20 || 0))[0];
+    document.getElementById("summaryConsistentPlayer").textContent = `${cp.username} (${cp.country})`;
+    document.getElementById("summaryConsistentDays").textContent = `${cp.daysInTop20 || 0} day(s) in Top 20`;
+  } else {
+    document.getElementById("summaryConsistentPlayer").textContent = "-";
+    document.getElementById("summaryConsistentDays").textContent = "";
+  }
+
+  // Chart
+  const categories = chartSeries.map((d) => d.date);
+  const values = chartSeries.map((d) => Number(d.totalUsd || 0));
+
+  const options = {
+    chart: { type: "line", height: 300, toolbar: { show: false } },
+    series: [{ name: "Total USD", data: values }],
+    xaxis: { categories, labels: { rotate: -45 } },
+    dataLabels: { enabled: false },
+    stroke: { curve: "smooth", width: 3 },
+    grid: { borderColor: "#e5e7eb" },
+    tooltip: { y: { formatter: (val) => formatUsd(val) } }
+  };
+
+  if (statsChart) {
+    statsChart.updateOptions(options);
+  } else {
+    statsChart = new ApexCharts(document.querySelector("#chartTurnover"), options);
+    statsChart.render();
+  }
+
+  // Table
+  const tbody = document.querySelector("#tblTopPlayers tbody");
+  tbody.innerHTML = "";
+  topPlayersOverall.forEach((p) => {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>${p.rank}</td>
+      <td>${p.username}</td>
+      <td>${p.country}</td>
+      <td>${formatUsd(p.totalUsd)}</td>
+      <td>${p.daysInTop20}</td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+function exportStatsCsv() {
+  if (!lastStatsPayload) return alert("No stats loaded yet.");
+
+  const { chartSeries = [], topPlayersOverall = [], fromDate, toDate, mode, country } = lastStatsPayload;
+  const lines = [];
+  lines.push(`Mode,${mode}`);
+  lines.push(`Country,${country}`);
+  lines.push(`From,${fromDate}`);
+  lines.push(`To,${toDate}`);
+  lines.push("");
+  lines.push("Daily Totals");
+  lines.push("Date,Total USD");
+  chartSeries.forEach((d) => lines.push(`${d.date},${d.totalUsd}`));
+  lines.push("");
+  lines.push("Top Players (Range)");
+  lines.push("Rank,Username,Country,Total USD,Days in Top 20");
+  topPlayersOverall.forEach((p) => lines.push(`${p.rank},${p.username},${p.country},${p.totalUsd},${p.daysInTop20}`));
+
+  const blob = new Blob([lines.join("\n")], { type: "text/csv;charset=utf-8;" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `turnover_stats_${mode}_${country}_${fromDate}_${toDate}.csv`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+function exportStatsPdf() {
+  if (!lastStatsPayload) return alert("No stats loaded yet.");
+
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
+
+  const { fromDate, toDate, mode, country, chartSeries = [], topPlayersOverall = [] } = lastStatsPayload;
+  const totalRangeUsd = chartSeries.reduce((sum, d) => sum + (Number(d.totalUsd) || 0), 0);
+
+  doc.setFontSize(14);
+  doc.text("Turnover Analytics (USD)", 14, 16);
+  doc.setFontSize(10);
+  doc.text(`Mode: ${mode}`, 14, 24);
+  doc.text(`Country: ${country}`, 14, 30);
+  doc.text(`Range: ${fromDate} → ${toDate}`, 14, 36);
+  doc.text(`Total USD: ${totalRangeUsd.toFixed(2)}`, 14, 42);
+
+  if (topPlayersOverall.length) {
+    const top = topPlayersOverall[0];
+    doc.text(`Top Player: ${top.username} (${top.country}) ${top.totalUsd.toFixed(2)} USD`, 14, 48);
+  }
+
+  // Simple top list
+  let y = 58;
+  doc.setFontSize(10);
+  doc.text("Top Players:", 14, y);
+  y += 6;
+  doc.setFontSize(9);
+  topPlayersOverall.slice(0, 18).forEach((p) => {
+    doc.text(`${p.rank}. ${p.username} (${p.country}) - ${p.totalUsd.toFixed(2)} USD, ${p.daysInTop20} days`, 14, y);
+    y += 5;
+  });
+
+  doc.save(`turnover_stats_${mode}_${country}_${fromDate}_${toDate}.pdf`);
+}
+
+function initDataTab() {
+  const btnReload = document.getElementById("btnReloadStats");
+  const btnCsv = document.getElementById("btnExportCsv");
+  const btnPdf = document.getElementById("btnExportPdf");
+  const modeSel = document.getElementById("dataMode");
+  const countrySel = document.getElementById("dataCountry");
+  const baseDate = document.getElementById("dataBaseDate");
+
+  if (!btnReload || !btnCsv || !btnPdf) return;
+
+  btnReload.addEventListener("click", loadStatsFromServer);
+  btnCsv.addEventListener("click", exportStatsCsv);
+  btnPdf.addEventListener("click", exportStatsPdf);
+
+  modeSel?.addEventListener("change", loadStatsFromServer);
+  countrySel?.addEventListener("change", loadStatsFromServer);
+  baseDate?.addEventListener("change", loadStatsFromServer);
+
+  loadStatsFromServer();
+}
+
+  
   document.addEventListener('DOMContentLoaded', () => {
     showTab('global');
     const today = todayMexicoISO();
@@ -701,6 +1006,7 @@ mxplayer02, 12000.00"></textarea>
     document.getElementById('brDate').value = today;
     document.getElementById('mxDate').value = today;
     loadGlobalLeaderboard();
+      initDataTab();
   });
 </script>
 
