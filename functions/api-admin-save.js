@@ -18,6 +18,19 @@ export async function onRequestPost(context) {
   const slotKey = body.slotKey || "";
   const rows = Array.isArray(body.rows) ? body.rows : [];
 
+  const totalLocal = cleanRows.reduce((sum, r) => sum + r.turnover, 0);
+
+const msg =
+  `<b>✅ Turnover Update Saved</b>\n` +
+  `<b>Country:</b> ${country}\n` +
+  `<b>Date (UTC-6):</b> ${date}\n` +
+  `<b>Slot:</b> ${slotKey}\n` +
+  `<b>Rows:</b> ${cleanRows.length}\n` +
+  `<b>Total Local:</b> ${totalLocal.toFixed(2)}\n` +
+  `<b>Time:</b> ${new Date().toISOString()}`;
+
+await sendTelegram(context, msg);
+
   if (!["BR", "MX"].includes(country)) {
     return new Response(JSON.stringify({ ok: false, error: "Invalid country" }), {
       status: 400,
@@ -37,6 +50,30 @@ export async function onRequestPost(context) {
     });
   }
 
+  async function sendTelegram(context, text) {
+  const token = context.env.TELEGRAM_BOT_TOKEN;
+  const chatId = context.env.TELEGRAM_CHAT_ID;
+  const topicId = context.env.TELEGRAM_TOPIC_ID;
+
+  if (!token || !chatId) return; // silently skip if not configured
+
+  const payload = {
+    chat_id: chatId,
+    text,
+    parse_mode: "HTML"
+  };
+
+  // Send into a Topic if provided
+  if (topicId) payload.message_thread_id = Number(topicId);
+
+  await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload)
+  });
+}
+
+  
   // Clean rows
   const cleanRows = [];
   for (const r of rows) {
