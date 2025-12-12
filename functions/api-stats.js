@@ -2,30 +2,24 @@ export async function onRequest(context) {
   const db = context.env.DB;
   const url = new URL(context.request.url);
 
-  const mode = (url.searchParams.get("mode") || "daily").toLowerCase(); // daily | weekly | monthly
-  const countryFilter = (url.searchParams.get("country") || "ALL").toUpperCase(); // ALL | BR | MX
-  const dateParam = url.searchParams.get("date"); // base date YYYY-MM-DD
-
-  if (!["daily", "weekly", "monthly"].includes(mode)) {
-    return new Response(JSON.stringify({ ok: false, error: "Invalid mode" }), {
-      status: 400,
-      headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" }
-    });
-  }
-  if (!["ALL", "BR", "MX"].includes(countryFilter)) {
-    return new Response(JSON.stringify({ ok: false, error: "Invalid country" }), {
-      status: 400,
-      headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" }
-    });
-  }
-  if (dateParam && !/^\d{4}-\d{2}-\d{2}$/.test(dateParam)) {
-    return new Response(JSON.stringify({ ok: false, error: "Invalid date format (YYYY-MM-DD)" }), {
-      status: 400,
-      headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" }
+  // CORS / preflight
+  if (context.request.method === "OPTIONS") {
+    return new Response(null, {
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "GET,OPTIONS",
+        "Access-Control-Allow-Headers": "Content-Type"
+      }
     });
   }
 
-  // Mexico today (UTC-6)
+  const modeRaw = (url.searchParams.get("mode") || "daily").toLowerCase(); // daily|weekly|monthly
+  const countryFilter = (url.searchParams.get("country") || "ALL").toUpperCase(); // ALL|BR|MX
+  const dateParam = url.searchParams.get("date"); // YYYY-MM-DD
+
+  const mode = ["daily", "weekly", "monthly"].includes(modeRaw) ? modeRaw : "daily";
+  const country = ["ALL", "BR", "MX"].includes(countryFilter) ? countryFilter : "ALL";
+
   function getMexicoTodayISO() {
     const nowUtcMs = Date.now();
     const offsetMs = -6 * 60 * 60 * 1000;
@@ -46,84 +40,45 @@ export async function onRequest(context) {
     return `${yy}-${mm}-${dd}`;
   }
 
-  const baseDate = dateParam || getMexicoTodayISO();
+  const baseDate = /^\d{4}-\d{2}-\d{2}$/.test(dateParam || "") ? dateParam : getMexicoTodayISO();
 
   let rangeLength = 1;
   if (mode === "weekly") rangeLength = 7;
   if (mode === "monthly") rangeLength = 30;
 
-  // Build dates oldest → newest
   const dates = [];
-  for (let i = rangeLength - 1; i >= 0; i--) {
-    dates.push(shiftDateISO(baseDate, -i));
-  }
-
-  const fromDate = dates[0];
-  const toDate = dates[dates.length - 1];
+  for (let i = rangeLength - 1; i >= 0; i--) dates.push(shiftDateISO(baseDate, -i));
 
   const RATE_BR = 5;
   const RATE_MX = 18;
 
-  const SLOT_ORDER = {
-    "00_02": 1,
-    "00_03": 1.5, // (not used normally)
-    "00_04": 2,
-    "00_06": 3,
-    "00_08": 4,
-    "00_10": 5,
-    "00_12": 6,
-    "00_14": 7,
-    "00_16": 8,
-    "00_18": 9,
-    "00_20": 10,
-    "00_22": 11,
-    "00_24": 12
-  };
-
-  // Load all rows for the date range in one query (faster than 30 loops)
-  let all;
-  try {
-    all = await db
-      .prepare(
-        "SELECT country,date,slot_key,username,local_turnover,created_at FROM raw_turnover WHERE date >= ? AND date <= ?"
-      )
-      .bind(fromDate, toDate)
+  async function computeDailyStats(date) {
+    const result = await db
+      .prepare("SELECT country,date,slot_key,username,local_turnover,created_at FROM raw_turnover WHERE date = ?")
+      .bind(date)
       .all();
-  } catch (e) {
-    return new Response(
-      JSON.stringify({ ok: false, error: "DB error: " + (e.message || String(e)) }),
-      {
-        status: 500,
-        headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" }
-      }
-    );
-  }
 
-  const rows = all.results || [];
+    const rows = result.results || [];
 
-  // Group raw rows by date
-  const byDate = new Map();
-  for (const r of rows) {
-    if (!r.date) continue;
-    if (!byDate.has(r.date)) byDate.set(r.date, []);
-    byDate.get(r.date).push(r);
-  }
+    const SLOT_ORDER = {
+      "00_02": 1, "00_04": 2, "00_06": 3, "00_08": 4, "00_10": 5, "00_12": 6,
+      "00_14": 7, "00_16": 8, "00_18": 9, "00_20": 10, "00_22": 11, "00_24": 12
+    };
 
-  function computeDailyStats(date, dayRows) {
-    const agg = {}; // key country:usernameLower
+    const agg = {}; // key: country:username(lower)
 
-    for (const r of dayRows) {
-      const country = (r.country || "").toUpperCase();
-      if (countryFilter !== "ALL" && country !== countryFilter) continue;
+    for (const r of rows) {
+      const c = (r.country || "").toUpperCase();
+      if (country !== "ALL" && c !== country) continue;
 
       const username = String(r.username || "").trim();
       if (!username) continue;
 
-      const key = `${country}:${username.toLowerCase()}`;
+      const key = `${c}:${username.toLowerCase()}`;
 
       if (!agg[key]) {
         agg[key] = {
-          country,
+          country: c,
           username,
           cumLocal: 0,
           lastSlotOrder: -1,
@@ -161,7 +116,6 @@ export async function onRequest(context) {
       let usd = 0;
       if (rec.country === "BR") usd = effectiveLocal / RATE_BR;
       else if (rec.country === "MX") usd = effectiveLocal / RATE_MX;
-      else usd = effectiveLocal;
 
       usd = Number(usd.toFixed(2));
       totalUsd += usd;
@@ -173,79 +127,59 @@ export async function onRequest(context) {
 
     const top20 = players.slice(0, 20).map((p, idx) => ({ rank: idx + 1, ...p }));
 
-    return {
-      date,
-      totalUsd: Number(totalUsd.toFixed(2)),
-      players,
-      top20
-    };
+    return { date, totalUsd: Number(totalUsd.toFixed(2)), players, top20 };
   }
 
-  // Create perDay in requested date order (even if no data => total 0)
-  const perDay = [];
-  for (const d of dates) {
-    const dayRows = byDate.get(d) || [];
-    perDay.push(computeDailyStats(d, dayRows));
-  }
+  try {
+    const perDay = [];
+    for (const d of dates) perDay.push(await computeDailyStats(d));
 
-  const chartSeries = perDay.map((d) => ({ date: d.date, totalUsd: d.totalUsd }));
+    const chartSeries = perDay.map((d) => ({ date: d.date, totalUsd: d.totalUsd }));
 
-  // Aggregate top players for the whole range
-  const playerAgg = new Map(); // key country:usernameLower
-  for (const d of perDay) {
-    for (const p of d.players) {
-      const key = `${p.country}:${p.username.toLowerCase()}`;
-      if (!playerAgg.has(key)) {
-        playerAgg.set(key, { username: p.username, country: p.country, totalUsd: 0, daysInTop20: 0 });
+    const playerAgg = new Map(); // country:username -> totals
+    for (const d of perDay) {
+      for (const p of d.players) {
+        const key = `${p.country}:${p.username.toLowerCase()}`;
+        if (!playerAgg.has(key)) playerAgg.set(key, { username: p.username, country: p.country, totalUsd: 0, daysInTop20: 0 });
+        playerAgg.get(key).totalUsd += p.usd_turnover;
       }
-      playerAgg.get(key).totalUsd += p.usd_turnover;
+      for (const tp of d.top20) {
+        const key = `${tp.country}:${tp.username.toLowerCase()}`;
+        if (playerAgg.has(key)) playerAgg.get(key).daysInTop20 += 1;
+      }
     }
-    for (const tp of d.top20) {
-      const key = `${tp.country}:${tp.username.toLowerCase()}`;
-      if (playerAgg.has(key)) playerAgg.get(key).daysInTop20 += 1;
-    }
-  }
 
-  const topPlayersOverall = Array.from(playerAgg.values())
-    .sort((a, b) => b.totalUsd - a.totalUsd)
-    .slice(0, 50)
-    .map((p, idx) => ({
-      rank: idx + 1,
-      username: p.username,
-      country: p.country,
-      totalUsd: Number(p.totalUsd.toFixed(2)),
-      daysInTop20: p.daysInTop20
-    }));
+    const topPlayersOverall = Array.from(playerAgg.values())
+      .sort((a, b) => b.totalUsd - a.totalUsd)
+      .slice(0, 50)
+      .map((p, idx) => ({
+        rank: idx + 1,
+        username: p.username,
+        country: p.country,
+        totalUsd: Number(p.totalUsd.toFixed(2)),
+        daysInTop20: p.daysInTop20
+      }));
 
-  // Range total
-  const rangeTotalUsd = Number(
-    perDay.reduce((sum, d) => sum + (d.totalUsd || 0), 0).toFixed(2)
-  );
-
-  // Top / consistent
-  const topPlayer = topPlayersOverall[0] || null;
-  const mostConsistent = Array.from(playerAgg.values())
-    .sort((a, b) => b.daysInTop20 - a.daysInTop20 || b.totalUsd - a.totalUsd)[0] || null;
-
-  return new Response(
-    JSON.stringify({
+    return new Response(JSON.stringify({
       ok: true,
       mode,
-      country: countryFilter,
+      country,
       baseDate,
-      fromDate,
-      toDate,
-      rangeTotalUsd,
-      topPlayer,
-      mostConsistent,
+      fromDate: dates[0],
+      toDate: dates[dates.length - 1],
       chartSeries,
+      perDay,
       topPlayersOverall
-    }),
-    {
+    }), {
       headers: {
         "Content-Type": "application/json",
         "Access-Control-Allow-Origin": "*"
       }
-    }
-  );
+    });
+  } catch (e) {
+    return new Response(JSON.stringify({ ok: false, error: e.message || String(e) }), {
+      status: 500,
+      headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" }
+    });
+  }
 }
