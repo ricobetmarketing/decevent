@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Rico.bet Share Card</title>
+  <style>
+    :root{
+      /* Your frame image */
+      --frame: url("https://ricobr.ft-crm.com/media-api/serve/c9e583a8-df98-447f-a543-5956ab7f08a7_br.png");
+      --w: 1080px;
+      --h: 1483px;
+
+      /* Inner content area inside the frame (tweak if needed) */
+      --inner-left: 195px;
+      --inner-top: 415px;
+      --inner-width: 685px;
+      --inner-height: 590px;
+    }
+
+    html, body { margin:0; padding:0; background:#000; }
+    body { display:flex; justify-content:center; align-items:center; height:100vh; }
+
+    .canvas {
+      position: relative;
+      width: var(--w);
+      height: var(--h);
+      background-image: var(--frame);
+      background-size: cover;
+      background-position: center;
+      overflow: hidden;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+    }
+
+    .inner {
+      position:absolute;
+      left: var(--inner-left);
+      top: var(--inner-top);
+      width: var(--inner-width);
+      height: var(--inner-height);
+      padding: 18px 18px 14px;
+      box-sizing:border-box;
+      color:#fff;
+      background: rgba(0,0,0,0.20);
+      border-radius: 14px;
+      overflow:hidden;
+    }
+
+    .titleRow{
+      display:flex;
+      justify-content:space-between;
+      align-items:baseline;
+      gap:12px;
+      margin-bottom:12px;
+    }
+    .titleRow h1{
+      font-size:28px;
+      margin:0;
+      letter-spacing:0.5px;
+    }
+    .titleRow .meta{
+      font-size:16px;
+      opacity:0.9;
+      white-space:nowrap;
+    }
+
+    table{
+      width:100%;
+      border-collapse:collapse;
+      font-size:20px;
+    }
+    thead th{
+      text-align:left;
+      font-size:16px;
+      opacity:0.9;
+      padding: 6px 0 10px;
+    }
+    tbody td{
+      padding: 10px 0;
+      border-top: 1px solid rgba(255,255,255,0.12);
+    }
+    .rank{
+      width:60px;
+      font-weight:700;
+    }
+    .user{
+      font-weight:700;
+      max-width: 420px;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      white-space:nowrap;
+    }
+    .cty{ width:90px; opacity:0.95; }
+    .usd{ text-align:right; width:150px; font-variant-numeric: tabular-nums; }
+
+    .foot{
+      position:absolute;
+      left: var(--inner-left);
+      top: calc(var(--inner-top) + var(--inner-height) + 16px);
+      width: var(--inner-width);
+      color:#fff;
+      opacity:0.85;
+      font-size:18px;
+      text-align:center;
+    }
+  </style>
+</head>
+<body>
+  <div class="canvas" id="canvas">
+    <div class="inner">
+      <div class="titleRow">
+        <h1>Top Ranking</h1>
+        <div class="meta" id="meta">Loading…</div>
+      </div>
+
+      <table>
+        <thead>
+          <tr>
+            <th class="rank">#</th>
+            <th>Username</th>
+            <th class="cty">Cty</th>
+            <th class="usd">USD</th>
+          </tr>
+        </thead>
+        <tbody id="rows"></tbody>
+      </table>
+    </div>
+
+    <div class="foot" id="foot"></div>
+  </div>
+
+<script>
+  function qs(name){
+    return new URL(location.href).searchParams.get(name);
+  }
+
+  const date = qs("date");
+  const limit = Number(qs("limit") || 10);
+
+  async function load() {
+    const meta = document.getElementById("meta");
+    const rowsEl = document.getElementById("rows");
+    const foot = document.getElementById("foot");
+
+    meta.textContent = date ? date + " (UTC-6)" : "Today (UTC-6)";
+
+    const url = "/api-leaderboard" + (date ? ("?date=" + encodeURIComponent(date)) : "");
+    const res = await fetch(url);
+    const json = await res.json();
+
+    const rows = (json.rows || []).slice(0, limit);
+
+    rowsEl.innerHTML = "";
+    for (const p of rows) {
+      const flag = p.country === "BR" ? "🇧🇷" : (p.country === "MX" ? "🇲🇽" : "🌐");
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td class="rank">${p.rank ?? ""}</td>
+        <td class="user">${(p.username || "")}</td>
+        <td class="cty">${flag} ${p.country || ""}</td>
+        <td class="usd">$${Number(p.usd_turnover || 0).toFixed(2)}</td>
+      `;
+      rowsEl.appendChild(tr);
+    }
+
+    // Optional: show total players or “result updated”
+    foot.textContent = "RESULT UPDATED • rico.bet";
+  }
+
+  load();
+</script>
+</body>
+</html>
