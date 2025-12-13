@@ -1,5 +1,3 @@
-// functions/api-admin-save.js
-
 async function sendTelegram(context, text) {
   const token = context.env.TELEGRAM_BOT_TOKEN;
   const chatId = context.env.TELEGRAM_CHAT_ID;
@@ -14,7 +12,6 @@ async function sendTelegram(context, text) {
     disable_web_page_preview: true
   };
 
-  // Send into a Topic if provided
   if (topicId) payload.message_thread_id = Number(topicId);
 
   const resp = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
@@ -41,15 +38,17 @@ function formatTimeGMT8() {
   return `${y}-${m}-${d} ${hh}:${mm}${ampm} (GMT+8)`;
 }
 
-// Get Mexico "today" ISO (UTC-6)
-function getMexicoTodayISO() {
-  const nowUtcMs = Date.now();
-  const offsetMs = -6 * 60 * 60 * 1000;
-  const mexNow = new Date(nowUtcMs + offsetMs);
-  const y = mexNow.getFullYear();
-  const m = String(mexNow.getMonth() + 1).padStart(2, "0");
-  const d = String(mexNow.getDate()).padStart(2, "0");
-  return `${y}-${m}-${d}`;
+function makeBatchId() {
+  return "b_" + Date.now().toString(36) + "_" + Math.random().toString(36).slice(2, 10);
+}
+
+// your current FX rules
+function toUSD(country, amount) {
+  const v = Number(amount || 0);
+  if (!Number.isFinite(v)) return 0;
+  if (country === "BR") return v / 5;
+  if (country === "MX") return v / 18;
+  return v;
 }
 
 export async function onRequestPost(context) {
@@ -66,9 +65,11 @@ export async function onRequestPost(context) {
   }
 
   const country = (body.country || "").toUpperCase();
-  const date = body.date || "";         // this is UTC-6 date selected in admin
+  const date = body.date || "";         // UTC-6 date selected in admin
   const slotKey = body.slotKey || "";
   const rows = Array.isArray(body.rows) ? body.rows : [];
+  const uploader = body.uploader || ""; // optional (we’ll add in admin UI later)
+  const note = body.note || "";         // optional
 
   if (!["BR", "MX"].includes(country)) {
     return new Response(JSON.stringify({ ok: false, error: "Invalid country" }), {
@@ -106,34 +107,52 @@ export async function onRequestPost(context) {
     });
   }
 
-  const now = Date.now(); // timestamp (ms)
+  const batch_id = makeBatchId();
+  const created_at = new Date().toISOString();
+  const nowMs = Date.now(); // keep your existing timestamp style for turnover_updates
   const totalLocal = cleanRows.reduce((sum, r) => sum + r.turnover, 0);
+  const totalUSD = cleanRows.reduce((sum, r) => sum + toUSD(country, r.turnover), 0);
 
   try {
-    // Overwrite: same date + country + slot
-    await db
-      .prepare("DELETE FROM turnover_updates WHERE date = ? AND country = ? AND slot = ?")
-      .bind(date, country, slotKey)
-      .run();
+    // 1) log batch summary
+    await db.prepare(`
+      INSERT INTO upload_batches
+        (batch_id, created_at, uploader, country, slot, date, rows_count, total_local, total_usd, note)
+      VALUES
+        (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10)
+    `).bind(
+      batch_id, created_at, uploader || null, country, slotKey, date,
+      cleanRows.length, totalLocal, totalUSD, note || null
+    ).run();
 
+    // 2) insert all rows for this batch (NO DELETE anymore)
     const insert = db.prepare(
-      "INSERT INTO turnover_updates (country,date,slot,username,raw_turnover,timestamp) VALUES (?,?,?,?,?,?)"
+      "INSERT INTO turnover_updates (country,date,slot,username,raw_turnover,timestamp,batch_id) VALUES (?,?,?,?,?,?,?)"
     );
 
     const batch = cleanRows.map((r) =>
-      insert.bind(country, date, slotKey, r.username, r.turnover, now)
+      insert.bind(country, date, slotKey, r.username, r.turnover, nowMs, batch_id)
     );
     await db.batch(batch);
 
-    // ✅ Sum up CURRENT TOTAL turnover for the day (UTC-6 date) from turnover_updates table
-    const daySumRes = await db
-      .prepare("SELECT COALESCE(SUM(raw_turnover),0) AS total FROM turnover_updates WHERE date = ?")
-      .bind(date)
-      .first();
+    // 3) compute day total from ONLY the latest batch per (date+country+slot)
+    const daySumRes = await db.prepare(`
+      SELECT COALESCE(SUM(t.raw_turnover),0) AS total
+      FROM turnover_updates t
+      JOIN upload_batches b ON b.batch_id = t.batch_id
+      WHERE b.date = ?
+        AND b.created_at = (
+          SELECT MAX(b2.created_at)
+          FROM upload_batches b2
+          WHERE b2.date = b.date
+            AND b2.country = b.country
+            AND b2.slot = b.slot
+        )
+    `).bind(date).first();
 
     const dayTotalLocal = Number(daySumRes?.total || 0);
 
-    // Telegram message (your required style)
+    // 4) Telegram message
     const msg =
       `📊 <b>Daily Turnover Challenge!</b>\n\n` +
       `<b>Current Update:</b> ${dayTotalLocal.toFixed(2)}\n` +
@@ -147,7 +166,9 @@ export async function onRequestPost(context) {
     return new Response(
       JSON.stringify({
         ok: true,
+        batch_id,
         inserted: cleanRows.length,
+        totals: { totalLocal, totalUSD },
         telegram: tg
       }),
       { headers: { "Content-Type": "application/json" } }
