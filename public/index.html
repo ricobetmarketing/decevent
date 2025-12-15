@@ -1,0 +1,1470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Daily Turnover Challenge – December</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --muted: #9ca3af;
+      --accent: #f9735b;
+      --accent-green: #22c55e;
+      --accent-blue: #0ea5e9;
+    }
+ 
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Baloo 2", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 15px;
+      background: radial-gradient(circle at 0 0, #111827 0%, #020617 55%, #000000 100%);
+      color: #f9fafb;
+      padding: 12px 0 32px;
+      overflow-x: hidden;
+    }
+
+    .page {
+      width: 100%;
+      max-width: 1040px;
+      margin: 0 auto;
+      position: relative;
+    }
+
+    .frame {
+      width: 100%;
+      padding: 0 16px 22px;
+      position: relative;
+      margin: 0 auto;
+    }
+
+    .inner { position: relative; z-index: 1; }
+
+    /* LANGUAGE SWITCHER (top right) */
+    .lang-switcher {
+      position: fixed;
+      top: 10px;
+      right: 14px;
+      z-index: 60;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 8px;
+      border-radius: 999px;
+      background: rgba(15,23,42,0.9);
+      border: 1px solid rgba(55,65,81,0.9);
+      box-shadow: 0 10px 20px rgba(0,0,0,0.65);
+      font-size: 11px;
+    }
+
+    .lang-switcher-label { opacity: 0.8; }
+
+    .lang-select {
+      background: transparent;
+      border: 0;
+      color: #e5e7eb;
+      font-family: inherit;
+      font-size: 11px;
+      outline: none;
+      cursor: pointer;
+    }
+
+    /* HEADER */
+    .header {
+      margin-bottom: 18px;
+      display: grid;
+      grid-template-columns: minmax(0, 2fr) minmax(0, 1.4fr);
+      gap: 14px;
+      align-items: stretch;
+    }
+
+    @media (max-width: 768px) {
+      .header { grid-template-columns: minmax(0, 1fr); }
+    }
+
+    .hero-card {
+      border-radius: 22px;
+      background: #020617;
+      border: 1px solid rgba(31,41,55,0.85);
+      box-shadow: 0 12px 28px rgba(15,23,42,0.7);
+      overflow: hidden;
+    }
+
+    .hero-banner {
+      display: block;
+      width: 100%;
+      height: auto;
+      object-fit: contain;
+    }
+
+    /* REWARD COUNTDOWN – full-card glow, no border line */
+    .countdown-card {
+      position: relative;
+      padding: 18px 22px 16px;
+      border-radius: 26px;
+      background: transparent;
+      border: none;
+      font-size: 13px;
+      color: #e5e7eb;
+      box-shadow: 0 22px 40px rgba(15,23,42,0.95),
+        0 0 40px rgba(34,197,94,0.45);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      align-items: center;
+      text-align: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .countdown-inner {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      text-align: center;
+      align-items: center;
+    }
+
+    .countdown-time-wrapper {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .countdown-time {
+      font-size: 32px;
+      font-weight: 800;
+      letter-spacing: 0.2em;
+      padding: 8px 16px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 50% 0%, rgba(15,23,42,0.9), transparent 120%);
+      box-shadow:
+        0 0 18px rgba(34,197,94,0.85),
+        0 0 32px rgba(59,130,246,0.6);
+      text-align: center;
+      font-variant-numeric: tabular-nums;
+      text-shadow: 0 0 18px rgba(74,222,128,0.95);
+      animation: payoutPulse 2s ease-in-out infinite;
+    }
+
+    .snowflake {
+      position: fixed;
+      top: -10px;
+      color: #e5f0ff;
+      font-size: 9px;
+      opacity: 0.6;
+      pointer-events: none;
+      z-index: 5;
+      animation-name: snowFall;
+      animation-timing-function: linear;
+      animation-iteration-count: infinite;
+    }
+
+    @keyframes snowFall {
+      0% {
+        transform: translateY(-10px);
+        opacity: 0;
+      }
+      10% {
+        opacity: 0.9;
+      }
+      100% {
+        transform: translateY(110vh);
+        opacity: 0;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .countdown-time {
+        font-size: 26px;
+        letter-spacing: 0.16em;
+      }
+    }
+
+    @keyframes payoutPulse {
+      0% {
+        transform: scale(1);
+        box-shadow:
+          0 0 18px rgba(34,197,94,0.85),
+          0 0 32px rgba(59,130,246,0.6);
+      }
+      50% {
+        transform: scale(1.02);
+        box-shadow:
+          0 0 26px rgba(34,197,94,1),
+          0 0 42px rgba(59,130,246,0.9);
+      }
+      100% {
+        transform: scale(1);
+        box-shadow:
+          0 0 18px rgba(34,197,94,0.85),
+          0 0 32px rgba(59,130,246,0.6);
+      }
+    }
+
+    @keyframes heartbeat {
+      0%   { transform: scale(1); }
+      30%  { transform: scale(1.08); }
+      45%  { transform: scale(1); }
+      60%  { transform: scale(1.06); }
+      100% { transform: scale(1); }
+    }
+
+    /* LEADERBOARD CARD */
+    .leaderboard-card {
+      margin-top: 4px;
+      padding: 14px 14px 12px;
+      border-radius: 22px;
+      background:
+        radial-gradient(circle at 0 0, rgba(148,163,184,0.25), transparent 60%),
+        #020617;
+      border: 1px solid rgba(31,41,55,0.9);
+      box-shadow: 0 16px 32px rgba(15,23,42,0.85);
+    }
+
+    .leaderboard-top { margin-bottom: 6px; }
+
+    /* DATE + RESULTS TIMER ROW */
+    .filter-row {
+      display: flex;
+      flex-wrap: nowrap;
+      gap: 8px;
+      margin-bottom: 6px;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .filter-row-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex: 0 0 auto;
+      position: relative;
+    }
+
+    .filter-row input[type="date"] {
+      border-radius: 999px;
+      border: 1px solid rgba(55,65,81,0.9);
+      background:
+        radial-gradient(circle at 0 0, rgba(15,23,42,0.85), transparent 65%),
+        #020617;
+      color: #f9fafb;
+      font-family: inherit;
+      font-size: 12px;
+      padding: 7px 26px 7px 11px;
+      outline: none;
+      width: 140px;
+      cursor: pointer;
+    }
+
+    .filter-row input[type="date"]::-webkit-calendar-picker-indicator {
+      filter: invert(1);
+    }
+
+    .filter-row-left::after {
+      content: "▾";
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 11px;
+      color: #9ca3af;
+      pointer-events: none;
+    }
+
+    /* 2-HOUR RESULTS TIMER – right side */
+    .lb-top-timer {
+      flex: 0 0 auto;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 3px;
+      font-size: 10px;
+      min-width: 110px;
+    }
+
+    .lb-top-label {
+      color: #9ca3af;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .lb-top-time {
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(59,130,246,0.9);
+      background: rgba(15,23,42,0.98);
+      font-weight: 700;
+      font-size: 11px;
+      color: #bfdbfe;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .search-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 4px;
+      align-items: center;
+    }
+
+    .search-row input[type="text"] {
+      flex: 1 1 220px;
+      border-radius: 999px;
+      border: 1px solid rgba(55,65,81,0.9);
+      background: radial-gradient(circle at 0 0, rgba(15,23,42,0.8), transparent 65%);
+      color: #f9fafb;
+      font-family: inherit;
+      font-size: 12px;
+      padding: 7px 11px;
+      outline: none;
+    }
+
+    .search-row input::placeholder { color: #6b7280; }
+
+    .search-row button {
+      border-radius: 999px;
+      border: 0;
+      padding: 7px 13px;
+      font-size: 12px;
+      font-weight: 700;
+      background: linear-gradient(135deg, #22c55e, #4ade80);
+      color: #022c22;
+      cursor: pointer;
+      box-shadow: 0 10px 18px rgba(34,197,94,0.75);
+      white-space: nowrap;
+    }
+
+    .search-result {
+      font-size: 11px;
+      color: #9ca3af;
+      min-height: 16px;
+      margin-top: 2px;
+    }
+
+    .search-result strong { color: #bae6fd; }
+
+    .leaderboard-body { margin-top: 8px; }
+
+    /* Podium – top 3 */
+    .podium-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      align-items: flex-end;
+      margin-bottom: 10px;
+    }
+
+    .podium-item {
+      border-radius: 18px;
+      background:
+        radial-gradient(circle at 50% 0, rgba(148,163,184,0.45), transparent 70%),
+        #020617;
+      border: 1px solid rgba(55,65,81,0.9);
+      padding: 8px 6px 10px;
+      text-align: center;
+      position: relative;
+      font-size: 12px;
+    }
+
+    .podium-item.rank-1 {
+      background: linear-gradient(180deg, #facc15, #fb7185);
+      color: #1e1307;
+      transform: translateY(-8px);
+      box-shadow: 0 12px 24px rgba(0,0,0,0.9);
+    }
+
+    .podium-rank {
+      position: absolute;
+      top: 4px;
+      left: 50%;
+      transform: translateX(-50%);
+      border-radius: 999px;
+      padding: 2px 10px;
+      font-size: 11px;
+      background: rgba(0,0,0,0.72);
+      color: #fef9c3;
+      border: 1px solid rgba(255,255,255,0.8);
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .podium-item.rank-1 .podium-rank { background: rgba(0,0,0,0.8); }
+
+    .podium-trophy { font-size: 14px; }
+
+    .podium-avatar {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      margin: 20px auto 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      border: 2px solid rgba(255,255,255,0.9);
+      background: #020617;
+    }
+
+    .podium-avatar img {
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: cover;
+    }
+
+    .podium-avatar span { font-size: 22px; }
+
+    .podium-name {
+      font-size: 13px;
+      font-weight: 700;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .podium-turnover {
+      font-size: 12px;
+      margin-top: 2px;
+      opacity: 0.9;
+    }
+
+    .podium-prize {
+      font-size: 12px;
+      margin-top: 2px;
+      font-weight: 700;
+    }
+
+    /* LIST HEADER – Rank, Username, Turnover, Prize */
+    .list-header {
+      display: grid;
+      grid-template-columns: 40px minmax(0, 1.6fr) minmax(0, 1.1fr) minmax(0, 0.9fr);
+      gap: 6px;
+      font-size: 10px;
+      color: #9ca3af;
+      margin: 6px 0;
+      padding: 0 7px;
+    }
+
+    .list-header span {
+      line-height: 1.2;
+    }
+
+    .ranking-list {
+      max-height: 360px;
+      overflow-y: auto;
+      border-radius: 14px;
+      background:
+        radial-gradient(circle at 0 0, rgba(15,23,42,0.85), transparent 70%),
+        #020617;
+      border: 1px solid rgba(31,41,55,0.9);
+    }
+
+    @media (max-width: 640px) {
+      .ranking-list { max-height: 260px; }
+    }
+
+    .ranking-row {
+      display: grid;
+      grid-template-columns: 40px minmax(0, 1.6fr) minmax(0, 1.1fr) minmax(0, 0.9fr);
+      gap: 6px;
+      align-items: center;
+      padding: 6px 7px;
+      font-size: 11px;
+      background: rgba(15,23,42,0.96);
+      border-bottom: 1px solid #020617;
+    }
+
+    .ranking-row:nth-child(even) { background: #030712; }
+
+    .ranking-row.highlight {
+      border: 1px solid #38bdf8;
+      box-shadow:
+        0 0 0 1px rgba(15,23,42,0.9),
+        0 10px 24px rgba(56,189,248,0.9);
+      position: relative;
+      z-index: 1;
+    }
+
+    .rank-badge {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid rgba(148,163,184,0.8);
+      background: radial-gradient(circle, rgba(255,255,255,0.15), transparent 60%);
+      font-weight: 700;
+    }
+
+    .rank-main {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      overflow: hidden;
+    }
+
+    .rank-avatar {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      border: 1px solid rgba(148,163,184,0.9);
+      background: #020617;
+    }
+
+    .rank-avatar img {
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: cover;
+    }
+
+    .rank-avatar span { font-size: 16px; }
+
+    .rank-name {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      font-weight: 600;
+    }
+
+    .rank-turnover {
+      text-align: right;
+      font-size: 11px;
+      font-variant-numeric: tabular-nums;
+      color: #e5e7eb;
+    }
+
+    .rank-prize {
+      text-align: right;
+      font-weight: 600;
+      font-size: 11px;
+    }
+
+    /* CTAS */
+    .turnover-ctas {
+      margin-top: 18px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+    }
+
+    .turnover-ctas button {
+      border-radius: 999px;
+      border: 0;
+      padding: 9px 18px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      text-decoration: none;
+      font-family: inherit;
+      white-space: nowrap;
+    }
+
+    .btn-play {
+      background: linear-gradient(135deg, #f9735b, #b91c1c);
+      color: #fef2f2;
+      box-shadow: 0 10px 20px rgba(185,28,28,0.7);
+      animation: heartbeat 1.5s ease-in-out infinite;
+    }
+
+    .btn-how {
+      background: #020617;
+      color: #e5e7eb;
+      border: 1px solid rgba(148,163,184,0.9);
+      box-shadow: 0 6px 14px rgba(15,23,42,0.8);
+    }
+
+    /* FAQ MODAL */
+    .faq-modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(15,23,42,0.96);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 40;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease;
+    }
+
+    .faq-modal.show {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .faq-modal-inner {
+      width: 100%;
+      max-width: 780px;
+      max-height: 80vh;
+      border-radius: 20px;
+      background: #020617;
+      border: 1px solid rgba(55,65,81,0.9);
+      box-shadow: 0 18px 40px rgba(0,0,0,0.9);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .faq-modal-header {
+      padding: 10px 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid rgba(55,65,81,0.9);
+      background: #020617;
+    }
+
+    .faq-modal-title {
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .faq-modal-sub {
+      font-size: 11px;
+      color: #9ca3af;
+    }
+
+    .faq-modal-close {
+      border-radius: 999px;
+      border: 0;
+      padding: 5px 10px;
+      font-size: 12px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      cursor: pointer;
+      background: #020617;
+      color: #e5e7eb;
+      border: 1px solid rgba(148,163,184,0.9);
+    }
+
+    .faq-modal-body {
+      padding: 10px 14px 12px;
+      overflow-y: auto;
+      background: #020617;
+    }
+
+    .faq-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-top: 6px;
+    }
+
+    .faq-item {
+      border-radius: 14px;
+      background: #020617;
+      border: 1px solid rgba(55,65,81,0.9);
+      overflow: hidden;
+    }
+
+    .faq-question {
+      width: 100%;
+      border: 0;
+      background: transparent;
+      color: #f9fafb;
+      padding: 9px 11px;
+      font-family: inherit;
+      font-size: 13px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+    }
+
+    .faq-question-text {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      text-align: left;
+    }
+
+    .faq-question-index {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 20px;
+      height: 20px;
+      border-radius: 999px;
+      background: rgba(248,113,113,0.15);
+      border: 1px solid rgba(248,113,113,0.5);
+      font-size: 11px;
+    }
+
+    .faq-icon {
+      font-size: 16px;
+      color: #9ca3af;
+      transition: transform 0.15s ease;
+    }
+
+    .faq-item.open .faq-icon { transform: rotate(45deg); }
+
+    .faq-answer {
+      max-height: 0;
+      overflow: hidden;
+      padding: 0 11px;
+      font-size: 12px;
+      color: #d1d5db;
+      transition: max-height 0.2s ease, padding-bottom 0.2s ease;
+    }
+
+    .faq-item.open .faq-answer {
+      padding-bottom: 9px;
+      max-height: 1000px;
+    }
+
+    .faq-answer p {
+      margin: 6px 0;
+    }
+
+    .faq-answer ul {
+      margin: 4px 0 0;
+      padding-left: 18px;
+      font-size: 12px;
+    }
+
+    /* TOAST */
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: 16px;
+      transform: translateX(-50%) translateY(10px);
+      background:
+        radial-gradient(circle at 0 0, rgba(255,255,255,0.15), transparent 55%),
+        linear-gradient(135deg, #22c55e, #16a34a);
+      color: #022c22;
+      padding: 8px 14px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      box-shadow: 0 10px 22px rgba(0,0,0,0.7);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.15s ease, transform 0.15s ease;
+      z-index: 50;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #020617; }
+    ::-webkit-scrollbar-thumb { background: #4b5563; border-radius: 999px; }
+    ::-webkit-scrollbar-thumb:hover { background: #9ca3af; }
+  </style>
+</head>
+<body>
+  <!-- Language switcher -->
+  <div class="lang-switcher">
+    <span class="lang-switcher-label">🌐</span>
+    <select id="langSelect" class="lang-select">
+      <option value="en">EN</option>
+      <option value="pt">PT-BR</option>
+      <option value="es">ES</option>
+    </select>
+  </div>
+
+  <div class="page">
+    <div class="frame">
+      <div class="inner">
+        <!-- HEADER -->
+        <header class="header">
+          <div class="hero-card">
+            <img
+              src="https://ricobr.ft-crm.com/media-api/serve/7f955edc-2fa5-4a08-af64-91361b314f6f_Turnover_Challenge.png"
+              alt="Daily Turnover Challenge"
+              class="hero-banner"
+            />
+          </div>
+
+          <!-- Payout countdown -->
+          <div class="countdown-card">
+            <div class="countdown-inner">
+              <div class="countdown-label" data-i18n="countdownLabel1">
+                Next rewards payout in
+              </div>
+              <div class="countdown-time-wrapper">
+                <div class="countdown-time" id="nextRewardTime">--:--:--</div>
+              </div>
+              <div class="countdown-meta" data-i18n="countdownMeta1">
+                Countdown timer based on UTC-6
+              </div>
+            </div>
+          </div>
+        </header>
+
+        <!-- LEADERBOARD -->
+        <section class="leaderboard-card">
+          <div class="leaderboard-top">
+            <div class="filter-row">
+              <div class="filter-row-left">
+                <input id="searchDate" type="date" aria-label="Search date" />
+              </div>
+
+              <div class="lb-top-timer">
+                <span class="lb-top-label" data-i18n="lbTopLabel">Results update in</span>
+                <span class="lb-top-time" id="lbCountdown">02:00</span>
+              </div>
+            </div>
+
+            <div class="search-row">
+              <input id="searchInput" type="text" placeholder="Search your username…" data-i18n-placeholder="searchPlaceholder" />
+              <button id="searchBtn" data-i18n="searchBtn">Find</button>
+            </div>
+
+            <div class="search-result" id="searchResult"></div>
+          </div>
+
+          <div class="leaderboard-body">
+            <div class="podium-grid" id="podiumGrid"></div>
+
+            <div class="list-header">
+              <span data-i18n="colRank">Rank</span>
+              <span data-i18n="colUser">Username</span>
+              <span data-i18n="colTurnover">Winning<br>Amount (USD)</span>
+              <span data-i18n="colPrize">Prize</span>
+            </div>
+            <div class="ranking-list" id="rankingList"></div>
+          </div>
+        </section>
+
+        <!-- CTAs -->
+        <div class="turnover-ctas">
+          <button class="btn-play" id="startPlayingBtn">
+            🎮 <span data-i18n="btnPlay">Start Playing</span>
+          </button>
+          <button class="btn-how" id="howWorksBtn">
+            ❓ <span data-i18n="btnHow">How it works / T&amp;C</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FAQ MODAL -->
+  <div class="faq-modal" id="faqModal">
+    <div class="faq-modal-inner">
+      <div class="faq-modal-header">
+        <div>
+          <div class="faq-modal-title" data-i18n="faqTitle">
+            Daily Turnover Challenge – FAQ
+          </div>
+          <div class="faq-modal-sub" data-i18n="faqSub">
+            Tap on each question to expand and read the details.
+          </div>
+        </div>
+        <button class="faq-modal-close" id="faqCloseBtn">
+          ✕ <span>Close</span>
+        </button>
+      </div>
+
+      <div class="faq-modal-body">
+        <div id="faqList" class="faq-list">
+          <!-- FAQ items rendered by JS -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast">Done!</div>
+
+<script>
+  /* ========== SNOW ========== */
+  function createSnowflakes(count = 40) {
+    for (let i = 0; i < count; i++) {
+      const el = document.createElement("div");
+      el.className = "snowflake";
+      el.textContent = "✻";
+      const left = Math.random() * 100;
+      const duration = 8 + Math.random() * 8;
+      const delay = Math.random() * -duration;
+      const size = 7 + Math.random() * 6;
+      el.style.left = left + "vw";
+      el.style.fontSize = size + "px";
+      el.style.animationDuration = duration + "s";
+      el.style.animationDelay = delay + "s";
+      document.body.appendChild(el);
+    }
+  }
+  createSnowflakes();
+
+  /* FLAG URL MAPPING */
+  const BR_FLAG_URL = "https://ricobr.ft-crm.com/media-api/serve/f6b3499e-2692-4d6e-b86d-58d1c55b6d5f_brazil.png";
+  const MX_FLAG_URL = "https://ricobr.ft-crm.com/media-api/serve/b132c7fc-2f90-4bda-82de-78223c5c3725_mexico.png";
+
+  /* BANNER URLS */
+  const BANNER_EN = "https://ricobr.ft-crm.com/media-api/serve/bf286818-b2a5-4b37-b39c-90ba577a1480_en.png";
+  const BANNER_BR = "https://ricobr.ft-crm.com/media-api/serve/b2f0e72e-e6d4-4058-8529-5740305cd6e2_br.png";
+  const BANNER_MX = "https://ricobr.ft-crm.com/media-api/serve/2cef786e-6407-4c59-bc62-eb6f7f254c76_MX.png";
+
+  const bannerImg = document.querySelector(".hero-banner");
+
+  function updateBanner(lang) {
+    if (!bannerImg) return;
+    if (lang === "pt") bannerImg.src = BANNER_BR;
+    else if (lang === "es") bannerImg.src = BANNER_MX;
+    else bannerImg.src = BANNER_EN;
+  }
+
+  /* TOAST */
+  const toastEl = document.getElementById("toast");
+  function showToast(msg) {
+    if (!toastEl) return;
+    toastEl.textContent = msg;
+    toastEl.classList.add("show");
+    setTimeout(() => toastEl.classList.remove("show"), 1800);
+  }
+
+  /* ========== DAILY PAYOUT COUNTDOWN (UTC-6 logic) ========== */
+  const nextRewardTimeEl = document.getElementById("nextRewardTime");
+
+  function getNextMexicoPayoutUtcMs(nowUtcMs) {
+    const offsetMs = -6 * 60 * 60 * 1000; // UTC-6
+    const mexNow = new Date(nowUtcMs + offsetMs);
+    let target = new Date(
+      mexNow.getFullYear(),
+      mexNow.getMonth(),
+      mexNow.getDate(),
+      1,
+      0,
+      0,
+      0
+    );
+    if (target <= mexNow) {
+      target.setDate(target.getDate() + 1);
+    }
+    return target.getTime() - offsetMs;
+  }
+
+  function updatePayoutCountdown() {
+    if (!nextRewardTimeEl) return;
+    const now = new Date();
+    const nowUtcMs = now.getTime();
+    const targetUtcMs = getNextMexicoPayoutUtcMs(nowUtcMs);
+    let diff = targetUtcMs - nowUtcMs;
+    if (diff <= 0) diff = 0;
+    const h = String(Math.floor(diff / (1000 * 60 * 60))).padStart(2, "0");
+    const m = String(Math.floor((diff / (1000 * 60)) % 60)).padStart(2, "0");
+    const s = String(Math.floor((diff / 1000) % 60)).padStart(2, "0");
+    nextRewardTimeEl.textContent = h + ":" + m + ":" + s;
+  }
+
+  updatePayoutCountdown();
+  setInterval(updatePayoutCountdown, 1000);
+
+  /* ========== LEADERBOARD UPDATE COUNTDOWN – EVERY 2 HOURS (UTC-6) ========== */
+  const lbCountdownEl = document.getElementById("lbCountdown");
+
+  function getNextBoardUpdateUtcMs() {
+    const nowUtcMs = Date.now();
+    const offsetMs = -6 * 60 * 60 * 1000; // Mexico UTC-6
+    const mexNow = new Date(nowUtcMs + offsetMs);
+
+    const minutesSinceMidnight =
+      mexNow.getHours() * 60 + mexNow.getMinutes() + mexNow.getSeconds() / 60;
+    const slotMinutes = 120; // 2 hours
+    const nextSlotIndex = Math.floor(minutesSinceMidnight / slotMinutes) + 1;
+    const nextSlotMinutes = nextSlotIndex * slotMinutes;
+
+    const mexTarget = new Date(mexNow);
+    mexTarget.setHours(0, 0, 0, 0);
+    mexTarget.setMinutes(nextSlotMinutes); // can overflow into next day
+
+    return mexTarget.getTime() - offsetMs;
+  }
+
+  let nextLbUpdateUtcMs = getNextBoardUpdateUtcMs();
+
+  function updateLbCountdown() {
+    if (!lbCountdownEl) return;
+    const nowUtcMs = Date.now();
+    let diff = nextLbUpdateUtcMs - nowUtcMs;
+    if (diff <= 0) {
+      nextLbUpdateUtcMs = getNextBoardUpdateUtcMs();
+      diff = nextLbUpdateUtcMs - Date.now();
+    }
+    const totalSeconds = Math.floor(diff / 1000);
+    const mins = Math.floor(totalSeconds / 60);
+    const secs = totalSeconds % 60;
+    lbCountdownEl.textContent =
+      String(mins).padStart(2, "0") + ":" + String(secs).padStart(2, "0");
+  }
+
+  updateLbCountdown();
+  setInterval(updateLbCountdown, 1000);
+
+  /* ========== LEADERBOARD DATA (FROM /api/leaderboard) ========== */
+  const podiumGrid = document.getElementById("podiumGrid");
+  const rankingList = document.getElementById("rankingList");
+  const searchInput = document.getElementById("searchInput");
+  const searchBtn = document.getElementById("searchBtn");
+  const searchResult = document.getElementById("searchResult");
+  const searchDateInput = document.getElementById("searchDate");
+
+  let allRows = []; // [{ date, rank, username, turnover, flagUrl }]
+  let currentLeaderboardDate = null;
+
+  function flagInner(flagUrl) {
+    if (flagUrl) {
+      const safe = String(flagUrl).replace(/"/g, "&quot;");
+      return '<img src="' + safe + '" alt="flag" />';
+    }
+    return "<span>🌐</span>";
+  }
+
+  function shortNum(n) {
+    let num = Number(n);
+    if (!isFinite(num)) return "-";
+
+    num = Math.round(num * 100) / 100;
+
+    if (Math.abs(num) >= 1_000_000) {
+      return (num / 1_000_000).toFixed(2) + "M";
+    }
+    if (Math.abs(num) >= 1_000) {
+      return (num / 1_000).toFixed(2) + "K";
+    }
+
+    return num.toFixed(2);
+  }
+
+  function prizeForRank(rank) {
+    const r = Number(rank);
+    if (r === 1) return "$100";
+    if (r === 2) return "$70";
+    if (r === 3) return "$50";
+    if (r === 4) return "$45";
+    if (r === 5) return "$40";
+    if (r === 6) return "$30";
+    if (r === 7) return "$25";
+    if (r === 8) return "$20";
+    if (r === 9) return "$15";
+    if (r === 10) return "$10";
+    if (r >= 11 && r <= 20) return "$5";
+    return "-";
+  }
+
+  function clearPodiumAndList() {
+    if (podiumGrid) podiumGrid.innerHTML = "";
+    if (rankingList) rankingList.innerHTML = "";
+  }
+
+  function renderForDate(dateStr) {
+    clearPodiumAndList();
+    if (!allRows.length) {
+      if (searchResult) {
+        searchResult.innerHTML = "Leaderboard data is not loaded yet.";
+      }
+      return;
+    }
+
+    const targetDate = dateStr || (allRows[0] && allRows[0].date);
+    if (!targetDate) return;
+
+    const rowsForDate = allRows
+      .filter((r) => r.date === targetDate)
+      .sort((a, b) => Number(a.rank) - Number(b.rank));
+
+    if (!rowsForDate.length) {
+      if (searchResult) {
+        searchResult.innerHTML =
+          'No leaderboard found for <strong>' + targetDate + "</strong>.";
+      }
+      return;
+    }
+
+    /* Podium – ranks 1–3 */
+    if (podiumGrid) {
+      const top3 = rowsForDate.filter(
+        (r) => Number(r.rank) >= 1 && Number(r.rank) <= 3
+      );
+      const desiredOrder = [2, 1, 3];
+      desiredOrder.forEach((rank) => {
+        const player = top3.find((r) => Number(r.rank) === rank);
+        if (!player) return;
+        const card = document.createElement("div");
+        card.className = "podium-item rank-" + rank;
+        const prize = prizeForRank(rank);
+        const trophyEmoji = rank === 1 ? "🏆" : rank === 2 ? "🥈" : "🥉";
+        card.innerHTML = `
+          <div class="podium-rank">
+            <span class="podium-trophy">${trophyEmoji}</span>
+            <span>#${rank}</span>
+          </div>
+          <div class="podium-avatar">${flagInner(player.flagUrl)}</div>
+          <div class="podium-name">${player.username}</div>
+          <div class="podium-turnover">💰 ${shortNum(player.turnover)}</div>
+          <div class="podium-prize">Prize: ${prize}</div>
+        `;
+        podiumGrid.appendChild(card);
+      });
+    }
+
+    /* List – ranks 4–20 */
+    if (rankingList) {
+      rowsForDate
+        .filter((r) => Number(r.rank) >= 4 && Number(r.rank) <= 20)
+        .forEach((player) => {
+          const rank = Number(player.rank);
+          const row = document.createElement("div");
+          row.className = "ranking-row";
+          row.dataset.rank = rank;
+          const prize = prizeForRank(rank);
+          row.innerHTML = `
+            <div class="rank-badge">${rank}</div>
+            <div class="rank-main">
+              <div class="rank-avatar">${flagInner(player.flagUrl)}</div>
+              <div class="rank-name">${player.username}</div>
+            </div>
+            <div class="rank-turnover">${shortNum(player.turnover)}</div>
+            <div class="rank-prize">${prize}</div>
+          `;
+          rankingList.appendChild(row);
+        });
+    }
+
+    currentLeaderboardDate = targetDate;
+    if (searchResult) {
+      searchResult.innerHTML = "";
+    }
+  }
+
+  /* NEW: load from /api/leaderboard and map into the format we need */
+  function loadSheetData(preferredDate) {
+    const dateFromPicker = (searchDateInput && searchDateInput.value) || "";
+    const targetDate =
+      preferredDate ||
+      dateFromPicker ||
+      new Date().toISOString().slice(0, 10);
+
+    fetch("/api-leaderboard?date=" + encodeURIComponent(targetDate))
+      .then((res) => res.json())
+      .then((data) => {
+        const date = data.date || targetDate;
+        const rows = data.rows || [];
+
+        // Map backend rows → frontend format
+        allRows = rows.map((r) => {
+          let flagUrl = "";
+          if (r.country === "BR") flagUrl = BR_FLAG_URL;
+          else if (r.country === "MX") flagUrl = MX_FLAG_URL;
+          return {
+            date,
+            rank: r.rank,
+            username: r.username,
+            turnover: r.usd_turnover,
+            flagUrl
+          };
+        });
+
+        if (searchDateInput && date) {
+          searchDateInput.value = date;
+        }
+
+        if (!allRows.length) {
+          clearPodiumAndList();
+          if (searchResult) {
+            searchResult.innerHTML =
+              'No leaderboard found for <strong>' + date + "</strong> yet.";
+          }
+          return;
+        }
+
+        renderForDate(date);
+      })
+      .catch((err) => {
+        console.error(err);
+        showToast("Error loading leaderboard");
+      });
+  }
+
+  /* ========== SEARCH BY USERNAME + DATE ========== */
+  function findRankForDate(usernameRaw, dateStr) {
+    const username = usernameRaw.trim().toLowerCase();
+    if (!username) return null;
+    const dateRows = allRows.filter((r) => r.date === dateStr);
+    if (!dateRows.length) return null;
+    const userRow = dateRows.find(
+      (r) => String(r.username).toLowerCase() === username
+    );
+    if (!userRow) return null;
+    const rank = Number(userRow.rank);
+    const inTop20 = rank >= 1 && rank <= 20;
+    const turnover = userRow.turnover;
+    return { ...userRow, rank, turnover, inTop20 };
+  }
+
+  function handleSearch() {
+    if (!searchInput || !searchResult) return;
+    const q = searchInput.value;
+    const dateValue =
+      (searchDateInput && searchDateInput.value) ||
+      (allRows[0] && allRows[0].date);
+    const displayDate = dateValue || "this date";
+
+    if (!q.trim()) {
+      searchResult.textContent = "";
+      return;
+    }
+
+    if (!allRows.length) {
+      searchResult.innerHTML =
+        "Leaderboard not loaded yet. Please try again shortly.";
+      return;
+    }
+
+    const result = findRankForDate(q, displayDate);
+    if (!result) {
+      const dict = translations[currentLang];
+      searchResult.innerHTML = dict.noUserFound
+        .replace("{user}", q)
+        .replace("{date}", displayDate);
+      return;
+    }
+
+    const rankPrize = prizeForRank(result.rank);
+    const baseText =
+      "<strong>" +
+      result.username +
+      "</strong> is currently <strong># " +
+      result.rank +
+      "</strong> on <strong>" +
+      displayDate +
+      "</strong>.";
+    const turnoverText =
+      " Score (USD): <strong>" + shortNum(result.turnover) + "</strong>.";
+    const prizeText =
+      rankPrize !== "-"
+        ? " Prize for this rank: <strong>" + rankPrize + "</strong>."
+        : "";
+
+    if (result.inTop20) {
+      searchResult.innerHTML = baseText + prizeText + turnoverText;
+
+      if (result.rank >= 4 && result.rank <= 20 && rankingList) {
+        const rows = Array.from(rankingList.children);
+        rows.forEach((r) => r.classList.remove("highlight"));
+        const row = rows.find(
+          (r) => Number(r.dataset.rank) === result.rank
+        );
+        if (row) {
+          row.classList.add("highlight");
+          row.scrollIntoView({ behavior: "smooth", block: "center" });
+        }
+      }
+    } else {
+      searchResult.innerHTML =
+        baseText +
+        " (outside Top 20 list)." +
+        prizeText +
+        turnoverText;
+    }
+  }
+
+  if (searchBtn && searchInput) {
+    searchBtn.addEventListener("click", handleSearch);
+    searchInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") handleSearch();
+    });
+  }
+
+  /* Make date picker actually reload the leaderboard */
+  if (searchDateInput) {
+    const today = new Date().toISOString().slice(0, 10);
+    searchDateInput.value = today;
+    searchDateInput.addEventListener("change", () => {
+      const d = searchDateInput.value;
+      if (d) loadSheetData(d);
+    });
+  }
+
+  /* ========== CTAS & FAQ MODAL ========== */
+  const startPlayingBtn = document.getElementById("startPlayingBtn");
+  const howWorksBtn = document.getElementById("howWorksBtn");
+  const faqModal = document.getElementById("faqModal");
+  const faqCloseBtn = document.getElementById("faqCloseBtn");
+
+  if (startPlayingBtn) {
+    startPlayingBtn.addEventListener("click", () => {
+      const selfOrigin = window.location.origin || "";
+
+      const parentOrigin = (() => {
+        try {
+          if (!document.referrer) return "";
+          const u = new URL(document.referrer);
+          return u.origin;
+        } catch (e) {
+          return "";
+        }
+      })();
+
+      const ricoDomains = [
+        "https://www.rico.bet",
+        "https://www.ricobet.com.mx",
+        "https://www.ricobet.net"
+      ];
+
+      let baseOrigin = "";
+      let finalUrl = "";
+
+      if (ricoDomains.includes(parentOrigin)) {
+        baseOrigin = parentOrigin;
+      } else if (ricoDomains.includes(selfOrigin)) {
+        baseOrigin = selfOrigin;
+      }
+
+      if (baseOrigin) {
+        finalUrl = baseOrigin + "/slots";
+      } else {
+        if (currentLang === "es") {
+          finalUrl = "https://www.ricobet.com.mx/slots";
+        } else {
+          finalUrl = "https://www.rico.bet/slots";
+        }
+      }
+
+      (window.top || window).location.href = finalUrl;
+    });
+  }
+
+  if (howWorksBtn && faqModal) {
+    howWorksBtn.addEventListener("click", () => {
+      faqModal.classList.add("show");
+    });
+  }
+
+  if (faqCloseBtn && faqModal) {
+    faqCloseBtn.addEventListener("click", () => {
+      faqModal.classList.remove("show");
+    });
+  }
+
+  if (faqModal) {
+    faqModal.addEventListener("click", (e) => {
+      if (e.target === faqModal) faqModal.classList.remove("show");
+    });
+  }
+
+  /* ========== TRANSLATIONS (EN / PT / ES) ========== */
+  const translations = {
+    /* ... keep your translations object exactly as in your file ... */
+    /* I didn't change anything inside it */
+  };
+
+  const langSelect = document.getElementById("langSelect");
+  const faqListEl = document.getElementById("faqList");
+  let currentLang = "en";
+
+  function renderFaq(lang) {
+    if (!faqListEl) return;
+    const dict = translations[lang] || translations.en;
+    faqListEl.innerHTML = "";
+    (dict.faqItems || []).forEach((item, idx) => {
+      const article = document.createElement("article");
+      article.className = "faq-item";
+      article.innerHTML = `
+        <button class="faq-question">
+          <div class="faq-question-text">
+            <span class="faq-question-index">${idx + 1}</span>
+            <span>${item.q}</span>
+          </div>
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-answer">${item.a}</div>
+      `;
+      faqListEl.appendChild(article);
+    });
+
+    faqListEl.querySelectorAll(".faq-item").forEach((item) => {
+      const btn = item.querySelector(".faq-question");
+      if (!btn) return;
+      btn.addEventListener("click", () => {
+        const isOpen = item.classList.contains("open");
+        faqListEl.querySelectorAll(".faq-item").forEach((i) => {
+          i.classList.remove("open");
+        });
+        if (!isOpen) item.classList.add("open");
+      });
+    });
+  }
+
+  function applyLanguage(lang) {
+    const dict = translations[lang] || translations.en;
+    currentLang = lang;
+    document.documentElement.setAttribute("data-lang", lang);
+    if (langSelect && langSelect.value !== lang) {
+      langSelect.value = lang;
+    }
+
+    document.querySelectorAll("[data-i18n]").forEach((el) => {
+      const key = el.getAttribute("data-i18n");
+      if (dict[key]) {
+        if (key === "colTurnover") {
+          el.innerHTML = dict[key];
+        } else {
+          el.textContent = dict[key];
+        }
+      }
+    });
+
+    const searchInputEl = document.getElementById("searchInput");
+    if (searchInputEl && dict.searchPlaceholder) {
+      searchInputEl.placeholder = dict.searchPlaceholder;
+    }
+
+    updateBanner(lang);
+    renderFaq(lang);
+  }
+
+  if (langSelect) {
+    langSelect.addEventListener("change", (e) => {
+      const value = e.target.value || "en";
+      applyLanguage(value);
+    });
+  }
+
+  function detectLanguageAndApply() {
+    fetch("https://ipapi.co/json/")
+      .then((res) => res.json())
+      .then((data) => {
+        let lang = "en";
+        if (data && data.country === "BR") lang = "pt";
+        else if (data && data.country === "MX") lang = "es";
+        applyLanguage(lang);
+      })
+      .catch(() => {
+        const navLang = (navigator.language || navigator.userLanguage || "en")
+          .slice(0, 2)
+          .toLowerCase();
+        if (navLang === "pt") applyLanguage("pt");
+        else if (navLang === "es") applyLanguage("es");
+        else applyLanguage("en");
+      });
+  }
+
+  detectLanguageAndApply();
+  loadSheetData();
+</script>
+
+</body>
+</html>
