@@ -29,8 +29,7 @@ export async function onRequest(context) {
     const dd = String(dt.getUTCDate()).padStart(2, "0");
     return `${yy}-${mm}-${dd}`;
   }
-const CACHE_VERSION = "v2"; // bump this when you want to "flush"
-const cacheKey = `${CACHE_VERSION}:stats:${country}:${mode}:${date}`;
+
 
   const baseDate = /^\d{4}-\d{2}-\d{2}$/.test(dateParam || "") ? dateParam : getMexicoTodayISO();
 
