@@ -70,18 +70,29 @@ export async function onRequest(context) {
       const key = `${country}:${username.toLowerCase()}`;
 
       if (!agg[key]) {
-        agg[key] = {
-          country,
-          username,
-          cumLocal: 0,
-          lastSlotOrder: -1,
-          brDeduct: 0,
-          brDeductTime: 0
-        };
+agg[key] = {
+  country,
+  username,
+  cumLocal: 0,
+  lastSlotOrder: -1,
+  brDeduct: 0,
+  brDeductTime: 0,
+  isImportedUsd: false
+};
+
       }
 
       const rec = agg[key];
       const slotKey = r.slot_key;
+
+      // ✅ Imported historical totals are already USD
+if (slotKey === "IMPORT_USD") {
+  rec.isImportedUsd = true;
+  // treat as "latest" for the day (only 1 value/day usually)
+  rec.cumLocal = Number(r.local_turnover) || 0;
+  rec.lastSlotOrder = 999; // force it to win over normal slots
+  continue;
+}
 
       if (slotKey === "BR_00_03") {
         if (Number(r.created_at) > rec.brDeductTime) {
@@ -106,9 +117,16 @@ export async function onRequest(context) {
         effectiveLocal = Math.max(effectiveLocal - (rec.brDeduct || 0), 0);
       }
 
-      let usd = 0;
-      if (rec.country === "BR") usd = effectiveLocal / RATE_BR;
-      else if (rec.country === "MX") usd = effectiveLocal / RATE_MX;
+let usd = 0;
+
+// ✅ If IMPORT_USD, it is already USD
+if (rec.isImportedUsd) {
+  usd = effectiveLocal;
+} else {
+  if (rec.country === "BR") usd = effectiveLocal / RATE_BR;
+  else if (rec.country === "MX") usd = effectiveLocal / RATE_MX;
+}
+
 
       usd = Number(usd.toFixed(2));
       totalUsd += usd;
