@@ -1,0 +1,998 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Daily Turnover Management System</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+
+  <style>
+    :root { --primary-color:#198754; --sidebar-width:250px; }
+    body { background:#f8f9fa; font-size:14px; }
+
+    #sidebar{
+      width:var(--sidebar-width); min-height:100vh; background:#111827;
+      position:fixed; top:0; left:0; padding-top:20px; color:#fff; z-index:1000;
+      box-shadow:4px 0 15px rgba(0,0,0,.35);
+    }
+    #sidebar h4 { font-size:1.1rem; letter-spacing:.04em; }
+    #sidebar .nav-link{
+      color:#9ca3af; padding:12px 20px; display:flex; align-items:center;
+      transition:.2s; font-size:.96rem; border-radius:0;
+    }
+    #sidebar .nav-link i{ margin-right:8px; }
+    #sidebar .nav-link:hover, #sidebar .nav-link.active{
+      background:linear-gradient(135deg,#22c55e,#16a34a); color:#022c22;
+    }
+
+    #content{ margin-left:var(--sidebar-width); padding:20px; }
+    .card-header{ background-color:var(--primary-color)!important; color:#fff!important; font-weight:600; }
+    .tab-content .tab-pane{ display:none; }
+    .tab-content .tab-pane.active{ display:block; }
+
+    .text-small{ font-size:12px; }
+    .status-text{ font-size:12px; margin-top:6px; min-height:18px; }
+    .status-ok{ color:#16a34a; }
+    .status-error{ color:#dc2626; }
+
+    .pill-note{
+      display:inline-flex; align-items:center; gap:4px;
+      border-radius:999px; padding:3px 8px;
+      background:rgba(148,163,184,.15); font-size:11px;
+    }
+    .pill-note.green{ background:rgba(34,197,94,.15); color:#15803d; }
+    .pill-note.blue{ background:rgba(59,130,246,.15); color:#1d4ed8; }
+
+    textarea{ font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace; font-size:13px; }
+  </style>
+</head>
+<body>
+
+<div id="sidebar">
+  <h4 class="text-center mb-4 text-warning">Turnover System</h4>
+  <nav class="nav flex-column">
+    <a class="nav-link active" id="global-tab" href="#global" onclick="showTab('global')">
+      <i class="fas fa-globe"></i> GLOBAL Leaderboard
+    </a>
+    <a class="nav-link" id="brazil-tab" href="#brazil" onclick="showTab('brazil')">🇧🇷 Brazil</a>
+    <a class="nav-link" id="mexico-tab" href="#mexico" onclick="showTab('mexico')">🇲🇽 Mexico</a>
+    <a class="nav-link" id="data-tab" href="#data" onclick="showTab('data')">
+      <i class="fas fa-chart-line"></i> DATA / Analytics
+    </a>
+
+    <!-- STEP 4 -->
+    <a class="nav-link" id="user-tab" href="#user" onclick="showTab('user')">
+      <i class="fas fa-user"></i> Search User
+    </a>
+    <a class="nav-link" id="history-tab" href="#history" onclick="showTab('history')">
+      <i class="fas fa-clock-rotate-left"></i> Upload History
+    </a>
+    <a class="nav-link" id="rollback-tab" href="#rollback" onclick="showTab('rollback')">
+      <i class="fas fa-rotate-left"></i> Rollback
+    </a>
+<a class="nav-link" href="/admin-import.html">
+  <i class="fas fa-upload"></i> Upload History
+</a>
+
+
+  </nav>
+</div>
+
+<div id="content">
+  <h1 class="h4 mb-2">Daily Turnover Management</h1>
+  <p class="text-muted text-small mb-3">
+    Your team updates Brazil &amp; Mexico every 2 hours. This tool saves raw data into D1, converts to USD, and builds the GLOBAL leaderboard used on the public page.
+  </p>
+  <hr>
+
+  <div class="tab-content">
+
+    <!-- DATA TAB -->
+    <div class="tab-pane" id="data">
+      <div class="card shadow-sm mb-4">
+        <div class="card-header bg-white text-dark d-flex justify-content-between align-items-center" style="background:#fff!important;color:#111!important;">
+          <span><i class="fas fa-chart-bar me-2"></i>Turnover Analytics (USD)</span>
+          <div class="d-flex gap-2">
+            <button id="btnExportCsv" class="btn btn-sm btn-outline-secondary">
+              <i class="fas fa-file-csv"></i> CSV
+            </button>
+            <button id="btnExportPdf" class="btn btn-sm btn-outline-secondary">
+              <i class="fas fa-file-pdf"></i> PDF
+            </button>
+          </div>
+        </div>
+
+        <div class="card-body">
+          <div class="row g-3 mb-3">
+            <div class="col-md-3">
+              <label class="form-label">Range</label>
+              <select id="dataMode" class="form-select">
+                <option value="daily">Today (Daily)</option>
+                <option value="weekly" selected>This Week (7 days)</option>
+                <option value="monthly">Last 30 Days</option>
+              </select>
+            </div>
+            <div class="col-md-3">
+              <label class="form-label">Country</label>
+              <select id="dataCountry" class="form-select">
+                <option value="ALL" selected>Combined (BR + MX)</option>
+                <option value="BR">Brazil Only</option>
+                <option value="MX">Mexico Only</option>
+              </select>
+            </div>
+            <div class="col-md-3">
+              <label class="form-label">Base Date (UTC-6)</label>
+              <input type="date" id="dataBaseDate" class="form-control">
+            </div>
+            <div class="col-md-3 d-flex align-items-end">
+              <button id="btnReloadStats" class="btn btn-primary w-100">
+                <i class="fas fa-sync-alt"></i> Refresh
+              </button>
+            </div>
+          </div>
+
+          <div id="dataStatus" class="status-text"></div>
+
+          <div class="row g-3 mb-3">
+            <div class="col-md-4">
+              <div class="card border-0 shadow-sm"><div class="card-body">
+                <div class="text-muted small">Total Turnover (USD)</div>
+                <div id="summaryTotalUsd" class="h4 mb-0">-</div>
+                <div class="text-muted small" id="summaryRangeLabel"></div>
+              </div></div>
+            </div>
+            <div class="col-md-4">
+              <div class="card border-0 shadow-sm"><div class="card-body">
+                <div class="text-muted small">Top Player (by USD)</div>
+                <div id="summaryTopPlayer" class="h5 mb-0">-</div>
+                <div class="text-muted small" id="summaryTopPlayerUsd"></div>
+              </div></div>
+            </div>
+            <div class="col-md-4">
+              <div class="card border-0 shadow-sm"><div class="card-body">
+                <div class="text-muted small">Most Consistent (Days in Top 20)</div>
+                <div id="summaryConsistentPlayer" class="h5 mb-0">-</div>
+                <div class="text-muted small" id="summaryConsistentDays"></div>
+              </div></div>
+            </div>
+          </div>
+
+          <div class="card border-0 shadow-sm mb-3">
+            <div class="card-body">
+              <h6 class="mb-2">Daily Turnover Trend (USD)</h6>
+              <div id="chartTurnover" style="height: 300px;"></div>
+            </div>
+          </div>
+
+          <div class="card border-0 shadow-sm">
+            <div class="card-body">
+              <h6 class="mb-2">Top Players (Selected Range)</h6>
+              <div class="table-responsive">
+                <table class="table table-sm table-hover align-middle" id="tblTopPlayers">
+                  <thead class="table-light">
+                    <tr>
+                      <th>Rank</th><th>Username</th><th>Country</th><th>Total USD (Range)</th><th>Days in Top 20</th>
+                    </tr>
+                  </thead>
+                  <tbody></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- GLOBAL TAB -->
+    <div class="tab-pane active" id="global">
+      <div class="card shadow-sm mb-4">
+        <div class="card-header bg-success">
+          <i class="fas fa-trophy"></i> GLOBAL Leaderboard &amp; Summary (USD)
+        </div>
+        <div class="card-body">
+          <p class="text-muted mb-3">
+            Combined <strong>Brazil + Mexico</strong>, converted to USD and ranked by Score (USD).
+          </p>
+
+          <div class="row g-3 mb-3">
+            <div class="col-md-3">
+              <label for="globalDate" class="form-label text-small">
+                Leaderboard Date <span class="pill-note blue">Mexico time (UTC-6)</span>
+              </label>
+              <input type="date" class="form-control form-control-sm" id="globalDate">
+            </div>
+            <div class="col-md-3">
+              <label for="globalPlayer" class="form-label text-small">Filter by Username</label>
+              <input type="text" class="form-control form-control-sm" id="globalPlayer" placeholder="e.g. fabiano199">
+            </div>
+            <div class="col-md-3 d-flex align-items-end">
+              <button class="btn btn-secondary btn-sm w-100" id="globalSearchBtn">
+                <i class="fas fa-search"></i> Load Leaderboard
+              </button>
+            </div>
+            <div class="col-md-3 d-flex align-items-end">
+              <div id="globalStatus" class="status-text"></div>
+            </div>
+          </div>
+
+          <div class="table-responsive">
+            <table class="table table-striped table-hover table-sm align-middle">
+              <thead class="table-dark">
+                <tr>
+                  <th style="width:60px;">Rank</th>
+                  <th>Username</th>
+                  <th style="width:90px;">Country</th>
+                  <th style="width:150px;">Score (USD)</th>
+                </tr>
+              </thead>
+              <tbody id="globalTableBody"></tbody>
+            </table>
+          </div>
+
+          <p class="text-small text-muted mt-2 mb-0">
+            To correct data: re-upload <strong>Brazil</strong> or <strong>Mexico</strong> with the same <strong>date</strong> and <strong>time slot</strong>.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- BRAZIL TAB -->
+    <div class="tab-pane" id="brazil">
+      <div class="card shadow-sm mb-4">
+        <div class="card-header">🇧🇷 Brazil Turnover Data Entry (BRL)</div>
+        <div class="card-body">
+          <p class="text-small text-danger mb-2">
+            ⚠️ Select the <strong>Mexico day (UTC-6)</strong> and the latest cumulative slot.
+          </p>
+
+          <div class="row g-3 mb-3">
+            <div class="col-md-4">
+              <label for="brDate" class="form-label text-small">
+                Leaderboard Date <span class="pill-note blue">Mexico (UTC-6)</span>
+              </label>
+              <input type="date" class="form-control form-control-sm" id="brDate">
+            </div>
+            <div class="col-md-4">
+              <label for="brTime" class="form-label text-small">
+                Time Slot / Type <span class="pill-note green">Cumulative</span>
+              </label>
+              <select id="brTime" class="form-select form-select-sm">
+                <option value="00_02">00:00 – 02:00</option>
+                <option value="00_04">00:00 – 04:00</option>
+                <option value="00_06">00:00 – 06:00</option>
+                <option value="00_08">00:00 – 08:00</option>
+                <option value="00_10">00:00 – 10:00</option>
+                <option value="00_12">00:00 – 12:00</option>
+                <option value="00_14">00:00 – 14:00</option>
+                <option value="00_16">00:00 – 16:00</option>
+                <option value="00_18">00:00 – 18:00</option>
+                <option value="00_20">00:00 – 20:00</option>
+                <option value="00_22">00:00 – 22:00</option>
+                <option value="00_24">00:00 – 24:00</option>
+                <option value="BR_00_03">BR 00:00 – 03:00 (local Brazil – deduct)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="d-flex mb-2">
+            <button class="btn btn-sm btn-outline-primary me-2" onclick="toggleMode('brazil','manual')">Manual Entry</button>
+            <button class="btn btn-sm btn-outline-primary" onclick="toggleMode('brazil','csv')">CSV Upload</button>
+          </div>
+
+          <div id="brazil-manual" class="data-mode">
+            <label for="brDataArea" class="form-label text-small">Paste data <span class="pill-note">username, cumulative BRL</span></label>
+            <textarea class="form-control" id="brDataArea" rows="7" placeholder="fabiano199, 2500.50"></textarea>
+          </div>
+
+          <div id="brazil-csv" class="data-mode" style="display:none;">
+            <label for="brCsvFile" class="form-label text-small">Upload CSV (.csv)</label>
+            <input type="file" class="form-control form-control-sm" id="brCsvFile" accept=".csv">
+            <a href="#" id="brTemplateLink" class="d-inline-block mt-1 text-small"><i class="fas fa-download"></i> Download CSV template</a>
+          </div>
+
+          <div class="mt-3">
+            <button type="button" class="btn btn-primary btn-sm" onclick="saveCountry('BR')"><i class="fas fa-upload"></i> Save Brazil data</button>
+            <div id="brStatus" class="status-text"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MEXICO TAB -->
+    <div class="tab-pane" id="mexico">
+      <div class="card shadow-sm mb-4">
+        <div class="card-header">🇲🇽 Mexico Turnover Data Entry (MXN)</div>
+        <div class="card-body">
+          <p class="text-small text-info mb-2">ℹ️ Mexico day cycle: <strong>00:00 – 23:59 (UTC-6)</strong></p>
+
+          <div class="row g-3 mb-3">
+            <div class="col-md-4">
+              <label for="mxDate" class="form-label text-small">
+                Leaderboard Date <span class="pill-note blue">Mexico (UTC-6)</span>
+              </label>
+              <input type="date" class="form-control form-control-sm" id="mxDate">
+            </div>
+            <div class="col-md-4">
+              <label for="mxTime" class="form-label text-small">
+                Time Slot / Type <span class="pill-note green">Cumulative</span>
+              </label>
+              <select id="mxTime" class="form-select form-select-sm">
+                <option value="00_02">00:00 – 02:00</option>
+                <option value="00_04">00:00 – 04:00</option>
+                <option value="00_06">00:00 – 06:00</option>
+                <option value="00_08">00:00 – 08:00</option>
+                <option value="00_10">00:00 – 10:00</option>
+                <option value="00_12">00:00 – 12:00</option>
+                <option value="00_14">00:00 – 14:00</option>
+                <option value="00_16">00:00 – 16:00</option>
+                <option value="00_18">00:00 – 18:00</option>
+                <option value="00_20">00:00 – 20:00</option>
+                <option value="00_22">00:00 – 22:00</option>
+                <option value="00_24">00:00 – 24:00</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="d-flex mb-2">
+            <button class="btn btn-sm btn-outline-primary me-2" onclick="toggleMode('mexico','manual')">Manual Entry</button>
+            <button class="btn btn-sm btn-outline-primary" onclick="toggleMode('mexico','csv')">CSV Upload</button>
+          </div>
+
+          <div id="mexico-manual" class="data-mode">
+            <label for="mxDataArea" class="form-label text-small">Paste data <span class="pill-note">username, cumulative MXN</span></label>
+            <textarea class="form-control" id="mxDataArea" rows="7" placeholder="mxplayer01, 20000.00"></textarea>
+          </div>
+
+          <div id="mexico-csv" class="data-mode" style="display:none;">
+            <label for="mxCsvFile" class="form-label text-small">Upload CSV (.csv)</label>
+            <input type="file" class="form-control form-control-sm" id="mxCsvFile" accept=".csv">
+            <a href="#" id="mxTemplateLink" class="d-inline-block mt-1 text-small"><i class="fas fa-download"></i> Download CSV template</a>
+          </div>
+
+          <div class="mt-3">
+            <button type="button" class="btn btn-primary btn-sm" onclick="saveCountry('MX')"><i class="fas fa-upload"></i> Save Mexico data</button>
+            <div id="mxStatus" class="status-text"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 4: USER SEARCH -->
+    <div class="tab-pane" id="user">
+      <div class="card shadow-sm mb-4">
+        <div class="card-header bg-white text-dark" style="background:#fff!important;color:#111!important;">
+          <i class="fas fa-user me-2"></i> Search User History
+        </div>
+        <div class="card-body">
+          <div class="row g-3 mb-2">
+            <div class="col-md-4">
+              <label class="form-label text-small">Username</label>
+              <input id="uSearchName" type="text" class="form-control form-control-sm" placeholder="e.g. fabiano199">
+            </div>
+            <div class="col-md-3">
+              <label class="form-label text-small">Country (optional)</label>
+              <select id="uSearchCountry" class="form-select form-select-sm">
+                <option value="" selected>All</option>
+                <option value="BR">BR</option>
+                <option value="MX">MX</option>
+              </select>
+            </div>
+            <div class="col-md-3 d-flex align-items-end">
+              <button class="btn btn-secondary btn-sm w-100" id="btnUserSearch">
+                <i class="fas fa-search"></i> Search
+              </button>
+            </div>
+            <div class="col-md-2 d-flex align-items-end">
+              <div id="userStatus" class="status-text"></div>
+            </div>
+          </div>
+
+          <div class="table-responsive">
+            <table class="table table-sm table-hover align-middle">
+              <thead class="table-light">
+                <tr>
+                  <th>Date</th>
+                  <th>Slot</th>
+                  <th>Country</th>
+                  <th>Turnover (Local)</th>
+                  <th>Batch</th>
+                  <th>Uploaded</th>
+                </tr>
+              </thead>
+              <tbody id="userTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 4: UPLOAD HISTORY -->
+    <div class="tab-pane" id="history">
+      <div class="card shadow-sm mb-4">
+        <div class="card-header bg-white text-dark" style="background:#fff!important;color:#111!important;">
+          <i class="fas fa-clock-rotate-left me-2"></i> Upload History Log
+        </div>
+        <div class="card-body">
+          <div class="row g-3 mb-2">
+            <div class="col-md-3">
+              <label class="form-label text-small">Date (optional)</label>
+              <input id="hDate" type="date" class="form-control form-control-sm">
+            </div>
+            <div class="col-md-3">
+              <label class="form-label text-small">Country (optional)</label>
+              <select id="hCountry" class="form-select form-select-sm">
+                <option value="" selected>All</option>
+                <option value="BR">BR</option>
+                <option value="MX">MX</option>
+              </select>
+            </div>
+            <div class="col-md-3 d-flex align-items-end">
+              <button class="btn btn-secondary btn-sm w-100" id="btnHistoryLoad">
+                <i class="fas fa-list"></i> Load
+              </button>
+            </div>
+            <div class="col-md-3 d-flex align-items-end">
+              <div id="historyStatus" class="status-text"></div>
+            </div>
+          </div>
+
+          <div class="table-responsive">
+            <table class="table table-sm table-hover align-middle">
+              <thead class="table-light">
+                <tr>
+                  <th>Created</th>
+                  <th>Date</th>
+                  <th>Country</th>
+                  <th>Slot</th>
+                  <th>Rows</th>
+                  <th>Total Local</th>
+                  <th>Total USD</th>
+                  <th>Uploader</th>
+                  <th>Batch</th>
+                </tr>
+              </thead>
+              <tbody id="historyTableBody"></tbody>
+            </table>
+          </div>
+
+          <p class="text-muted text-small mb-0">
+            Tip: copy a <span class="badge bg-secondary">batch</span> value and use it in Rollback.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 4: ROLLBACK -->
+    <div class="tab-pane" id="rollback">
+      <div class="card shadow-sm mb-4">
+        <div class="card-header bg-white text-dark" style="background:#fff!important;color:#111!important;">
+          <i class="fas fa-rotate-left me-2"></i> Rollback (Restore Previous Upload)
+        </div>
+        <div class="card-body">
+          <div class="row g-3 mb-2">
+            <div class="col-md-3">
+              <label class="form-label text-small">Date (UTC-6)</label>
+              <input id="rbDate" type="date" class="form-control form-control-sm">
+            </div>
+            <div class="col-md-2">
+              <label class="form-label text-small">Country</label>
+              <select id="rbCountry" class="form-select form-select-sm">
+                <option value="BR">BR</option>
+                <option value="MX">MX</option>
+              </select>
+            </div>
+            <div class="col-md-3">
+              <label class="form-label text-small">Slot Key</label>
+              <input id="rbSlot" type="text" class="form-control form-control-sm" placeholder="e.g. 00_12 or BR_00_03">
+            </div>
+            <div class="col-md-4">
+              <label class="form-label text-small">Rollback to Batch ID</label>
+              <input id="rbBatch" type="text" class="form-control form-control-sm" placeholder="paste batch_id from history">
+            </div>
+          </div>
+
+          <div class="row g-3 mt-1">
+            <div class="col-md-4">
+              <label class="form-label text-small">Admin Key</label>
+              <input id="rbKey" type="password" class="form-control form-control-sm" placeholder="(same key used in your rollback API)">
+            </div>
+            <div class="col-md-4 d-flex align-items-end">
+              <button class="btn btn-danger btn-sm w-100" id="btnRollback">
+                <i class="fas fa-triangle-exclamation"></i> Rollback Now
+              </button>
+            </div>
+            <div class="col-md-4 d-flex align-items-end">
+              <div id="rbStatus" class="status-text"></div>
+            </div>
+          </div>
+
+          <div class="text-small text-muted mt-2">
+            This will restore the selected <b>batch</b> as the current data for the same <b>date + country + slot</b>.
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"></script>
+
+<!-- ApexCharts -->
+<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+
+<!-- PDF (jsPDF + autoTable) -->
+<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jspdf-autotable@3.8.2/dist/jspdf.plugin.autotable.min.js"></script>
+
+<script>
+  // ------- TAB SWITCHING -------
+  function showTab(tabId) {
+    document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('#sidebar .nav-link').forEach(l => l.classList.remove('active'));
+    document.getElementById(tabId).classList.add('active');
+    document.getElementById(tabId + '-tab').classList.add('active');
+
+    if (tabId === 'data') loadStats();
+  }
+
+  function toggleMode(country, mode) {
+    const manualDiv = document.getElementById(country + '-manual');
+    const csvDiv = document.getElementById(country + '-csv');
+    if (!manualDiv || !csvDiv) return;
+    if (mode === 'manual') { manualDiv.style.display='block'; csvDiv.style.display='none'; }
+    else { manualDiv.style.display='none'; csvDiv.style.display='block'; }
+  }
+
+  function setStatus(prefix, message, type) {
+    const el = document.getElementById(prefix.toLowerCase() + 'Status');
+    if (!el) return;
+    el.textContent = message || '';
+    el.classList.remove('status-ok','status-error');
+    if (type === 'ok') el.classList.add('status-ok');
+    if (type === 'error') el.classList.add('status-error');
+  }
+
+  function setGlobalStatus(msg, type) {
+    const el = document.getElementById('globalStatus');
+    el.textContent = msg || '';
+    el.classList.remove('status-ok','status-error');
+    if (type === 'ok') el.classList.add('status-ok');
+    if (type === 'error') el.classList.add('status-error');
+  }
+
+  function setDataStatus(msg, type) {
+    const el = document.getElementById('dataStatus');
+    el.textContent = msg || '';
+    el.classList.remove('status-ok','status-error');
+    if (type === 'ok') el.classList.add('status-ok');
+    if (type === 'error') el.classList.add('status-error');
+  }
+
+  function setAnyStatus(id, msg, type) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.textContent = msg || "";
+    el.classList.remove("status-ok","status-error");
+    if (type === "ok") el.classList.add("status-ok");
+    if (type === "error") el.classList.add("status-error");
+  }
+
+  function parseLines(text) {
+    const lines = (text||'').split(/\r?\n/);
+    const rows = [];
+    const errors = [];
+    lines.forEach((line, idx) => {
+      const t = line.trim(); if (!t) return;
+      const parts = t.split(/[,;\t]/).map(p=>p.trim()).filter(Boolean);
+      if (parts.length < 2) return errors.push(`Line ${idx+1}: not enough values`);
+      const username = parts[0];
+      const turnover = Number(String(parts[1]).replace(/,/g,''));
+      if (!username) return errors.push(`Line ${idx+1}: missing username`);
+      if (!Number.isFinite(turnover)) return errors.push(`Line ${idx+1}: invalid turnover`);
+      rows.push({ username, turnover });
+    });
+    return { rows, errors };
+  }
+
+  function setupCsvUpload(fileInputId, textareaId) {
+    const fileInput = document.getElementById(fileInputId);
+    const textarea = document.getElementById(textareaId);
+    if (!fileInput || !textarea) return;
+    fileInput.addEventListener('change', () => {
+      const file = fileInput.files && fileInput.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (e) => { textarea.value = e.target.result || ''; };
+      reader.readAsText(file);
+    });
+  }
+  setupCsvUpload('brCsvFile','brDataArea');
+  setupCsvUpload('mxCsvFile','mxDataArea');
+
+  function setupTemplateLink(linkId, examplePrefix) {
+    const link = document.getElementById(linkId);
+    if (!link) return;
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+      const csv = "username,turnover\n" + examplePrefix + "player01,1500.00\n" + examplePrefix + "player02,900.00\n";
+      const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = examplePrefix + "template.csv";
+      a.click();
+      URL.revokeObjectURL(url);
+    });
+  }
+  setupTemplateLink('brTemplateLink','br');
+  setupTemplateLink('mxTemplateLink','mx');
+
+  async function saveCountry(countryCode) {
+    const upper = countryCode.toUpperCase();
+    const dateEl = document.getElementById(upper === 'BR' ? 'brDate' : 'mxDate');
+    const slotEl = document.getElementById(upper === 'BR' ? 'brTime' : 'mxTime');
+    const textareaEl = document.getElementById(upper === 'BR' ? 'brDataArea' : 'mxDataArea');
+
+    const date = dateEl.value;
+    const slotKey = slotEl.value;
+    if (!date) return setStatus(upper, 'Please choose a leaderboard date.', 'error');
+
+    const parsed = parseLines(textareaEl.value);
+    if (parsed.errors.length) return setStatus(upper, parsed.errors[0], 'error');
+    if (!parsed.rows.length) return setStatus(upper, 'No rows to save.', 'error');
+
+    setStatus(upper, `Saving ${parsed.rows.length} rows…`, '');
+
+    try {
+      const res = await fetch('/api-admin-save', {
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({ country: upper, date, slotKey, rows: parsed.rows })
+      });
+      const json = await res.json().catch(()=>({}));
+      if (!res.ok || !json.ok) return setStatus(upper, json.error || `Save failed (${res.status})`, 'error');
+
+      setStatus(upper, `Saved ${json.inserted || 0} rows for ${upper} [${date}, ${slotKey}].`, 'ok');
+      await loadGlobalLeaderboard();
+      await loadStats();
+    } catch (e) {
+      setStatus(upper, 'Network error while saving.', 'error');
+    }
+  }
+
+  async function loadGlobalLeaderboard() {
+    const date = document.getElementById('globalDate').value;
+    const filter = (document.getElementById('globalPlayer').value || '').trim().toLowerCase();
+    const tbody = document.getElementById('globalTableBody');
+    if (!date) return setGlobalStatus('Please choose a date first.', 'error');
+
+    setGlobalStatus('Loading leaderboard…', '');
+    tbody.innerHTML = '';
+
+    try {
+      const res = await fetch('/api-leaderboard?date=' + encodeURIComponent(date));
+      const json = await res.json().catch(()=>({}));
+      if (!res.ok || !json.ok) return setGlobalStatus(json.error || `Error ${res.status}`, 'error');
+
+      const rows = (json.rows || []).filter(r => !filter || String(r.username||'').toLowerCase().includes(filter));
+
+      if (!rows.length) {
+        setGlobalStatus('No entries for ' + (json.date || date) + ' yet.', '');
+        return;
+      }
+
+      rows.forEach(p => {
+        const flag = p.country === 'BR' ? '🇧🇷' : (p.country === 'MX' ? '🇲🇽' : '🌐');
+        const tr = document.createElement('tr');
+        tr.innerHTML =
+          `<td>${p.rank ?? '-'}</td>
+           <td>${p.username || ''}</td>
+           <td>${flag} ${p.country || ''}</td>
+           <td>$${Number(p.usd_turnover || 0).toFixed(2)}</td>`;
+        tbody.appendChild(tr);
+      });
+
+      setGlobalStatus(`Showing ${rows.length} players for ${json.date || date}.`, 'ok');
+    } catch (e) {
+      setGlobalStatus('Network error loading leaderboard.', 'error');
+    }
+  }
+
+  document.getElementById('globalSearchBtn').addEventListener('click', loadGlobalLeaderboard);
+
+  // ===== DATA / ANALYTICS =====
+  let statsCache = null;
+  let chart = null;
+
+  function renderChart(series) {
+    const categories = (series || []).map(x => x.date);
+    const data = (series || []).map(x => Number(x.totalUsd || 0));
+
+    const options = {
+      chart: { type: 'line', height: 300, toolbar: { show: false } },
+      series: [{ name: 'Total USD', data }],
+      xaxis: { categories },
+      yaxis: { labels: { formatter: (v) => Number(v).toFixed(2) } },
+      stroke: { width: 3 },
+      dataLabels: { enabled: false }
+    };
+
+    if (!chart) {
+      chart = new ApexCharts(document.querySelector("#chartTurnover"), options);
+      chart.render();
+    } else {
+      chart.updateOptions(options, true, true);
+    }
+  }
+
+  function renderTable(topPlayersOverall) {
+    const tbody = document.querySelector('#tblTopPlayers tbody');
+    tbody.innerHTML = '';
+    (topPlayersOverall || []).slice(0, 20).forEach(p => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${p.rank}</td>
+        <td>${p.username}</td>
+        <td>${p.country}</td>
+        <td>$${Number(p.totalUsd || 0).toFixed(2)}</td>
+        <td>${p.daysInTop20}</td>
+      `;
+      tbody.appendChild(tr);
+    });
+  }
+
+  function renderSummary(payload) {
+    const totalRangeUsd = (payload.perDay || []).reduce((sum, d) => sum + (Number(d.totalUsd)||0), 0);
+    document.getElementById('summaryTotalUsd').textContent = '$' + totalRangeUsd.toFixed(2);
+    document.getElementById('summaryRangeLabel').textContent = `${payload.fromDate} → ${payload.toDate} (${payload.mode}, ${payload.country})`;
+
+    const top = (payload.topPlayersOverall || [])[0];
+    document.getElementById('summaryTopPlayer').textContent = top ? `${top.username} (${top.country})` : '-';
+    document.getElementById('summaryTopPlayerUsd').textContent = top ? `$${Number(top.totalUsd||0).toFixed(2)} in range` : '';
+
+    const consistent = (payload.topPlayersOverall || []).slice().sort((a,b)=>b.daysInTop20-a.daysInTop20)[0];
+    document.getElementById('summaryConsistentPlayer').textContent = consistent ? `${consistent.username} (${consistent.country})` : '-';
+    document.getElementById('summaryConsistentDays').textContent = consistent ? `${consistent.daysInTop20} days in Top 20` : '';
+  }
+
+  async function loadStats() {
+    const mode = document.getElementById('dataMode').value;
+    const country = document.getElementById('dataCountry').value;
+    const date = document.getElementById('dataBaseDate').value;
+    if (!date) return setDataStatus('Please choose a base date.', 'error');
+
+    setDataStatus('Loading stats…', '');
+    try {
+      const qs = new URLSearchParams({ mode, country, date });
+      const res = await fetch('/api-stats?' + qs.toString());
+      const json = await res.json().catch(()=>({}));
+      if (!res.ok || !json.ok) return setDataStatus(json.error || `Error ${res.status}`, 'error');
+
+      statsCache = json;
+      renderSummary(json);
+      renderChart(json.chartSeries || []);
+      renderTable(json.topPlayersOverall || []);
+      setDataStatus(`Loaded ${json.mode} stats for ${json.fromDate} → ${json.toDate}.`, 'ok');
+    } catch (e) {
+      setDataStatus('Network error loading stats.', 'error');
+    }
+  }
+
+  document.getElementById('btnReloadStats').addEventListener('click', loadStats);
+
+  document.getElementById('btnExportCsv').addEventListener('click', () => {
+    if (!statsCache) return alert('No data yet. Click Refresh first.');
+    const rows = statsCache.topPlayersOverall || [];
+    const header = "rank,username,country,totalUsd,daysInTop20\n";
+    const body = rows.map(r =>
+      [r.rank, `"${String(r.username).replace(/"/g,'""')}"`, r.country, r.totalUsd, r.daysInTop20].join(',')
+    ).join('\n');
+    const blob = new Blob([header + body], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `turnover_stats_${statsCache.fromDate}_to_${statsCache.toDate}_${statsCache.country}_${statsCache.mode}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+  });
+
+  document.getElementById('btnExportPdf').addEventListener('click', () => {
+    if (!statsCache) return alert('No data yet. Click Refresh first.');
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF({ orientation: 'portrait', unit: 'pt', format: 'a4' });
+
+    doc.setFontSize(14);
+    doc.text(`Turnover Analytics (USD)`, 40, 40);
+    doc.setFontSize(10);
+    doc.text(`${statsCache.fromDate} → ${statsCache.toDate} | ${statsCache.country} | ${statsCache.mode}`, 40, 58);
+
+    const tableRows = (statsCache.topPlayersOverall || []).slice(0, 30).map(r => [
+      r.rank, r.username, r.country, `$${Number(r.totalUsd||0).toFixed(2)}`, r.daysInTop20
+    ]);
+
+    doc.autoTable({
+      head: [[ "Rank", "Username", "Country", "Total USD", "Days in Top 20" ]],
+      body: tableRows,
+      startY: 80,
+      styles: { fontSize: 9 }
+    });
+
+    doc.save(`turnover_stats_${statsCache.fromDate}_to_${statsCache.toDate}_${statsCache.country}_${statsCache.mode}.pdf`);
+  });
+
+  // ===== STEP 4 APIs =====
+  async function loadUserHistory() {
+    const username = (document.getElementById("uSearchName").value || "").trim();
+    const country = document.getElementById("uSearchCountry").value || "";
+    const tbody = document.getElementById("userTableBody");
+
+    if (!username) return setAnyStatus("userStatus", "Please enter username.", "error");
+
+    setAnyStatus("userStatus", "Loading…", "");
+    tbody.innerHTML = "";
+
+    try {
+      const qs = new URLSearchParams({ username });
+      if (country) qs.set("country", country);
+
+      const res = await fetch("/api-user-history?" + qs.toString());
+      const json = await res.json().catch(()=>({}));
+
+      if (!res.ok || !json.ok) {
+        setAnyStatus("userStatus", json.error || `Error ${res.status}`, "error");
+        return;
+      }
+
+      const rows = json.rows || [];
+      if (!rows.length) {
+        setAnyStatus("userStatus", "No history found.", "ok");
+        return;
+      }
+
+      rows.forEach(r => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>${r.date || ""}</td>
+          <td>${r.slot || ""}</td>
+          <td>${r.country || ""}</td>
+          <td>${Number(r.raw_turnover || 0).toFixed(2)}</td>
+          <td><span class="badge bg-secondary">${r.batch_id || ""}</span></td>
+          <td>${r.created_at || r.timestamp || ""}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      setAnyStatus("userStatus", `Loaded ${rows.length} rows.`, "ok");
+    } catch (e) {
+      setAnyStatus("userStatus", "Network error.", "error");
+    }
+  }
+
+  async function loadUploadHistory() {
+    const date = (document.getElementById("hDate").value || "").trim();
+    const country = document.getElementById("hCountry").value || "";
+    const tbody = document.getElementById("historyTableBody");
+
+    setAnyStatus("historyStatus", "Loading…", "");
+    tbody.innerHTML = "";
+
+    try {
+      const qs = new URLSearchParams();
+      if (date) qs.set("date", date);
+      if (country) qs.set("country", country);
+
+      const res = await fetch("/api-upload-history?" + qs.toString());
+      const json = await res.json().catch(()=>({}));
+
+      if (!res.ok || !json.ok) {
+        setAnyStatus("historyStatus", json.error || `Error ${res.status}`, "error");
+        return;
+      }
+
+      const rows = json.rows || [];
+      if (!rows.length) {
+        setAnyStatus("historyStatus", "No upload history.", "ok");
+        return;
+      }
+
+      rows.forEach(r => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>${r.created_at || ""}</td>
+          <td>${r.date || ""}</td>
+          <td>${r.country || ""}</td>
+          <td>${r.slot || ""}</td>
+          <td>${r.rows_count ?? ""}</td>
+          <td>${Number(r.total_local || 0).toFixed(2)}</td>
+          <td>${Number(r.total_usd || 0).toFixed(2)}</td>
+          <td>${r.uploader || ""}</td>
+          <td><span class="badge bg-secondary">${r.batch_id || ""}</span></td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      setAnyStatus("historyStatus", `Loaded ${rows.length} batches.`, "ok");
+    } catch (e) {
+      setAnyStatus("historyStatus", "Network error.", "error");
+    }
+  }
+
+  async function doRollback() {
+    const date = (document.getElementById("rbDate").value || "").trim();
+    const country = document.getElementById("rbCountry").value || "";
+    const slotKey = (document.getElementById("rbSlot").value || "").trim();
+    const batch_id = (document.getElementById("rbBatch").value || "").trim();
+    const key = (document.getElementById("rbKey").value || "").trim();
+
+    if (!date || !country || !slotKey || !batch_id || !key) {
+      return setAnyStatus("rbStatus", "Missing fields.", "error");
+    }
+
+    setAnyStatus("rbStatus", "Rolling back…", "");
+    try {
+      const res = await fetch("/api-rollback", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ date, country, slotKey, batch_id, key })
+      });
+      const json = await res.json().catch(()=>({}));
+
+      if (!res.ok || !json.ok) {
+        setAnyStatus("rbStatus", json.error || `Error ${res.status}`, "error");
+        return;
+      }
+
+      setAnyStatus("rbStatus", "Rollback success ✅", "ok");
+      await loadGlobalLeaderboard();
+      await loadStats();
+    } catch (e) {
+      setAnyStatus("rbStatus", "Network error.", "error");
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    const b1 = document.getElementById("btnUserSearch");
+    if (b1) b1.addEventListener("click", loadUserHistory);
+
+    const b2 = document.getElementById("btnHistoryLoad");
+    if (b2) b2.addEventListener("click", loadUploadHistory);
+
+    const b3 = document.getElementById("btnRollback");
+    if (b3) b3.addEventListener("click", doRollback);
+  });
+
+  // ------- Default dates = Mexico time UTC-6 -------
+  function todayMexicoISO() {
+    const nowUtcMs = Date.now();
+    const offsetMs = -6 * 60 * 60 * 1000;
+    const mexNow = new Date(nowUtcMs + offsetMs);
+    const y = mexNow.getFullYear();
+    const m = String(mexNow.getMonth() + 1).padStart(2, "0");
+    const d = String(mexNow.getDate()).padStart(2, "0");
+    return `${y}-${m}-${d}`;
+  }
+
+  document.addEventListener('DOMContentLoaded', async () => {
+    showTab('global');
+    const today = todayMexicoISO();
+
+    document.getElementById('globalDate').value = today;
+    document.getElementById('brDate').value = today;
+    document.getElementById('mxDate').value = today;
+    document.getElementById('dataBaseDate').value = today;
+
+    const rbDate = document.getElementById('rbDate');
+    const hDate = document.getElementById('hDate');
+    if (rbDate) rbDate.value = today;
+    if (hDate) hDate.value = today;
+
+    await loadGlobalLeaderboard();
+  });
+</script>
+
+</body>
+</html>
