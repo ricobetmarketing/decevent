@@ -43,6 +43,39 @@ export async function onRequest(context) {
   const RATE_BR = 5;
   const RATE_MX = 18;
 
+  async function loadFakeDaily(date) {
+  const r = await db.prepare(`
+    SELECT username, country, boost_pct
+    FROM fake_daily
+    WHERE date = ? AND is_active = 1
+  `).bind(date).all();
+  return r.results || [];
+}
+
+function applyFakeOption1(playersRealSorted, fakeDaily) {
+  const realOnly = (playersRealSorted || []).filter(p => Number(p.usd_turnover || 0) > 0);
+  const topRealUsd = realOnly[0] ? Number(realOnly[0].usd_turnover || 0) : 0;
+  if (!topRealUsd || !fakeDaily?.length) return realOnly;
+
+  const fakeRows = [];
+  for (const f of fakeDaily) {
+    const uname = String(f.username || "").trim();
+    const pct = Number(f.boost_pct || 0);
+    if (!uname || !Number.isFinite(pct) || pct <= 0) continue;
+
+    fakeRows.push({
+      country: (String(f.country || "ALL").toUpperCase() === "ALL") ? "FAKE" : String(f.country).toUpperCase(),
+      username: uname,
+      usd_turnover: Number((topRealUsd * (pct / 100)).toFixed(2)),
+      is_fake: true
+    });
+  }
+
+  const combined = [...realOnly, ...fakeRows].sort((a,b)=>b.usd_turnover-a.usd_turnover);
+  return combined;
+}
+
+  
   async function computeDailyStats(date) {
     const result = await db
       .prepare(
