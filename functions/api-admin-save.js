@@ -132,28 +132,16 @@ export async function onRequestPost(context) {
       note || null
     ).run();
 
-// 2) insert all rows into turnover_updates with batch_id
 const insert = db.prepare(`
-  INSERT INTO turnover_updates
-    (country, date, slot, username, raw_turnover, timestamp, batch_id, created_at)
-  VALUES
-    (?, ?, ?, ?, ?, ?, ?, ?)
+  INSERT INTO turnover_updates (country,date,slot,username,raw_turnover,timestamp,batch_id,created_at)
+  VALUES (?,?,?,?,?,?,?,?)
 `);
 
 const batch = cleanRows.map((r) =>
-  insert.bind(
-    country,
-    date,
-    slotKey,
-    r.username,
-    r.turnover,
-    nowMs,     // timestamp (ok to store ms)
-    batch_id,
-    nowMs      // created_at (REQUIRED, INTEGER)
-  )
+  insert.bind(country, date, slotKey, r.username, r.turnover, nowMs, batch_id, nowMs)
 );
-
 await db.batch(batch);
+
 
 
     // 3) compute day total from ONLY latest batch per (date+country+slot)
