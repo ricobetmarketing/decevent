@@ -1,3 +1,5 @@
+// functions/api-admin-save.js
+
 async function sendTelegram(context, text) {
   const token = context.env.TELEGRAM_BOT_TOKEN;
   const chatId = context.env.TELEGRAM_CHAT_ID;
@@ -24,7 +26,6 @@ async function sendTelegram(context, text) {
   return { ok: resp.ok, status: resp.status, data };
 }
 
-// Format time in GMT+8 (your PC time)
 function formatTimeGMT8() {
   const dt = new Date(Date.now() + 8 * 60 * 60 * 1000);
   const y = dt.getUTCFullYear();
@@ -42,7 +43,6 @@ function makeBatchId() {
   return "b_" + Date.now().toString(36) + "_" + Math.random().toString(36).slice(2, 10);
 }
 
-// your current FX rules
 function toUSD(country, amount) {
   const v = Number(amount || 0);
   if (!Number.isFinite(v)) return 0;
@@ -65,11 +65,11 @@ export async function onRequestPost(context) {
   }
 
   const country = (body.country || "").toUpperCase();
-  const date = body.date || "";         // UTC-6 date selected in admin
+  const date = body.date || ""; // UTC-6 date selected in admin
   const slotKey = body.slotKey || "";
   const rows = Array.isArray(body.rows) ? body.rows : [];
-  const uploader = body.uploader || ""; // optional (we’ll add in admin UI later)
-  const note = body.note || "";         // optional
+  const uploader = body.uploader || "";
+  const note = body.note || "";
 
   if (!["BR", "MX"].includes(country)) {
     return new Response(JSON.stringify({ ok: false, error: "Invalid country" }), {
@@ -90,7 +90,6 @@ export async function onRequestPost(context) {
     });
   }
 
-  // Clean rows
   const cleanRows = [];
   for (const r of rows) {
     const username = String(r.username || "").trim();
@@ -109,41 +108,50 @@ export async function onRequestPost(context) {
 
   const batch_id = makeBatchId();
   const created_at = new Date().toISOString();
-  const nowMs = Date.now(); // keep your existing timestamp style for turnover_updates
+  const nowMs = Date.now();
   const totalLocal = cleanRows.reduce((sum, r) => sum + r.turnover, 0);
   const totalUSD = cleanRows.reduce((sum, r) => sum + toUSD(country, r.turnover), 0);
 
   try {
-    // 1) log batch summary
+    // 1) log batch summary INTO daily_leaderboard (not upload_batches)
     await db.prepare(`
-      INSERT INTO upload_batches
-        (batch_id, created_at, uploader, country, slot, date, rows_count, total_local, total_usd, note)
+      INSERT INTO daily_leaderboard
+        (batch_id, created_at, uploader, country, slot, date, rows_count, total_local, total_usd, note, status)
       VALUES
-        (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10)
+        (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, 'PENDING')
     `).bind(
-      batch_id, created_at, uploader || null, country, slotKey, date,
-      cleanRows.length, totalLocal, totalUSD, note || null
+      batch_id,
+      created_at,
+      uploader || null,
+      country,
+      slotKey,
+      date,
+      cleanRows.length,
+      totalLocal,
+      totalUSD,
+      note || null
     ).run();
 
-    // 2) insert all rows for this batch (NO DELETE anymore)
-    const insert = db.prepare(
-      "INSERT INTO turnover_updates (country,date,slot,username,raw_turnover,timestamp,batch_id) VALUES (?,?,?,?,?,?,?)"
-    );
+    // 2) insert all rows into turnover_updates with batch_id
+    const insert = db.prepare(`
+      INSERT INTO turnover_updates (country,date,slot,username,raw_turnover,timestamp,batch_id)
+      VALUES (?,?,?,?,?,?,?)
+    `);
 
     const batch = cleanRows.map((r) =>
       insert.bind(country, date, slotKey, r.username, r.turnover, nowMs, batch_id)
     );
     await db.batch(batch);
 
-    // 3) compute day total from ONLY the latest batch per (date+country+slot)
+    // 3) compute day total from ONLY latest batch per (date+country+slot)
     const daySumRes = await db.prepare(`
       SELECT COALESCE(SUM(t.raw_turnover),0) AS total
       FROM turnover_updates t
-      JOIN upload_batches b ON b.batch_id = t.batch_id
+      JOIN daily_leaderboard b ON b.batch_id = t.batch_id
       WHERE b.date = ?
         AND b.created_at = (
           SELECT MAX(b2.created_at)
-          FROM upload_batches b2
+          FROM daily_leaderboard b2
           WHERE b2.date = b.date
             AND b2.country = b.country
             AND b2.slot = b.slot
@@ -152,13 +160,14 @@ export async function onRequestPost(context) {
 
     const dayTotalLocal = Number(daySumRes?.total || 0);
 
-    // 4) Telegram message
+    // 4) Telegram message (still ok)
     const msg =
       `📊 <b>Daily Turnover Challenge!</b>\n\n` +
       `<b>Current Update:</b> ${dayTotalLocal.toFixed(2)}\n` +
       `<b>Date (UTC-6):</b> ${date}\n` +
       `<b>Saved Slot:</b> ${slotKey} (${country})\n` +
       `<b>Rows:</b> ${cleanRows.length}\n` +
+      `<b>Status:</b> PENDING (need verify)\n` +
       `<b>Upload Time:</b> ${formatTimeGMT8()}`;
 
     const tg = await sendTelegram(context, msg);
