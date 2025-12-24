@@ -14,14 +14,16 @@ export async function onRequest(context) {
     date = `${y}-${m}-${d}`;
   }
 
- async function loadFakeDaily(date) {
+async function loadFakeDaily(date) {
   const r = await db.prepare(`
     SELECT username, country, boost_pct
     FROM fake_users
     WHERE date = ? AND is_active = 1
+    ORDER BY id DESC
   `).bind(date).all();
   return r.results || [];
 }
+
 
 
   function mergeFakeOption1(rowsRealSorted, fakeDaily) {
