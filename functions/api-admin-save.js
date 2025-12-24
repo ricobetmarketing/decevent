@@ -107,7 +107,7 @@ export async function onRequestPost(context) {
   }
 
   const batch_id = makeBatchId();
-  const created_at = new Date().toISOString();
+ const created_at = Date.now(); // INTEGER ms
   const nowMs = Date.now();
   const totalLocal = cleanRows.reduce((sum, r) => sum + r.turnover, 0);
   const totalUSD = cleanRows.reduce((sum, r) => sum + toUSD(country, r.turnover), 0);
