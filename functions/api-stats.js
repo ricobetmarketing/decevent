@@ -1,3 +1,4 @@
+// functions/api-stats.js
 export async function onRequest(context) {
   const db = context.env.DB;
   const url = new URL(context.request.url);
@@ -30,7 +31,6 @@ export async function onRequest(context) {
     return `${yy}-${mm}-${dd}`;
   }
 
-
   const baseDate = /^\d{4}-\d{2}-\d{2}$/.test(dateParam || "") ? dateParam : getMexicoTodayISO();
 
   let rangeLength = 1;
@@ -43,70 +43,70 @@ export async function onRequest(context) {
   const RATE_BR = 5;
   const RATE_MX = 18;
 
+  // ===== Fake (Option 1 = % of top REAL) =====
   async function loadFakeDaily(date) {
-  const r = await db.prepare(`
-    SELECT username, country, boost_pct
-    FROM fake_daily
-    WHERE date = ? AND is_active = 1
-  `).bind(date).all();
-  return r.results || [];
-}
-
-function applyFakeOption1(playersRealSorted, fakeDaily) {
-  const realOnly = (playersRealSorted || []).filter(p => Number(p.usd_turnover || 0) > 0);
-  const topRealUsd = realOnly[0] ? Number(realOnly[0].usd_turnover || 0) : 0;
-  if (!topRealUsd || !fakeDaily?.length) return realOnly;
-
-  const fakeRows = [];
-  for (const f of fakeDaily) {
-    const uname = String(f.username || "").trim();
-    const pct = Number(f.boost_pct || 0);
-    if (!uname || !Number.isFinite(pct) || pct <= 0) continue;
-
-    fakeRows.push({
-      country: (String(f.country || "ALL").toUpperCase() === "ALL") ? "FAKE" : String(f.country).toUpperCase(),
-      username: uname,
-      usd_turnover: Number((topRealUsd * (pct / 100)).toFixed(2)),
-      is_fake: true
-    });
+    const r = await db.prepare(`
+      SELECT username, country, boost_pct
+      FROM fake_daily
+      WHERE date = ? AND is_active = 1
+    `).bind(date).all();
+    return r.results || [];
   }
 
-  const combined = [...realOnly, ...fakeRows].sort((a,b)=>b.usd_turnover-a.usd_turnover);
-  return combined;
-}
+  function applyFakeOption1(playersRealSorted, fakeDaily) {
+    const realOnly = (playersRealSorted || []).filter(p => Number(p.usd_turnover || 0) > 0);
+    const topRealUsd = realOnly[0] ? Number(realOnly[0].usd_turnover || 0) : 0;
+    if (!topRealUsd || !fakeDaily?.length) return realOnly;
 
-  
+    const fakeRows = [];
+    for (const f of fakeDaily) {
+      const uname = String(f.username || "").trim();
+      const pct = Number(f.boost_pct || 0);
+      if (!uname || !Number.isFinite(pct) || pct <= 0) continue;
+
+      fakeRows.push({
+        country: (String(f.country || "ALL").toUpperCase() === "ALL") ? "FAKE" : String(f.country).toUpperCase(),
+        username: uname,
+        usd_turnover: Number((topRealUsd * (pct / 100)).toFixed(2)),
+        is_fake: true
+      });
+    }
+
+    return [...realOnly, ...fakeRows].sort((a, b) => b.usd_turnover - a.usd_turnover);
+  }
+
+  // ===== Approved-only daily compute =====
   async function computeDailyStats(date) {
+    // 1) find latest APPROVED batch per (date,country,slot)
     const approved = await db.prepare(`
-  SELECT b1.batch_id
-  FROM daily_leaderboard b1
-  JOIN (
-    SELECT date, country, slot, MAX(created_at) AS max_created
-    FROM daily_leaderboard
-    WHERE date = ? AND status='APPROVED'
-    GROUP BY date, country, slot
-  ) x
-  ON x.date=b1.date AND x.country=b1.country AND x.slot=b1.slot AND x.max_created=b1.created_at
-  WHERE b1.date=? AND b1.status='APPROVED'
-`).bind(date, date).all();
+      SELECT b1.batch_id
+      FROM daily_leaderboard b1
+      JOIN (
+        SELECT date, country, slot, MAX(created_at) AS max_created
+        FROM daily_leaderboard
+        WHERE date = ? AND status = 'APPROVED'
+        GROUP BY date, country, slot
+      ) x
+      ON x.date = b1.date AND x.country = b1.country AND x.slot = b1.slot AND x.max_created = b1.created_at
+      WHERE b1.date = ? AND b1.status = 'APPROVED'
+    `).bind(date, date).all();
 
-const batchIds = (approved.results||[]).map(x=>x.batch_id).filter(Boolean);
-if (!batchIds.length) return { date, totalUsd:0, players:[], top20:[] };
+    const batchIds = (approved.results || []).map(x => x.batch_id).filter(Boolean);
+    if (!batchIds.length) return { date, totalUsd: 0, players: [], top20: [] };
 
-const placeholders = batchIds.map(()=>"?").join(",");
-const result = await db.prepare(`
-  SELECT country,date,slot AS slot_key,username,raw_turnover AS local_turnover,timestamp AS created_at
-  FROM turnover_updates
-  WHERE batch_id IN (${placeholders})
-`).bind(...batchIds).all();
-
-    
-    const result = await db
-      .prepare(
-        "SELECT country,date,slot_key,username,local_turnover,created_at FROM raw_turnover WHERE date = ?"
-      )
-      .bind(date)
-      .all();
+    // 2) read turnover rows for those approved batch_ids
+    const placeholders = batchIds.map(() => "?").join(",");
+    const result = await db.prepare(`
+      SELECT
+        country,
+        date,
+        slot AS slot_key,
+        username,
+        raw_turnover AS local_turnover,
+        timestamp AS created_at
+      FROM turnover_updates
+      WHERE batch_id IN (${placeholders})
+    `).bind(...batchIds).all();
 
     const rows = result.results || [];
 
@@ -125,31 +125,19 @@ const result = await db.prepare(`
       if (!username) continue;
 
       const key = `${country}:${username.toLowerCase()}`;
-
       if (!agg[key]) {
-agg[key] = {
-  country,
-  username,
-  cumLocal: 0,
-  lastSlotOrder: -1,
-  brDeduct: 0,
-  brDeductTime: 0,
-  isImportedUsd: false
-};
-
+        agg[key] = {
+          country,
+          username,
+          cumLocal: 0,
+          lastSlotOrder: -1,
+          brDeduct: 0,
+          brDeductTime: 0
+        };
       }
 
       const rec = agg[key];
       const slotKey = r.slot_key;
-
-      // ✅ Imported historical totals are already USD
-if (slotKey === "IMPORT_USD") {
-  rec.isImportedUsd = true;
-  // treat as "latest" for the day (only 1 value/day usually)
-  rec.cumLocal = Number(r.local_turnover) || 0;
-  rec.lastSlotOrder = 999; // force it to win over normal slots
-  continue;
-}
 
       if (slotKey === "BR_00_03") {
         if (Number(r.created_at) > rec.brDeductTime) {
@@ -165,50 +153,40 @@ if (slotKey === "IMPORT_USD") {
       }
     }
 
-    let totalUsd = 0;
     const players = [];
-
     for (const rec of Object.values(agg)) {
       let effectiveLocal = rec.cumLocal;
       if (rec.country === "BR") {
         effectiveLocal = Math.max(effectiveLocal - (rec.brDeduct || 0), 0);
       }
 
-let usd = 0;
+      let usd = 0;
+      if (rec.country === "BR") usd = effectiveLocal / RATE_BR;
+      else if (rec.country === "MX") usd = effectiveLocal / RATE_MX;
 
-// ✅ If IMPORT_USD, it is already USD
-if (rec.isImportedUsd) {
-  usd = effectiveLocal;
-} else {
-  if (rec.country === "BR") usd = effectiveLocal / RATE_BR;
-  else if (rec.country === "MX") usd = effectiveLocal / RATE_MX;
-}
-
-
-      usd = Number(usd.toFixed(2));
-      totalUsd += usd;
-
-      players.push({ country: rec.country, username: rec.username, usd_turnover: usd });
+      players.push({
+        country: rec.country,
+        username: rec.username,
+        usd_turnover: Number(usd.toFixed(2))
+      });
     }
 
-players.sort((a, b) => b.usd_turnover - a.usd_turnover);
+    // sort REAL
+    players.sort((a, b) => b.usd_turnover - a.usd_turnover);
 
-// ✅ merge fake (option 1)
-const fakeDaily = await loadFakeDaily(date);
-const mergedPlayers = applyFakeOption1(players, fakeDaily);
+    // merge fake
+    const fakeDaily = await loadFakeDaily(date);
+    const mergedPlayers = applyFakeOption1(players, fakeDaily);
 
-// recompute totalUsd if you want total to include fake
-const totalUsdWithFake = mergedPlayers.reduce((s,p)=>s + (Number(p.usd_turnover)||0), 0);
+    const totalUsdWithFake = mergedPlayers.reduce((s, p) => s + (Number(p.usd_turnover) || 0), 0);
+    const top20 = mergedPlayers.slice(0, 20).map((p, idx) => ({ rank: idx + 1, ...p }));
 
-const top20 = mergedPlayers.slice(0, 20).map((p, idx) => ({ rank: idx + 1, ...p }));
-
-return {
-  date,
-  totalUsd: Number(totalUsdWithFake.toFixed(2)),
-  players: mergedPlayers,
-  top20
-};
-
+    return {
+      date,
+      totalUsd: Number(totalUsdWithFake.toFixed(2)),
+      players: mergedPlayers,
+      top20
+    };
   }
 
   try {
@@ -225,7 +203,7 @@ return {
         if (!playerAgg.has(key)) {
           playerAgg.set(key, { username: p.username, country: p.country, totalUsd: 0, daysInTop20: 0 });
         }
-        playerAgg.get(key).totalUsd += p.usd_turnover;
+        playerAgg.get(key).totalUsd += Number(p.usd_turnover) || 0;
       }
 
       for (const tp of d.top20) {
@@ -247,7 +225,6 @@ return {
 
     const overallTop = topPlayersOverall[0] || null;
 
-    // Most consistent = max daysInTop20 (tie-break totalUsd)
     const consistent = [...topPlayersOverall].sort((a, b) => {
       if (b.daysInTop20 !== a.daysInTop20) return b.daysInTop20 - a.daysInTop20;
       return b.totalUsd - a.totalUsd;
