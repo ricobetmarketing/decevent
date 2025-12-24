@@ -340,23 +340,79 @@
             </div>
           </div>
 
-          <div class="tab-pane" id="fake">
+    <!-- FAKE TAB -->
+<div class="tab-pane" id="fake">
   <div class="card shadow-sm mb-4">
     <div class="card-header bg-white text-dark" style="background:#fff!important;color:#111!important;">
       <i class="fas fa-user-secret me-2"></i> Fake Username (Daily Boost)
     </div>
-    <div class="card-body">
-      <p class="text-muted text-small mb-2">
-        Add fake usernames for the selected date. Boost is based on the <b>top real player</b> (Option 1).
-      </p>
 
-      <!-- put your fake form/table here -->
-      <div class="alert alert-secondary text-small mb-0">
-        Coming next: input username + boost %, save to <code>fake_daily</code>, and show preview.
+    <div class="card-body">
+      <div class="row g-3 align-items-end mb-2">
+        <div class="col-md-3">
+          <label class="form-label text-small">Date (UTC-6)</label>
+          <input type="date" id="fakeDate" class="form-control form-control-sm">
+        </div>
+
+        <div class="col-md-2">
+          <label class="form-label text-small">Country</label>
+          <select id="fakeCountry" class="form-select form-select-sm">
+            <option value="ALL" selected>ALL (Global)</option>
+            <option value="BR">BR</option>
+            <option value="MX">MX</option>
+          </select>
+        </div>
+
+        <div class="col-md-3">
+          <label class="form-label text-small">Username</label>
+          <input id="fakeUsername" class="form-control form-control-sm" placeholder="e.g. luckyking88">
+        </div>
+
+        <div class="col-md-2">
+          <label class="form-label text-small">Boost %</label>
+          <input id="fakeBoost" type="number" step="0.01" class="form-control form-control-sm" placeholder="e.g. 12.5">
+        </div>
+
+        <div class="col-md-2">
+          <button class="btn btn-success btn-sm w-100" id="btnFakeSave">
+            <i class="fas fa-save"></i> Save
+          </button>
+        </div>
+      </div>
+
+      <div class="row g-3 mb-3">
+        <div class="col-md-10">
+          <input id="fakeNote" class="form-control form-control-sm" placeholder="Note (optional)">
+        </div>
+        <div class="col-md-2 d-flex align-items-center">
+          <div id="fakeStatus" class="status-text"></div>
+        </div>
+      </div>
+
+      <div class="table-responsive">
+        <table class="table table-sm table-hover align-middle" id="tblFake">
+          <thead class="table-light">
+            <tr>
+              <th style="width:70px;">Active</th>
+              <th>Username</th>
+              <th style="width:90px;">Country</th>
+              <th style="width:120px;">Boost %</th>
+              <th>Note</th>
+              <th style="width:170px;">Created</th>
+              <th style="width:140px;">Actions</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+
+      <div class="text-muted text-small mt-2">
+        Boost is based on <b>current Top real player</b> (Option 1). Fake turnover = TopRealUSD × (Boost% / 100).
       </div>
     </div>
   </div>
 </div>
+
 
           <div class="d-flex mb-2">
             <button class="btn btn-sm btn-outline-primary me-2" onclick="toggleMode('mexico','manual')">Manual Entry</button>
