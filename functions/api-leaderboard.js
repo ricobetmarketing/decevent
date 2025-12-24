@@ -3,7 +3,6 @@ export async function onRequest(context) {
   const db = context.env.DB;
   const url = new URL(context.request.url);
 
-  // Default: today's Mexico date (UTC-6)
   let date = url.searchParams.get("date");
   if (!date) {
     const nowUtcMs = Date.now();
@@ -15,7 +14,49 @@ export async function onRequest(context) {
     date = `${y}-${m}-${d}`;
   }
 
-  // 1) Try LIVE table first (your current system)
+  // helper: load fake list for date
+  async function loadFakeDaily(date) {
+    const r = await db.prepare(`
+      SELECT username, country, boost_pct
+      FROM fake_daily
+      WHERE date = ? AND is_active = 1
+    `).bind(date).all();
+    return r.results || [];
+  }
+
+  // helper: merge fake against top REAL
+  function mergeFake(rowsReal, fakeDaily) {
+    const realOnly = (rowsReal || []).filter(r => Number(r.usd_turnover || 0) > 0);
+
+    const topReal = realOnly[0];
+    const topRealUsd = topReal ? Number(topReal.usd_turnover || 0) : 0;
+    if (!topRealUsd || !fakeDaily?.length) return realOnly;
+
+    const fakeRows = [];
+    for (const f of fakeDaily) {
+      const uname = String(f.username || "").trim();
+      const pct = Number(f.boost_pct || 0);
+      if (!uname || !Number.isFinite(pct) || pct <= 0) continue;
+
+      // Option 1: % of top real
+      const fakeUsd = Number((topRealUsd * (pct / 100)).toFixed(2));
+
+      fakeRows.push({
+        country: (String(f.country || "ALL").toUpperCase() === "ALL") ? "FAKE" : String(f.country).toUpperCase(),
+        username: uname,
+        usd_turnover: fakeUsd,
+        is_fake: true
+      });
+    }
+
+    const combined = [...realOnly, ...fakeRows]
+      .sort((a,b)=>Number(b.usd_turnover)-Number(a.usd_turnover));
+
+    combined.forEach((p,i)=>p.rank=i+1);
+    return combined;
+  }
+
+  // 1) LIVE (turnover_updates)
   let live = [];
   try {
     const r = await db
@@ -23,11 +64,8 @@ export async function onRequest(context) {
       .bind(date)
       .all();
     live = r.results || [];
-  } catch (e) {
-    // ignore; we can still fallback to import
-  }
+  } catch {}
 
-  // If LIVE data exists, keep your original logic:
   if (live.length) {
     const SLOT_ORDER = {
       "00_02": 1, "00_04": 2, "00_06": 3, "00_08": 4, "00_10": 5, "00_12": 6,
@@ -74,27 +112,36 @@ export async function onRequest(context) {
       return { country: rec.country, username: rec.username, usd_turnover: Number(usd.toFixed(2)) };
     });
 
-    const leaderboard = players.filter(p => p.usd_turnover > 0).sort((a,b)=>b.usd_turnover-a.usd_turnover);
+    let leaderboard = players.filter(p => p.usd_turnover > 0).sort((a,b)=>b.usd_turnover-a.usd_turnover);
     leaderboard.forEach((p,i)=>p.rank=i+1);
+
+    // ✅ merge fake
+    const fakeDaily = await loadFakeDaily(date);
+    leaderboard = mergeFake(leaderboard, fakeDaily);
+
     return new Response(JSON.stringify({ ok:true, date, rows: leaderboard.slice(0,20) }), {
       headers: { "Content-Type":"application/json", "Access-Control-Allow-Origin":"*" }
     });
   }
 
-  // 2) FALLBACK: IMPORT_USD (already USD, stored in raw_turnover.local_turnover)
+  // 2) FALLBACK: IMPORT_USD
   const imp = await db
     .prepare("SELECT country, date, username, local_turnover FROM raw_turnover WHERE date = ? AND slot_key = 'IMPORT_USD'")
     .bind(date)
     .all();
 
-  const rows = (imp.results || []).map(r => ({
+  let rows = (imp.results || []).map(r => ({
     country: (r.country || "").toUpperCase(),
     username: r.username,
     usd_turnover: Number((Number(r.local_turnover) || 0).toFixed(2))
   }));
 
-  const leaderboard = rows.filter(p => p.usd_turnover > 0).sort((a,b)=>b.usd_turnover-a.usd_turnover);
+  let leaderboard = rows.filter(p => p.usd_turnover > 0).sort((a,b)=>b.usd_turnover-a.usd_turnover);
   leaderboard.forEach((p,i)=>p.rank=i+1);
+
+  // ✅ merge fake
+  const fakeDaily = await loadFakeDaily(date);
+  leaderboard = mergeFake(leaderboard, fakeDaily);
 
   return new Response(JSON.stringify({ ok:true, date, rows: leaderboard.slice(0,20) }), {
     headers: { "Content-Type":"application/json", "Access-Control-Allow-Origin":"*" }
