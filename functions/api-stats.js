@@ -167,16 +167,24 @@ if (rec.isImportedUsd) {
       players.push({ country: rec.country, username: rec.username, usd_turnover: usd });
     }
 
-    players.sort((a, b) => b.usd_turnover - a.usd_turnover);
+players.sort((a, b) => b.usd_turnover - a.usd_turnover);
 
-    const top20 = players.slice(0, 20).map((p, idx) => ({ rank: idx + 1, ...p }));
+// ✅ merge fake (option 1)
+const fakeDaily = await loadFakeDaily(date);
+const mergedPlayers = applyFakeOption1(players, fakeDaily);
 
-    return {
-      date,
-      totalUsd: Number(totalUsd.toFixed(2)),
-      players,
-      top20
-    };
+// recompute totalUsd if you want total to include fake
+const totalUsdWithFake = mergedPlayers.reduce((s,p)=>s + (Number(p.usd_turnover)||0), 0);
+
+const top20 = mergedPlayers.slice(0, 20).map((p, idx) => ({ rank: idx + 1, ...p }));
+
+return {
+  date,
+  totalUsd: Number(totalUsdWithFake.toFixed(2)),
+  players: mergedPlayers,
+  top20
+};
+
   }
 
   try {
