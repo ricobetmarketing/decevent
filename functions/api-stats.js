@@ -77,6 +77,30 @@ function applyFakeOption1(playersRealSorted, fakeDaily) {
 
   
   async function computeDailyStats(date) {
+    const approved = await db.prepare(`
+  SELECT b1.batch_id
+  FROM daily_leaderboard b1
+  JOIN (
+    SELECT date, country, slot, MAX(created_at) AS max_created
+    FROM daily_leaderboard
+    WHERE date = ? AND status='APPROVED'
+    GROUP BY date, country, slot
+  ) x
+  ON x.date=b1.date AND x.country=b1.country AND x.slot=b1.slot AND x.max_created=b1.created_at
+  WHERE b1.date=? AND b1.status='APPROVED'
+`).bind(date, date).all();
+
+const batchIds = (approved.results||[]).map(x=>x.batch_id).filter(Boolean);
+if (!batchIds.length) return { date, totalUsd:0, players:[], top20:[] };
+
+const placeholders = batchIds.map(()=>"?").join(",");
+const result = await db.prepare(`
+  SELECT country,date,slot AS slot_key,username,raw_turnover AS local_turnover,timestamp AS created_at
+  FROM turnover_updates
+  WHERE batch_id IN (${placeholders})
+`).bind(...batchIds).all();
+
+    
     const result = await db
       .prepare(
         "SELECT country,date,slot_key,username,local_turnover,created_at FROM raw_turnover WHERE date = ?"
