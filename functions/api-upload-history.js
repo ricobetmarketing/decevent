@@ -2,20 +2,14 @@ export async function onRequestGet({ request, env }) {
   const db = env.DB;
   const url = new URL(request.url);
 
-  const date = (url.searchParams.get("date") || "").trim();     // YYYY-MM-DD
-  const country = (url.searchParams.get("country") || "").trim().toUpperCase(); // BR/MX
+  const date = (url.searchParams.get("date") || "").trim();
+  const country = (url.searchParams.get("country") || "").trim().toUpperCase();
 
   const where = [];
   const params = [];
 
-  if (date) {
-    where.push("date = ?");
-    params.push(date);
-  }
-  if (country) {
-    where.push("country = ?");
-    params.push(country);
-  }
+  if (date) { where.push("date = ?"); params.push(date); }
+  if (country) { where.push("country = ?"); params.push(country); }
 
   const whereSql = where.length ? `WHERE ${where.join(" AND ")}` : "";
 
@@ -32,7 +26,13 @@ export async function onRequestGet({ request, env }) {
         total_local,
         total_usd,
         uploader,
-        note
+        note,
+
+        verified_by,
+        verified_at,
+        rejected_by,
+        rejected_at,
+        reject_reason
       FROM daily_leaderboard
       ${whereSql}
       ORDER BY created_at DESC
@@ -50,7 +50,13 @@ export async function onRequestGet({ request, env }) {
       total_local: Number(r.total_local || 0),
       total_usd: Number(r.total_usd || 0),
       uploader: r.uploader || "",
-      note: r.note || ""
+      note: r.note || "",
+
+      verified_by: r.verified_by || "",
+      verified_at: r.verified_at ? new Date(Number(r.verified_at)).toISOString() : "",
+      rejected_by: r.rejected_by || "",
+      rejected_at: r.rejected_at ? new Date(Number(r.rejected_at)).toISOString() : "",
+      reject_reason: r.reject_reason || ""
     }));
 
     return new Response(JSON.stringify({ ok: true, rows }), {
