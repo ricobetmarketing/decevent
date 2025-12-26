@@ -72,11 +72,15 @@ export async function onRequestPost({ request, env }) {
       });
     }
 
-    await db.prepare(`
-      UPDATE daily_leaderboard
-      SET status='REJECTED', rejected_by=?, rejected_at=?, reject_reason=?
-      WHERE batch_id=?
-    `).bind(email, now, reason, batch_id).run();
+await db.prepare(`
+  UPDATE daily_leaderboard
+  SET status='REJECTED',
+      rejected_by=?,
+      rejected_at=?,
+      reject_reason=?
+  WHERE batch_id=?
+`).bind(email, now, reason, batch_id).run();
+
 
     const msg =
       `❌ <b>Batch REJECTED</b>\n\n` +
