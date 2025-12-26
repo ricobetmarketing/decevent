@@ -13,7 +13,6 @@ async function sendTelegram(context, text) {
     parse_mode: "HTML",
     disable_web_page_preview: true
   };
-
   if (topicId) payload.message_thread_id = Number(topicId);
 
   const resp = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
@@ -51,6 +50,45 @@ function toUSD(country, amount) {
   return v;
 }
 
+// ---- AUTO SLOT (UTC-6 Mexico time) with ±30min tolerance ----
+function getMexicoNow() {
+  return new Date(Date.now() + (-6 * 60 * 60 * 1000));
+}
+
+// Slot keys remain: 00_02, 00_04, ... 00_24
+function autoSlotKeyUTC6(toleranceMin = 30) {
+  const mex = getMexicoNow();
+  const h = mex.getHours();
+  const m = mex.getMinutes();
+  const totalMin = h * 60 + m;
+
+  const step = 120; // 2 hours
+  const prevBoundary = Math.floor(totalMin / step) * step;
+  const nextBoundary = prevBoundary + step;
+
+  const diffNext = nextBoundary - totalMin; // minutes to next boundary
+
+  // Default to previous boundary; if close to next boundary, pick next
+  let chosen = prevBoundary;
+  if (diffNext <= toleranceMin) chosen = nextBoundary;
+
+  let endHour = Math.round(chosen / 60);
+  if (endHour < 2) endHour = 2;
+  if (endHour > 24) endHour = 24;
+
+  return `00_${String(endHour).padStart(2, "0")}`;
+}
+
+// Optional: try to read CF Access email header
+function getEmailFromHeaders(request) {
+  return (
+    request.headers.get("cf-access-authenticated-user-email") ||
+    request.headers.get("Cf-Access-Authenticated-User-Email") ||
+    request.headers.get("x-auth-email") ||
+    ""
+  );
+}
+
 export async function onRequestPost(context) {
   const db = context.env.DB;
 
@@ -66,10 +104,11 @@ export async function onRequestPost(context) {
 
   const country = (body.country || "").toUpperCase();
   const date = body.date || ""; // UTC-6 date selected in admin
-  const slotKey = body.slotKey || "";
   const rows = Array.isArray(body.rows) ? body.rows : [];
-  const uploader = body.uploader || "";
   const note = body.note || "";
+
+  // ✅ uploader: use header if frontend didn't send
+  const uploader = (body.uploader || "").trim() || getEmailFromHeaders(context.request) || "";
 
   if (!["BR", "MX"].includes(country)) {
     return new Response(JSON.stringify({ ok: false, error: "Invalid country" }), {
@@ -83,12 +122,9 @@ export async function onRequestPost(context) {
       headers: { "Content-Type": "application/json" }
     });
   }
-  if (!slotKey) {
-    return new Response(JSON.stringify({ ok: false, error: "Missing slotKey" }), {
-      status: 400,
-      headers: { "Content-Type": "application/json" }
-    });
-  }
+
+  // ✅ Slot is now computed server-side (ignore frontend slotKey entirely)
+  const slotKey = autoSlotKeyUTC6(30);
 
   const cleanRows = [];
   for (const r of rows) {
@@ -107,13 +143,13 @@ export async function onRequestPost(context) {
   }
 
   const batch_id = makeBatchId();
- const created_at = Date.now(); // INTEGER ms
+  const created_at = Date.now(); // INTEGER ms
   const nowMs = Date.now();
   const totalLocal = cleanRows.reduce((sum, r) => sum + r.turnover, 0);
   const totalUSD = cleanRows.reduce((sum, r) => sum + toUSD(country, r.turnover), 0);
 
   try {
-    // 1) log batch summary INTO daily_leaderboard (not upload_batches)
+    // 1) Insert batch summary into daily_leaderboard
     await db.prepare(`
       INSERT INTO daily_leaderboard
         (batch_id, created_at, uploader, country, slot, date, rows_count, total_local, total_usd, note, status)
@@ -132,17 +168,16 @@ export async function onRequestPost(context) {
       note || null
     ).run();
 
-const insert = db.prepare(`
-  INSERT INTO turnover_updates (country,date,slot,username,raw_turnover,timestamp,batch_id,created_at)
-  VALUES (?,?,?,?,?,?,?,?)
-`);
+    // 2) Insert rows into turnover_updates
+    const insert = db.prepare(`
+      INSERT INTO turnover_updates (country,date,slot,username,raw_turnover,timestamp,batch_id,created_at)
+      VALUES (?,?,?,?,?,?,?,?)
+    `);
 
-const batch = cleanRows.map((r) =>
-  insert.bind(country, date, slotKey, r.username, r.turnover, nowMs, batch_id, nowMs)
-);
-await db.batch(batch);
-
-
+    const batch = cleanRows.map((r) =>
+      insert.bind(country, date, slotKey, r.username, r.turnover, nowMs, batch_id, nowMs)
+    );
+    await db.batch(batch);
 
     // 3) compute day total from ONLY latest batch per (date+country+slot)
     const daySumRes = await db.prepare(`
@@ -161,14 +196,15 @@ await db.batch(batch);
 
     const dayTotalLocal = Number(daySumRes?.total || 0);
 
-    // 4) Telegram message (still ok)
+    // 4) Telegram
     const msg =
       `📊 <b>Daily Turnover Challenge!</b>\n\n` +
       `<b>Current Update:</b> ${dayTotalLocal.toFixed(2)}\n` +
       `<b>Date (UTC-6):</b> ${date}\n` +
-      `<b>Saved Slot:</b> ${slotKey} (${country})\n` +
+      `<b>Auto Slot:</b> ${slotKey} (${country})\n` +
       `<b>Rows:</b> ${cleanRows.length}\n` +
       `<b>Status:</b> PENDING (need verify)\n` +
+      `<b>Uploader:</b> ${uploader || "unknown"}\n` +
       `<b>Upload Time:</b> ${formatTimeGMT8()}`;
 
     const tg = await sendTelegram(context, msg);
@@ -178,6 +214,7 @@ await db.batch(batch);
         ok: true,
         batch_id,
         inserted: cleanRows.length,
+        slotKey, // return slot used (helpful for UI)
         totals: { totalLocal, totalUSD },
         telegram: tg
       }),
