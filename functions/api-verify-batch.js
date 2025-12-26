@@ -67,11 +67,14 @@ export async function onRequestPost({ request, env }) {
     }
 
     // Approve this batch
-    await db.prepare(`
-      UPDATE daily_leaderboard
-      SET status='APPROVED', verified_by=?, verified_at=?, published_at=?
-      WHERE batch_id=?
-    `).bind(email, now, now, batch_id).run();
+await db.prepare(`
+  UPDATE daily_leaderboard
+  SET status='APPROVED',
+      verified_by=?,
+      verified_at=?
+  WHERE batch_id=?
+`).bind(email, now, batch_id).run();
+
 
     // Optional: mark other PENDING batches for same date/country/slot as SUPERSEDED
     await db.prepare(`
