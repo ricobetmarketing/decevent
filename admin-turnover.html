@@ -65,14 +65,29 @@
     .badge-sup { background: rgba(99,102,241,.12); border-color: rgba(99,102,241,.35); }
     code { font-size: 12px; }
 
-    /* ✅ Auto-slot display box */
     .auto-slot-box{
-      display:flex; align-items:center; justify-content:space-between;
-      padding:6px 10px; border:1px solid #dee2e6; border-radius:6px;
-      background:#f8fafc;
-      font-size:13px;
+      border:1px solid rgba(148,163,184,.35);
+      background: rgba(148,163,184,.10);
+      border-radius: 10px;
+      padding: 10px 12px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      min-height: 42px;
     }
-    .auto-slot-box b{ font-weight:700; }
+    .auto-slot-key{
+      font-weight: 800;
+      letter-spacing: .05em;
+      font-variant-numeric: tabular-nums;
+    }
+    .auto-slot-range{
+      color:#6b7280;
+      font-size: 12px;
+      font-variant-numeric: tabular-nums;
+      text-align:right;
+      white-space: nowrap;
+    }
   </style>
 </head>
 <body>
@@ -263,41 +278,41 @@
 
           <p class="text-small text-muted mt-2 mb-0">
             To correct data: re-upload <strong>Brazil</strong> or <strong>Mexico</strong> with the same <strong>date</strong>.
+            Slot is <b>AUTO</b> (computed using Mexico time).
           </p>
         </div>
       </div>
     </div>
 
-    <!-- ===================== BRAZIL TAB (AUTO SLOT) ===================== -->
+    <!-- ===================== BRAZIL TAB ===================== -->
     <div class="tab-pane" id="brazil">
       <div class="card shadow-sm mb-4">
         <div class="card-header">🇧🇷 Brazil Turnover Data Entry (BRL)</div>
         <div class="card-body">
           <p class="text-small text-danger mb-2">
-            ⚠️ Select the <strong>Mexico day (UTC-6)</strong>. Slot is <b>AUTO</b> (no dropdown).
+            ⚠️ Select the <strong>Mexico day (UTC-6)</strong>. Slot is <b>AUTO</b>.
           </p>
 
           <div class="row g-3 mb-3">
-            <div class="col-md-4">
+            <div class="col-md-6">
               <label for="brDate" class="form-label text-small">
                 Leaderboard Date <span class="pill-note blue">Mexico (UTC-6)</span>
               </label>
               <input type="date" class="form-control form-control-sm" id="brDate">
             </div>
 
-            <div class="col-md-4">
+            <div class="col-md-6">
               <label class="form-label text-small">
-                Time Slot / Type <span class="pill-note green">Cumulative</span>
+                Time Slot / Type <span class="pill-note green">AUTO (Cumulative)</span>
               </label>
               <div class="auto-slot-box">
                 <div>
-                  <b id="brAutoSlotKey">AUTO</b>
+                  <div class="auto-slot-key" id="brAutoSlotKey">--_--</div>
+                  <div class="text-muted text-small">Computed by Mexico time (±30 min safe window)</div>
                 </div>
-                <span class="text-muted text-small" id="brAutoSlotLabel">00:00 – --:-- (UTC-6)</span>
+                <div class="auto-slot-range" id="brAutoSlotRange">--:-- – --:-- (UTC-6)</div>
               </div>
-              <div class="text-muted text-small mt-1">
-                Slot is computed server-side (±30 min safe window).
-              </div>
+              <input type="hidden" id="brSlotKeyHidden" value="">
             </div>
           </div>
 
@@ -327,36 +342,35 @@
       </div>
     </div>
 
-    <!-- ===================== MEXICO TAB (AUTO SLOT) ===================== -->
+    <!-- ===================== MEXICO TAB ===================== -->
     <div class="tab-pane" id="mexico">
       <div class="card shadow-sm mb-4">
         <div class="card-header">🇲🇽 Mexico Turnover Data Entry (MXN)</div>
         <div class="card-body">
           <p class="text-small text-info mb-2">
-            ℹ️ Mexico day cycle: <strong>00:00 – 23:59 (UTC-6)</strong>. Slot is <b>AUTO</b>.
+            ℹ️ Mexico day cycle: <strong>00:00 – 23:59 (UTC-6)</strong> • Slot is <b>AUTO</b>
           </p>
 
           <div class="row g-3 mb-3">
-            <div class="col-md-4">
+            <div class="col-md-6">
               <label for="mxDate" class="form-label text-small">
                 Leaderboard Date <span class="pill-note blue">Mexico (UTC-6)</span>
               </label>
               <input type="date" class="form-control form-control-sm" id="mxDate">
             </div>
 
-            <div class="col-md-4">
+            <div class="col-md-6">
               <label class="form-label text-small">
-                Time Slot / Type <span class="pill-note green">Cumulative</span>
+                Time Slot / Type <span class="pill-note green">AUTO (Cumulative)</span>
               </label>
               <div class="auto-slot-box">
                 <div>
-                  <b id="mxAutoSlotKey">AUTO</b>
+                  <div class="auto-slot-key" id="mxAutoSlotKey">--_--</div>
+                  <div class="text-muted text-small">Computed by Mexico time (±30 min safe window)</div>
                 </div>
-                <span class="text-muted text-small" id="mxAutoSlotLabel">00:00 – --:-- (UTC-6)</span>
+                <div class="auto-slot-range" id="mxAutoSlotRange">--:-- – --:-- (UTC-6)</div>
               </div>
-              <div class="text-muted text-small mt-1">
-                Slot is computed server-side (±30 min safe window).
-              </div>
+              <input type="hidden" id="mxSlotKeyHidden" value="">
             </div>
           </div>
 
@@ -415,7 +429,7 @@
             </div>
 
             <div class="col-md-2">
-              <label class="form-label text-small">Boost %</label>
+              <label class="form-label text-small">Boost % (fixed for the day)</label>
               <input id="fakeBoost" type="number" step="0.01" class="form-control form-control-sm" placeholder="e.g. 12.5">
             </div>
 
@@ -453,7 +467,8 @@
           </div>
 
           <div class="text-muted text-small mt-2">
-            Boost is based on <b>current Top real player</b> (Option 1). Fake turnover = TopRealUSD × (Boost% / 100).
+            Note: UI stores fake list only. To make it match your Google Sheet logic (Boost based on <b>Top 20 real</b>),
+            you need backend to compute fake turnovers from the Top 20 real players on that date, using this single fixed Boost%.
           </div>
         </div>
       </div>
@@ -588,10 +603,7 @@
             </div>
             <div class="col-md-3">
               <label class="form-label text-small">Slot Key</label>
-              <input id="rbSlot" type="text" class="form-control form-control-sm" placeholder="e.g. 00_12 or BR_00_03">
-              <div class="text-muted text-small mt-1">
-                Note: save is AUTO slot now, but rollback still requires exact slotKey.
-              </div>
+              <input id="rbSlot" type="text" class="form-control form-control-sm" placeholder="e.g. 00_12">
             </div>
             <div class="col-md-4">
               <label class="form-label text-small">Rollback to Batch ID</label>
@@ -778,6 +790,89 @@
     if (type === 'error') el.classList.add('status-error');
   }
 
+  // ===== Correct Mexico-time slot logic (browser-safe) =====
+  // Uses IANA timezone, avoids the "00–10" bug you saw.
+  const MEX_TZ = "America/Mexico_City";
+  const SAFE_WINDOW_MIN = 30;
+
+  function getMexicoParts() {
+    const fmt = new Intl.DateTimeFormat("en-US", {
+      timeZone: MEX_TZ,
+      year: "numeric", month: "2-digit", day: "2-digit",
+      hour: "2-digit", minute: "2-digit", second: "2-digit",
+      hour12: false
+    });
+    const parts = fmt.formatToParts(new Date());
+    const map = {};
+    parts.forEach(p => { if (p.type !== "literal") map[p.type] = p.value; });
+    return {
+      y: Number(map.year),
+      m: Number(map.month),
+      d: Number(map.day),
+      hh: Number(map.hour),
+      mm: Number(map.minute),
+      ss: Number(map.second),
+    };
+  }
+
+  function todayMexicoISO() {
+    const p = getMexicoParts();
+    const y = p.y;
+    const m = String(p.m).padStart(2, "0");
+    const d = String(p.d).padStart(2, "0");
+    return `${y}-${m}-${d}`;
+  }
+
+  function pad2(n){ return String(n).padStart(2,"0"); }
+
+  function computeSlotFromMexicoNow(safeWindowMin = 30) {
+    const p = getMexicoParts();
+    const nowMin = p.hh * 60 + p.mm;
+
+    // Find nearest boundary within ±safeWindowMin
+    const boundaries = [];
+    for (let end = 120; end <= 1440; end += 120) boundaries.push(end);
+
+    let snapped = null;
+    for (const end of boundaries) {
+      const diff = Math.abs(nowMin - end);
+      if (diff <= safeWindowMin) { snapped = end; break; }
+    }
+
+    // Else: pick the latest completed (floor)
+    const chosenEnd = snapped ?? (Math.floor(nowMin / 120) * 120 || 120);
+
+    // Convert end minutes -> end hour
+    const endHour = Math.min(24, Math.max(2, Math.round(chosenEnd / 60)));
+    const slotKey = `00_${pad2(endHour)}`;
+    const startHour = Math.max(0, endHour - 2);
+
+    const rangeLabel = `${pad2(startHour)}:00 – ${pad2(endHour)}:00 (UTC-6)`;
+    return { slotKey, rangeLabel };
+  }
+
+  function refreshAutoSlotUI() {
+    const { slotKey, rangeLabel } = computeSlotFromMexicoNow(SAFE_WINDOW_MIN);
+
+    // Update both BR + MX displays (same slot schedule)
+    const brKey = document.getElementById("brAutoSlotKey");
+    const brRange = document.getElementById("brAutoSlotRange");
+    const brHidden = document.getElementById("brSlotKeyHidden");
+
+    const mxKey = document.getElementById("mxAutoSlotKey");
+    const mxRange = document.getElementById("mxAutoSlotRange");
+    const mxHidden = document.getElementById("mxSlotKeyHidden");
+
+    if (brKey) brKey.textContent = slotKey;
+    if (brRange) brRange.textContent = rangeLabel;
+    if (brHidden) brHidden.value = slotKey;
+
+    if (mxKey) mxKey.textContent = slotKey;
+    if (mxRange) mxRange.textContent = rangeLabel;
+    if (mxHidden) mxHidden.value = slotKey;
+  }
+
+  // ===== Parsing + CSV helpers =====
   function parseLines(text) {
     const lines = (text||'').split(/\r?\n/);
     const rows = [];
@@ -828,70 +923,35 @@
   setupTemplateLink('brTemplateLink','br');
   setupTemplateLink('mxTemplateLink','mx');
 
-  // ✅ Display-only auto slot (backend is source of truth)
-  function computeAutoSlotDisplay(toleranceMin = 30) {
-    const mex = new Date(Date.now() + (-6 * 60 * 60 * 1000));
-    const h = mex.getHours();
-    const m = mex.getMinutes();
-    const totalMin = h * 60 + m;
-
-    const step = 120; // 2h
-    const prev = Math.floor(totalMin / step) * step;
-    const next = prev + step;
-
-    const diffNext = next - totalMin;
-
-    let chosen = prev;
-    if (diffNext <= toleranceMin) chosen = next;
-
-    let endHour = Math.round(chosen / 60);
-    if (endHour < 2) endHour = 2;
-    if (endHour > 24) endHour = 24;
-
-    const slotKey = `00_${String(endHour).padStart(2,"0")}`;
-    const label = `00:00 – ${String(endHour).padStart(2,"0")}:00 (UTC-6)`;
-    return { slotKey, label };
-  }
-
-  function refreshAutoSlotUI() {
-    const { slotKey, label } = computeAutoSlotDisplay(30);
-
-    const brKey = document.getElementById("brAutoSlotKey");
-    const brLbl = document.getElementById("brAutoSlotLabel");
-    if (brKey) brKey.textContent = slotKey;
-    if (brLbl) brLbl.textContent = label;
-
-    const mxKey = document.getElementById("mxAutoSlotKey");
-    const mxLbl = document.getElementById("mxAutoSlotLabel");
-    if (mxKey) mxKey.textContent = slotKey;
-    if (mxLbl) mxLbl.textContent = label;
-  }
-
+  // ===== SAVE (AUTO SLOT) =====
   async function saveCountry(countryCode) {
     const upper = countryCode.toUpperCase();
     const dateEl = document.getElementById(upper === 'BR' ? 'brDate' : 'mxDate');
     const textareaEl = document.getElementById(upper === 'BR' ? 'brDataArea' : 'mxDataArea');
+    const hiddenSlot = document.getElementById(upper === 'BR' ? 'brSlotKeyHidden' : 'mxSlotKeyHidden');
 
     const date = dateEl.value;
+    const slotKey = (hiddenSlot?.value || "").trim();
+
     if (!date) return setStatus(upper, 'Please choose a leaderboard date.', 'error');
+    if (!slotKey) return setStatus(upper, 'Auto slot not ready yet. Please wait 1s and try again.', 'error');
 
     const parsed = parseLines(textareaEl.value);
     if (parsed.errors.length) return setStatus(upper, parsed.errors[0], 'error');
     if (!parsed.rows.length) return setStatus(upper, 'No rows to save.', 'error');
 
-    setStatus(upper, `Saving ${parsed.rows.length} rows… (AUTO SLOT)`, '');
+    setStatus(upper, `Saving ${parsed.rows.length} rows… (slot ${slotKey})`, '');
 
     try {
-      // ✅ slotKey removed
       const res = await fetch('/api-admin-save', {
         method:'POST',
         headers:{'Content-Type':'application/json'},
-        body: JSON.stringify({ country: upper, date, rows: parsed.rows })
+        body: JSON.stringify({ country: upper, date, slotKey, rows: parsed.rows })
       });
       const json = await res.json().catch(()=>({}));
       if (!res.ok || !json.ok) return setStatus(upper, json.error || `Save failed (${res.status})`, 'error');
 
-      setStatus(upper, `Saved ${json.inserted || 0} rows for ${upper} [${date}, ${json.slotKey || "AUTO"}].`, 'ok');
+      setStatus(upper, `Saved ${json.inserted || 0} rows for ${upper} [${date}, ${slotKey}] ✅`, 'ok');
       await loadGlobalLeaderboard();
       await loadStats();
       await loadUploadHistory();
@@ -900,6 +960,7 @@
     }
   }
 
+  // ===== GLOBAL LEADERBOARD =====
   async function loadGlobalLeaderboard() {
     const date = document.getElementById('globalDate').value;
     const filter = (document.getElementById('globalPlayer').value || '').trim().toLowerCase();
@@ -1162,15 +1223,9 @@
           <td>${r.verified_by || ""}</td>
           <td><code>${r.batch_id || ""}</code></td>
           <td>
-            <button class="btn btn-outline-secondary btn-sm me-1" onclick="openBatchDetails('${r.batch_id}')">
-              View
-            </button>
-            <button class="btn btn-success btn-sm me-1" onclick="verifyBatch('${r.batch_id}')" ${isPending ? "" : "disabled"}>
-              ✅ Verify
-            </button>
-            <button class="btn btn-danger btn-sm" onclick="openReject('${r.batch_id}')" ${isPending ? "" : "disabled"}>
-              ❌ Reject
-            </button>
+            <button class="btn btn-outline-secondary btn-sm me-1" onclick="openBatchDetails('${r.batch_id}')">View</button>
+            <button class="btn btn-success btn-sm me-1" onclick="verifyBatch('${r.batch_id}')" ${isPending ? "" : "disabled"}>✅ Verify</button>
+            <button class="btn btn-danger btn-sm" onclick="openReject('${r.batch_id}')" ${isPending ? "" : "disabled"}>❌ Reject</button>
           </td>
         `;
         tbody.appendChild(tr);
@@ -1222,9 +1277,7 @@
   let modalReject = null;
   let rejectBatchId = null;
 
-  function setModalStatus(id, msg, type) {
-    setAnyStatus(id, msg, type);
-  }
+  function setModalStatus(id, msg, type) { setAnyStatus(id, msg, type); }
 
   async function openBatchDetails(batch_id) {
     setModalStatus("batchDetailsStatus", "Loading batch details…", "");
@@ -1344,9 +1397,7 @@
   // ===== FAKE CRUD (same as your original) =====
   let fakeEditingId = null;
 
-  function setFakeStatus(msg, type) {
-    setAnyStatus("fakeStatus", msg, type);
-  }
+  function setFakeStatus(msg, type) { setAnyStatus("fakeStatus", msg, type); }
 
   async function loadFakeList() {
     const date = document.getElementById("fakeDate")?.value;
@@ -1370,9 +1421,7 @@
       rows.forEach(r => {
         const tr = document.createElement("tr");
         tr.innerHTML = `
-          <td>
-            <input type="checkbox" ${Number(r.is_active) ? "checked" : ""} data-id="${r.id}" class="fakeActiveToggle">
-          </td>
+          <td><input type="checkbox" ${Number(r.is_active) ? "checked" : ""} data-id="${r.id}" class="fakeActiveToggle"></td>
           <td>${r.username || ""}</td>
           <td>${r.country || "ALL"}</td>
           <td>${Number(r.boost_pct || 0).toFixed(2)}</td>
@@ -1474,15 +1523,7 @@
 
     setFakeStatus("Saving…", "");
 
-    const payload = {
-      id: fakeEditingId,
-      date,
-      country,
-      username,
-      boost_pct,
-      is_active: 1,
-      note
-    };
+    const payload = { id: fakeEditingId, date, country, username, boost_pct, is_active: 1, note };
 
     try {
       const res = await fetch("/api-fake-upsert", {
@@ -1506,17 +1547,6 @@
     }
   }
 
-  // ------- Default dates = Mexico time UTC-6 -------
-  function todayMexicoISO() {
-    const nowUtcMs = Date.now();
-    const offsetMs = -6 * 60 * 60 * 1000;
-    const mexNow = new Date(nowUtcMs + offsetMs);
-    const y = mexNow.getFullYear();
-    const m = String(mexNow.getMonth() + 1).padStart(2, "0");
-    const d = String(mexNow.getDate()).padStart(2, "0");
-    return `${y}-${m}-${d}`;
-  }
-
   document.addEventListener("DOMContentLoaded", async () => {
     modalDetails = new bootstrap.Modal(document.getElementById("batchDetailsModal"));
     modalReject = new bootstrap.Modal(document.getElementById("rejectModal"));
@@ -1532,8 +1562,8 @@
     document.getElementById('globalSearchBtn')?.addEventListener('click', loadGlobalLeaderboard);
 
     showTab('global');
-    const today = todayMexicoISO();
 
+    const today = todayMexicoISO();
     document.getElementById('globalDate').value = today;
     document.getElementById('brDate').value = today;
     document.getElementById('mxDate').value = today;
@@ -1547,8 +1577,9 @@
     if (rbDate) rbDate.value = today;
     if (hDate) hDate.value = today;
 
+    // Auto-slot UI (refresh every 20s, lightweight)
     refreshAutoSlotUI();
-    setInterval(refreshAutoSlotUI, 30 * 1000);
+    setInterval(refreshAutoSlotUI, 20000);
 
     await loadGlobalLeaderboard();
     await loadUploadHistory();
