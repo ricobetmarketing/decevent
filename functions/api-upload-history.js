@@ -20,29 +20,30 @@ export async function onRequestGet({ request, env }) {
   const whereSql = where.length ? `WHERE ${where.join(" AND ")}` : "";
 
   try {
-    const res = await db.prepare(`
-      SELECT
-        batch_id,
-        created_at,
-        date,
-        country,
-        slot,
-        status,
-        rows_count,
-        total_local,
-        total_usd,
-        uploader,
-        note,
-        verified_by,
-        verified_at,
-        rejected_by,
-        rejected_at,
-        reject_reason
-      FROM daily_leaderboard
-      ${whereSql}
-      ORDER BY created_at DESC
-      LIMIT 200
-    `).bind(...params).all();
+const res = await db.prepare(`
+  SELECT
+    batch_id,
+    created_at,
+    date,
+    country,
+    slot,
+    status,
+    rows_count,
+    total_local,
+    total_usd,
+    uploader,
+    verified_by,
+    verified_at,
+    rejected_by,
+    rejected_at,
+    reject_reason,
+    note
+  FROM daily_leaderboard
+  ${whereSql}
+  ORDER BY created_at DESC
+  LIMIT 200
+`).bind(...params).all();
+
 
     const rows = (res.results || []).map(r => ({
       batch_id: r.batch_id,
@@ -57,12 +58,12 @@ export async function onRequestGet({ request, env }) {
       uploader: r.uploader || "",
       note: r.note || "",
 
-      verified_by: r.verified_by || "",
-      verified_at: r.verified_at ? new Date(Number(r.verified_at)).toISOString() : "",
+     verified_by: r.verified_by || "",
+verified_at: r.verified_at ? new Date(Number(r.verified_at)).toISOString() : "",
+rejected_by: r.rejected_by || "",
+rejected_at: r.rejected_at ? new Date(Number(r.rejected_at)).toISOString() : "",
+reject_reason: r.reject_reason || "",
 
-      rejected_by: r.rejected_by || "",
-      rejected_at: r.rejected_at ? new Date(Number(r.rejected_at)).toISOString() : "",
-      reject_reason: r.reject_reason || ""
     }));
 
     return new Response(JSON.stringify({ ok: true, rows }), {
