@@ -15,41 +15,61 @@ export async function onRequest(context) {
   }
 
 async function loadFakeDaily(date) {
+  // Expect: 20 fake usernames per day, ALL share the same boost%
+  // We'll read boost_pct from the latest row (or the first row) and apply to all.
   const r = await db.prepare(`
     SELECT username, country, boost_pct
     FROM fake_users
     WHERE date = ? AND is_active = 1
-    ORDER BY id DESC
+    ORDER BY id ASC
+    LIMIT 20
   `).bind(date).all();
-  return r.results || [];
+
+  const rows = r.results || [];
+  const boost_pct = rows.length ? Number(rows[0].boost_pct || 0) : 0; // fixed daily %
+  return { rows, boost_pct };
 }
 
 
 
-  function mergeFakeOption1(rowsRealSorted, fakeDaily) {
-    const realOnly = (rowsRealSorted || []).filter(r => Number(r.usd_turnover || 0) > 0);
-    const topRealUsd = realOnly[0] ? Number(realOnly[0].usd_turnover || 0) : 0;
-    if (!topRealUsd || !fakeDaily?.length) return realOnly;
+function mergeFakeTop20RankMapping(rowsRealSorted, fakePayload) {
+  const realOnly = (rowsRealSorted || []).filter(r => Number(r.usd_turnover || 0) > 0);
+  const fakeDaily = fakePayload?.rows || [];
+  const boostPct = Number(fakePayload?.boost_pct || 0);
 
-    const fakeRows = [];
-    for (const f of fakeDaily) {
-      const uname = String(f.username || "").trim();
-      const pct = Number(f.boost_pct || 0);
-      if (!uname || !Number.isFinite(pct) || pct <= 0) continue;
+  if (!fakeDaily.length || !Number.isFinite(boostPct) || boostPct <= 0) return realOnly;
 
-      const fakeUsd = Number((topRealUsd * (pct / 100)).toFixed(2));
-      fakeRows.push({
-        country: (String(f.country || "ALL").toUpperCase() === "ALL") ? "FAKE" : String(f.country).toUpperCase(),
-        username: uname,
-        usd_turnover: fakeUsd,
-        is_fake: true
-      });
-    }
+  // Take Top 20 REAL
+  const top20 = realOnly.slice(0, 20);
 
-    const combined = [...realOnly, ...fakeRows].sort((a,b)=>b.usd_turnover-a.usd_turnover);
-    combined.forEach((p,i)=>p.rank=i+1);
-    return combined;
+  // Exclude fake usernames from real list (avoid duplicates)
+  const fakeNameSet = new Set(fakeDaily.map(f => String(f.username || "").trim().toLowerCase()));
+  const realNoFake = realOnly.filter(r => !fakeNameSet.has(String(r.username || "").toLowerCase()));
+
+  const fakeRows = [];
+  for (let i = 0; i < Math.min(20, fakeDaily.length); i++) {
+    const f = fakeDaily[i];
+    const uname = String(f.username || "").trim();
+    if (!uname) continue;
+
+    const base = top20[i]; // rank-to-rank mapping
+    const baseUsd = base ? Number(base.usd_turnover || 0) : 0;
+
+    const fakeUsd = Number((baseUsd * (boostPct / 100)).toFixed(2));
+
+    fakeRows.push({
+      country: (String(f.country || "ALL").toUpperCase() === "ALL") ? "FAKE" : String(f.country).toUpperCase(),
+      username: uname,
+      usd_turnover: fakeUsd,
+      is_fake: true
+    });
   }
+
+  const combined = [...realNoFake, ...fakeRows].sort((a, b) => b.usd_turnover - a.usd_turnover);
+  combined.forEach((p, i) => (p.rank = i + 1));
+  return combined;
+}
+
 
   // ✅ Pull only APPROVED batches for the date
   // latest approved per slot:
@@ -138,9 +158,9 @@ async function loadFakeDaily(date) {
 
   leaderboard.forEach((p,i)=>p.rank=i+1);
 
-  // ✅ merge fake after real sort
-  const fakeDaily = await loadFakeDaily(date);
-  leaderboard = mergeFakeOption1(leaderboard, fakeDaily);
+const fakePayload = await loadFakeDaily(date);
+leaderboard = mergeFakeTop20RankMapping(leaderboard, fakePayload);
+
 
   return new Response(JSON.stringify({ ok:true, date, rows: leaderboard.slice(0,20) }), {
     headers: { "Content-Type":"application/json", "Access-Control-Allow-Origin":"*" }
