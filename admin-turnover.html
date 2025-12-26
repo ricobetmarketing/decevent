@@ -49,6 +49,21 @@
       font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
       font-size:13px;
     }
+
+    .badge-soft {
+      background: rgba(148,163,184,.18);
+      border: 1px solid rgba(148,163,184,.35);
+      color: #111;
+      font-weight: 600;
+      padding: 4px 8px;
+      border-radius: 999px;
+      font-size: 11px;
+    }
+    .badge-pending { background: rgba(245,158,11,.15); border-color: rgba(245,158,11,.35); }
+    .badge-approved { background: rgba(34,197,94,.15); border-color: rgba(34,197,94,.35); }
+    .badge-rejected { background: rgba(239,68,68,.15); border-color: rgba(239,68,68,.35); }
+    .badge-sup { background: rgba(99,102,241,.12); border-color: rgba(99,102,241,.35); }
+    code { font-size: 12px; }
   </style>
 </head>
 <body>
@@ -81,8 +96,6 @@
     <a class="nav-link" id="rollback-tab" href="#rollback" onclick="showTab('rollback')">
       <i class="fas fa-rotate-left"></i> Rollback
     </a>
-
-  
   </nav>
 </div>
 
@@ -95,7 +108,7 @@
 
   <div class="tab-content">
 
-    <!-- DATA TAB -->
+    <!-- ===================== DATA TAB ===================== -->
     <div class="tab-pane" id="data">
       <div class="card shadow-sm mb-4">
         <div class="card-header bg-white text-dark d-flex justify-content-between align-items-center"
@@ -193,7 +206,7 @@
       </div>
     </div>
 
-    <!-- GLOBAL TAB -->
+    <!-- ===================== GLOBAL TAB ===================== -->
     <div class="tab-pane active" id="global">
       <div class="card shadow-sm mb-4">
         <div class="card-header bg-success">
@@ -246,7 +259,7 @@
       </div>
     </div>
 
-    <!-- BRAZIL TAB -->
+    <!-- ===================== BRAZIL TAB ===================== -->
     <div class="tab-pane" id="brazil">
       <div class="card shadow-sm mb-4">
         <div class="card-header">🇧🇷 Brazil Turnover Data Entry (BRL)</div>
@@ -310,7 +323,7 @@
       </div>
     </div>
 
-    <!-- MEXICO TAB -->
+    <!-- ===================== MEXICO TAB ===================== -->
     <div class="tab-pane" id="mexico">
       <div class="card shadow-sm mb-4">
         <div class="card-header">🇲🇽 Mexico Turnover Data Entry (MXN)</div>
@@ -371,20 +384,20 @@
       </div>
     </div>
 
-    <!-- FAKE TAB -->
+    <!-- ===================== FAKE TAB ===================== -->
     <div class="tab-pane" id="fake">
-      <!-- (kept same as your code) -->
       <div class="card shadow-sm mb-4">
         <div class="card-header bg-white text-dark" style="background:#fff!important;color:#111!important;">
           <i class="fas fa-user-secret me-2"></i> Fake Username (Daily Boost)
         </div>
+
         <div class="card-body">
-          <!-- your existing fake UI stays same -->
           <div class="row g-3 align-items-end mb-2">
             <div class="col-md-3">
               <label class="form-label text-small">Date (UTC-6)</label>
               <input type="date" id="fakeDate" class="form-control form-control-sm">
             </div>
+
             <div class="col-md-2">
               <label class="form-label text-small">Country</label>
               <select id="fakeCountry" class="form-select form-select-sm">
@@ -393,14 +406,17 @@
                 <option value="MX">MX</option>
               </select>
             </div>
+
             <div class="col-md-3">
               <label class="form-label text-small">Username</label>
               <input id="fakeUsername" class="form-control form-control-sm" placeholder="e.g. luckyking88">
             </div>
+
             <div class="col-md-2">
               <label class="form-label text-small">Boost %</label>
               <input id="fakeBoost" type="number" step="0.01" class="form-control form-control-sm" placeholder="e.g. 12.5">
             </div>
+
             <div class="col-md-2">
               <button class="btn btn-success btn-sm w-100" id="btnFakeSave">
                 <i class="fas fa-save"></i> Save
@@ -435,15 +451,14 @@
           </div>
 
           <div class="text-muted text-small mt-2">
-            Boost is based on <b>current Top real player</b>. Fake turnover = TopRealUSD × (Boost% / 100).
+            Boost is based on <b>current Top real player</b> (Option 1). Fake turnover = TopRealUSD × (Boost% / 100).
           </div>
         </div>
       </div>
     </div>
 
-    <!-- USER SEARCH -->
+    <!-- ===================== USER SEARCH ===================== -->
     <div class="tab-pane" id="user">
-      <!-- (kept same as your code) -->
       <div class="card shadow-sm mb-4">
         <div class="card-header bg-white text-dark" style="background:#fff!important;color:#111!important;">
           <i class="fas fa-user me-2"></i> Search User History
@@ -491,11 +506,11 @@
       </div>
     </div>
 
-    <!-- UPLOAD HISTORY (WITH VERIFY) -->
+    <!-- ===================== UPLOAD HISTORY (VERIFY / REJECT) ===================== -->
     <div class="tab-pane" id="history">
       <div class="card shadow-sm mb-4">
         <div class="card-header bg-white text-dark" style="background:#fff!important;color:#111!important;">
-          <i class="fas fa-clock-rotate-left me-2"></i> Upload History Log (Verify & Publish)
+          <i class="fas fa-clock-rotate-left me-2"></i> Upload History Log (Verify / Reject)
         </div>
         <div class="card-body">
           <div class="row g-3 mb-2">
@@ -534,8 +549,9 @@
                   <th>Total Local</th>
                   <th>Total USD</th>
                   <th>Uploader</th>
+                  <th>Verified By</th>
                   <th>Batch</th>
-                  <th style="width:160px;">Action</th>
+                  <th style="min-width:260px;">Action</th>
                 </tr>
               </thead>
               <tbody id="historyTableBody"></tbody>
@@ -543,15 +559,14 @@
           </div>
 
           <p class="text-muted text-small mb-0">
-            Tip: copy a <span class="badge bg-secondary">batch</span> value and use it in Rollback.
+            Tip: click <b>View</b> to compare uploaded rows vs current published rows.
           </p>
         </div>
       </div>
     </div>
 
-    <!-- ROLLBACK -->
+    <!-- ===================== ROLLBACK ===================== -->
     <div class="tab-pane" id="rollback">
-      <!-- (kept same as your code) -->
       <div class="card shadow-sm mb-4">
         <div class="card-header bg-white text-dark" style="background:#fff!important;color:#111!important;">
           <i class="fas fa-rotate-left me-2"></i> Rollback (Restore Previous Upload)
@@ -604,7 +619,97 @@
   </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"></script>
+<!-- ===================== MODAL: Batch Details (Cross-check) ===================== -->
+<div class="modal fade" id="batchDetailsModal" tabindex="-1">
+  <div class="modal-dialog modal-xl modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Batch Cross-Check (New vs Current Published)</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body">
+        <div id="batchDetailsStatus" class="status-text mb-2"></div>
+
+        <div class="row g-3">
+          <div class="col-md-6">
+            <div class="card shadow-sm">
+              <div class="card-header bg-dark">New Upload (selected batch)</div>
+              <div class="card-body" id="newBatchBox">-</div>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="card shadow-sm">
+              <div class="card-header bg-secondary">Current Published (APPROVED)</div>
+              <div class="card-body" id="currentBatchBox">-</div>
+            </div>
+          </div>
+        </div>
+
+        <hr />
+
+        <div class="row g-3">
+          <div class="col-md-6">
+            <h6 class="mb-2">Top 50 rows — New Batch</h6>
+            <div class="table-responsive">
+              <table class="table table-sm table-striped">
+                <thead class="table-light"><tr><th>#</th><th>Username</th><th>Raw Turnover</th></tr></thead>
+                <tbody id="tblNewRows"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <h6 class="mb-2">Top 50 rows — Current Published</h6>
+            <div class="table-responsive">
+              <table class="table table-sm table-striped">
+                <thead class="table-light"><tr><th>#</th><th>Username</th><th>Raw Turnover</th></tr></thead>
+                <tbody id="tblCurrentRows"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== MODAL: Reject ===================== -->
+<div class="modal fade" id="rejectModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Reject Batch</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body">
+        <div class="mb-2 text-muted text-small">
+          Batch: <code id="rejectBatchId">-</code>
+        </div>
+
+        <label class="form-label">Reject reason</label>
+        <textarea id="rejectReason" class="form-control" rows="4"
+          placeholder="Example: wrong date / missing users / duplicated / not latest cumulative slot..."></textarea>
+
+        <div id="rejectStatus" class="status-text mt-2"></div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button class="btn btn-danger" onclick="submitReject()">Reject</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/jspdf-autotable@3.8.2/dist/jspdf.plugin.autotable.min.js"></script>
@@ -623,7 +728,7 @@
 
     if (tabId === 'data') loadStats();
     if (tabId === 'fake') loadFakeList();
-    if (tabId === 'history') loadUploadHistory(); // auto load
+    if (tabId === 'history') loadUploadHistory();
   }
 
   function toggleMode(country, mode) {
@@ -632,6 +737,15 @@
     if (!manualDiv || !csvDiv) return;
     if (mode === 'manual') { manualDiv.style.display='block'; csvDiv.style.display='none'; }
     else { manualDiv.style.display='none'; csvDiv.style.display='block'; }
+  }
+
+  function setAnyStatus(id, msg, type) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.textContent = msg || "";
+    el.classList.remove("status-ok","status-error");
+    if (type === "ok") el.classList.add("status-ok");
+    if (type === "error") el.classList.add("status-error");
   }
 
   function setStatus(prefix, message, type) {
@@ -657,15 +771,6 @@
     el.classList.remove('status-ok','status-error');
     if (type === 'ok') el.classList.add('status-ok');
     if (type === 'error') el.classList.add('status-error');
-  }
-
-  function setAnyStatus(id, msg, type) {
-    const el = document.getElementById(id);
-    if (!el) return;
-    el.textContent = msg || "";
-    el.classList.remove("status-ok","status-error");
-    if (type === "ok") el.classList.add("status-ok");
-    if (type === "error") el.classList.add("status-error");
   }
 
   function parseLines(text) {
@@ -791,37 +896,6 @@
   }
   document.getElementById('globalSearchBtn')?.addEventListener('click', loadGlobalLeaderboard);
 
-  // ===== VERIFY & PUBLISH =====
-  async function approveBatch(batch_id) {
-    if (!batch_id) return;
-    if (!confirm("Verify & publish this batch? This will make it LIVE on leaderboard.")) return;
-
-    setAnyStatus("historyStatus", "Approving…", "");
-
-    try {
-      const res = await fetch("/api-admin-approve", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ batch_id })
-      });
-
-      const json = await res.json().catch(()=>({}));
-      if (!res.ok || !json.ok) {
-        setAnyStatus("historyStatus", json.error || `Approve failed (${res.status})`, "error");
-        return;
-      }
-
-      setAnyStatus("historyStatus", `Approved ✅ Verified by: ${json.verified_by || "unknown"}`, "ok");
-
-      await loadUploadHistory();
-      await loadGlobalLeaderboard();
-      await loadStats();
-
-    } catch (e) {
-      setAnyStatus("historyStatus", "Network error while approving.", "error");
-    }
-  }
-
   // ===== DATA / ANALYTICS =====
   let statsCache = null;
   let chart = null;
@@ -902,75 +976,47 @@
   }
   document.getElementById('btnReloadStats')?.addEventListener('click', loadStats);
 
-  // ===== UPLOAD HISTORY (NOW WITH STATUS + ACTION) =====
-  async function loadUploadHistory() {
-    const date = (document.getElementById("hDate").value || "").trim();
-    const country = document.getElementById("hCountry").value || "";
-    const tbody = document.getElementById("historyTableBody");
+  document.getElementById('btnExportCsv')?.addEventListener('click', () => {
+    if (!statsCache) return alert('No data yet. Click Refresh first.');
+    const rows = statsCache.topPlayersOverall || [];
+    const header = "rank,username,country,totalUsd,daysInTop20\n";
+    const body = rows.map(r =>
+      [r.rank, `"${String(r.username).replace(/"/g,'""')}"`, r.country, r.totalUsd, r.daysInTop20].join(',')
+    ).join('\n');
+    const blob = new Blob([header + body], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `turnover_stats_${statsCache.fromDate}_to_${statsCache.toDate}_${statsCache.country}_${statsCache.mode}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+  });
 
-    setAnyStatus("historyStatus", "Loading…", "");
-    tbody.innerHTML = "";
+  document.getElementById('btnExportPdf')?.addEventListener('click', () => {
+    if (!statsCache) return alert('No data yet. Click Refresh first.');
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF({ orientation: 'portrait', unit: 'pt', format: 'a4' });
 
-    try {
-      const qs = new URLSearchParams();
-      if (date) qs.set("date", date);
-      if (country) qs.set("country", country);
+    doc.setFontSize(14);
+    doc.text(`Turnover Analytics (USD)`, 40, 40);
+    doc.setFontSize(10);
+    doc.text(`${statsCache.fromDate} → ${statsCache.toDate} | ${statsCache.country} | ${statsCache.mode}`, 40, 58);
 
-      const res = await fetch("/api-upload-history?" + qs.toString());
-      const json = await res.json().catch(()=>({}));
+    const tableRows = (statsCache.topPlayersOverall || []).slice(0, 30).map(r => [
+      r.rank, r.username, r.country, `$${Number(r.totalUsd||0).toFixed(2)}`, r.daysInTop20
+    ]);
 
-      if (!res.ok || !json.ok) {
-        setAnyStatus("historyStatus", json.error || `Error ${res.status}`, "error");
-        return;
-      }
+    doc.autoTable({
+      head: [[ "Rank", "Username", "Country", "Total USD", "Days in Top 20" ]],
+      body: tableRows,
+      startY: 80,
+      styles: { fontSize: 9 }
+    });
 
-      const rows = json.rows || [];
-      if (!rows.length) {
-        setAnyStatus("historyStatus", "No upload history.", "ok");
-        return;
-      }
+    doc.save(`turnover_stats_${statsCache.fromDate}_to_${statsCache.toDate}_${statsCache.country}_${statsCache.mode}.pdf`);
+  });
 
-      rows.forEach(r => {
-        const status = String(r.status || "").toUpperCase();
-        const isPending = status === "PENDING";
-
-        const statusBadge =
-          status === "APPROVED"
-            ? `<span class="badge bg-success">APPROVED</span>`
-            : status === "PENDING"
-              ? `<span class="badge bg-warning text-dark">PENDING</span>`
-              : `<span class="badge bg-secondary">${status || "-"}</span>`;
-
-        const actionHtml = isPending
-          ? `<button class="btn btn-sm btn-success" onclick="approveBatch('${r.batch_id}')">
-               <i class="fas fa-check"></i> Verify & Publish
-             </button>`
-          : `<span class="text-muted text-small">—</span>`;
-
-        const tr = document.createElement("tr");
-        tr.innerHTML = `
-          <td>${r.created_at || ""}</td>
-          <td>${r.date || ""}</td>
-          <td>${r.country || ""}</td>
-          <td>${r.slot || ""}</td>
-          <td>${statusBadge}</td>
-          <td>${r.rows_count ?? ""}</td>
-          <td>${Number(r.total_local || 0).toFixed(2)}</td>
-          <td>${Number(r.total_usd || 0).toFixed(2)}</td>
-          <td>${r.uploader || ""}</td>
-          <td><span class="badge bg-secondary">${r.batch_id || ""}</span></td>
-          <td>${actionHtml}</td>
-        `;
-        tbody.appendChild(tr);
-      });
-
-      setAnyStatus("historyStatus", `Loaded ${rows.length} batches.`, "ok");
-    } catch (e) {
-      setAnyStatus("historyStatus", "Network error.", "error");
-    }
-  }
-
-  // ===== USER HISTORY (optional) =====
+  // ===== USER HISTORY =====
   async function loadUserHistory() {
     const username = (document.getElementById("uSearchName").value || "").trim();
     const country = document.getElementById("uSearchCountry").value || "";
@@ -1018,6 +1064,81 @@
     }
   }
 
+  // ===== UPLOAD HISTORY (VERIFY / REJECT) =====
+  function statusBadge(status) {
+    const s = String(status || "").toUpperCase();
+    let cls = "badge-soft";
+    if (s === "PENDING") cls += " badge-pending";
+    else if (s === "APPROVED") cls += " badge-approved";
+    else if (s === "REJECTED") cls += " badge-rejected";
+    else if (s === "SUPERSEDED") cls += " badge-sup";
+    return `<span class="${cls}">${s || "-"}</span>`;
+  }
+
+  async function loadUploadHistory() {
+    const date = (document.getElementById("hDate").value || "").trim();
+    const country = document.getElementById("hCountry").value || "";
+    const tbody = document.getElementById("historyTableBody");
+
+    setAnyStatus("historyStatus", "Loading…", "");
+    tbody.innerHTML = "";
+
+    try {
+      const qs = new URLSearchParams();
+      if (date) qs.set("date", date);
+      if (country) qs.set("country", country);
+
+      const res = await fetch("/api-upload-history?" + qs.toString());
+      const json = await res.json().catch(()=>({}));
+
+      if (!res.ok || !json.ok) {
+        setAnyStatus("historyStatus", json.error || `Error ${res.status}`, "error");
+        return;
+      }
+
+      const rows = json.rows || [];
+      if (!rows.length) {
+        setAnyStatus("historyStatus", "No upload history.", "ok");
+        return;
+      }
+
+      rows.forEach(r => {
+        const isPending = String(r.status || "").toUpperCase() === "PENDING";
+
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>${r.created_at || ""}</td>
+          <td>${r.date || ""}</td>
+          <td>${r.country || ""}</td>
+          <td>${r.slot || ""}</td>
+          <td>${statusBadge(r.status)}</td>
+          <td>${r.rows_count ?? ""}</td>
+          <td>${Number(r.total_local || 0).toFixed(2)}</td>
+          <td>${Number(r.total_usd || 0).toFixed(2)}</td>
+          <td>${r.uploader || ""}</td>
+          <td>${r.verified_by || ""}</td>
+          <td><code>${r.batch_id || ""}</code></td>
+          <td>
+            <button class="btn btn-outline-secondary btn-sm me-1" onclick="openBatchDetails('${r.batch_id}')">
+              View
+            </button>
+            <button class="btn btn-success btn-sm me-1" onclick="verifyBatch('${r.batch_id}')" ${isPending ? "" : "disabled"}>
+              ✅ Verify
+            </button>
+            <button class="btn btn-danger btn-sm" onclick="openReject('${r.batch_id}')" ${isPending ? "" : "disabled"}>
+              ❌ Reject
+            </button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      setAnyStatus("historyStatus", `Loaded ${rows.length} batches.`, "ok");
+    } catch (e) {
+      setAnyStatus("historyStatus", "Network error.", "error");
+    }
+  }
+
   // ===== ROLLBACK =====
   async function doRollback() {
     const date = (document.getElementById("rbDate").value || "").trim();
@@ -1053,23 +1174,136 @@
     }
   }
 
-  // ------- Default dates = Mexico time UTC-6 -------
-  function todayMexicoISO() {
-    const nowUtcMs = Date.now();
-    const offsetMs = -6 * 60 * 60 * 1000;
-    const mexNow = new Date(nowUtcMs + offsetMs);
-    const y = mexNow.getFullYear();
-    const m = String(mexNow.getMonth() + 1).padStart(2, "0");
-    const d = String(mexNow.getDate()).padStart(2, "0");
-    return `${y}-${m}-${d}`;
+  // ===== MODALS: Details + Reject =====
+  let modalDetails = null;
+  let modalReject = null;
+  let rejectBatchId = null;
+
+  function setModalStatus(id, msg, type) {
+    setAnyStatus(id, msg, type);
   }
 
-  // =========================
-  // ✅ FAKE USERNAME CRUD (kept your existing logic)
-  // =========================
+  async function openBatchDetails(batch_id) {
+    setModalStatus("batchDetailsStatus", "Loading batch details…", "");
+    document.getElementById("newBatchBox").innerHTML = "-";
+    document.getElementById("currentBatchBox").innerHTML = "-";
+    document.getElementById("tblNewRows").innerHTML = "";
+    document.getElementById("tblCurrentRows").innerHTML = "";
+
+    modalDetails.show();
+
+    try {
+      const res = await fetch("/api-batch-details?batch_id=" + encodeURIComponent(batch_id));
+      const json = await res.json().catch(()=>({}));
+      if (!res.ok || !json.ok) {
+        setModalStatus("batchDetailsStatus", json.error || `Error ${res.status}`, "error");
+        return;
+      }
+
+      const b = json.batch;
+      const c = json.current;
+
+      const boxHtml = (x) => {
+        if (!x) return `<div class="text-muted">No approved batch yet.</div>`;
+        return `
+          <div class="text-small"><b>Date:</b> ${x.date} | <b>Country:</b> ${x.country} | <b>Slot:</b> ${x.slot}</div>
+          <div class="text-small"><b>Status:</b> ${x.status || "-"}</div>
+          <div class="text-small"><b>Batch:</b> <code>${x.batch_id}</code></div>
+          <div class="text-small"><b>Rows:</b> ${x.rows_count}</div>
+          <div class="text-small"><b>Total Local:</b> ${Number(x.total_local||0).toFixed(2)}</div>
+          <div class="text-small"><b>Total USD:</b> ${Number(x.total_usd||0).toFixed(2)}</div>
+          <div class="text-small"><b>Uploader:</b> ${x.uploader || "-"}</div>
+          <hr class="my-2"/>
+          <div class="text-small"><b>Verified By:</b> ${x.verified_by || "-"}</div>
+          <div class="text-small"><b>Verified At:</b> ${x.verified_at || "-"}</div>
+          ${x.reject_reason ? `<div class="text-small text-danger"><b>Reject Reason:</b> ${x.reject_reason}</div>` : ""}
+        `;
+      };
+
+      document.getElementById("newBatchBox").innerHTML = boxHtml(b);
+      document.getElementById("currentBatchBox").innerHTML = boxHtml(c);
+
+      const renderRows = (tbodyId, rows) => {
+        const tb = document.getElementById(tbodyId);
+        tb.innerHTML = "";
+        (rows || []).forEach((r, idx) => {
+          const tr = document.createElement("tr");
+          tr.innerHTML = `<td>${idx+1}</td><td>${r.username}</td><td>${Number(r.raw_turnover||0).toFixed(2)}</td>`;
+          tb.appendChild(tr);
+        });
+      };
+
+      renderRows("tblNewRows", json.rows_new);
+      renderRows("tblCurrentRows", json.rows_current);
+
+      setModalStatus("batchDetailsStatus", "Loaded ✅ (left = new upload, right = current published)", "ok");
+    } catch (e) {
+      setModalStatus("batchDetailsStatus", "Network error loading details.", "error");
+    }
+  }
+
+  async function verifyBatch(batch_id) {
+    if (!confirm("Verify & Publish this batch?")) return;
+
+    try {
+      const res = await fetch("/api-verify-batch", {
+        method: "POST",
+        headers: { "Content-Type":"application/json" },
+        body: JSON.stringify({ batch_id })
+      });
+      const json = await res.json().catch(()=>({}));
+      if (!res.ok || !json.ok) return alert(json.error || `Verify failed (${res.status})`);
+
+      alert("Verified & Published ✅ (Telegram sent)");
+      await loadUploadHistory();
+      await loadGlobalLeaderboard();
+      await loadStats();
+    } catch (e) {
+      alert("Network error verifying.");
+    }
+  }
+
+  function openReject(batch_id) {
+    rejectBatchId = batch_id;
+    document.getElementById("rejectBatchId").textContent = batch_id;
+    document.getElementById("rejectReason").value = "";
+    setModalStatus("rejectStatus", "", "");
+    modalReject.show();
+  }
+
+  async function submitReject() {
+    const reason = (document.getElementById("rejectReason").value || "").trim();
+    if (!rejectBatchId) return;
+    if (!reason) return setModalStatus("rejectStatus", "Reason is required.", "error");
+
+    setModalStatus("rejectStatus", "Rejecting…", "");
+
+    try {
+      const res = await fetch("/api-reject-batch", {
+        method: "POST",
+        headers: { "Content-Type":"application/json" },
+        body: JSON.stringify({ batch_id: rejectBatchId, reason })
+      });
+      const json = await res.json().catch(()=>({}));
+      if (!res.ok || !json.ok) {
+        setModalStatus("rejectStatus", json.error || `Reject failed (${res.status})`, "error");
+        return;
+      }
+
+      setModalStatus("rejectStatus", "Rejected ✅ (Telegram sent)", "ok");
+      setTimeout(() => modalReject.hide(), 650);
+      await loadUploadHistory();
+    } catch (e) {
+      setModalStatus("rejectStatus", "Network error rejecting.", "error");
+    }
+  }
+
+  // ===== FAKE CRUD (same as your original) =====
   let fakeEditingId = null;
 
-  function setFakeStatus(msg, type) { setAnyStatus("fakeStatus", msg, type); }
+  function setFakeStatus(msg, type) {
+    setAnyStatus("fakeStatus", msg, type);
+  }
 
   async function loadFakeList() {
     const date = document.getElementById("fakeDate")?.value;
@@ -1093,7 +1327,9 @@
       rows.forEach(r => {
         const tr = document.createElement("tr");
         tr.innerHTML = `
-          <td><input type="checkbox" ${Number(r.is_active) ? "checked" : ""} data-id="${r.id}" class="fakeActiveToggle"></td>
+          <td>
+            <input type="checkbox" ${Number(r.is_active) ? "checked" : ""} data-id="${r.id}" class="fakeActiveToggle">
+          </td>
           <td>${r.username || ""}</td>
           <td>${r.country || "ALL"}</td>
           <td>${Number(r.boost_pct || 0).toFixed(2)}</td>
@@ -1115,10 +1351,12 @@
           const tr = btn.closest("tr");
           const r = JSON.parse(tr.dataset.row || "{}");
           fakeEditingId = r.id;
+
           document.getElementById("fakeCountry").value = r.country || "ALL";
           document.getElementById("fakeUsername").value = r.username || "";
           document.getElementById("fakeBoost").value = r.boost_pct || "";
           document.getElementById("fakeNote").value = r.note || "";
+
           setFakeStatus(`Editing ID ${r.id}`, "ok");
         });
       });
@@ -1193,7 +1431,15 @@
 
     setFakeStatus("Saving…", "");
 
-    const payload = { id: fakeEditingId, date, country, username, boost_pct, is_active: 1, note };
+    const payload = {
+      id: fakeEditingId,
+      date,
+      country,
+      username,
+      boost_pct,
+      is_active: 1,
+      note
+    };
 
     try {
       const res = await fetch("/api-fake-upsert", {
@@ -1217,17 +1463,34 @@
     }
   }
 
-  // init
-  document.addEventListener("DOMContentLoaded", () => {
+  // ------- Default dates = Mexico time UTC-6 -------
+  function todayMexicoISO() {
+    const nowUtcMs = Date.now();
+    const offsetMs = -6 * 60 * 60 * 1000;
+    const mexNow = new Date(nowUtcMs + offsetMs);
+    const y = mexNow.getFullYear();
+    const m = String(mexNow.getMonth() + 1).padStart(2, "0");
+    const d = String(mexNow.getDate()).padStart(2, "0");
+    return `${y}-${m}-${d}`;
+  }
+
+  document.addEventListener("DOMContentLoaded", async () => {
+    modalDetails = new bootstrap.Modal(document.getElementById("batchDetailsModal"));
+    modalReject = new bootstrap.Modal(document.getElementById("rejectModal"));
+
     document.getElementById("btnUserSearch")?.addEventListener("click", loadUserHistory);
     document.getElementById("btnHistoryLoad")?.addEventListener("click", loadUploadHistory);
     document.getElementById("btnRollback")?.addEventListener("click", doRollback);
+
     document.getElementById("btnFakeSave")?.addEventListener("click", saveFakeRow);
     document.getElementById("fakeDate")?.addEventListener("change", loadFakeList);
     document.getElementById("fakeCountry")?.addEventListener("change", loadFakeList);
 
+    document.getElementById('globalSearchBtn')?.addEventListener('click', loadGlobalLeaderboard);
+
     showTab('global');
     const today = todayMexicoISO();
+
     document.getElementById('globalDate').value = today;
     document.getElementById('brDate').value = today;
     document.getElementById('mxDate').value = today;
@@ -1241,7 +1504,8 @@
     if (rbDate) rbDate.value = today;
     if (hDate) hDate.value = today;
 
-    loadGlobalLeaderboard();
+    await loadGlobalLeaderboard();
+    await loadUploadHistory();
   });
 </script>
 
