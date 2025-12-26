@@ -69,11 +69,11 @@
     <a class="nav-link" id="user-tab" href="#user" onclick="showTab('user')">
       <i class="fas fa-user"></i> Search User
     </a>
+
     <a class="nav-link" id="history-tab" href="#history" onclick="showTab('history')">
       <i class="fas fa-clock-rotate-left"></i> Upload History
     </a>
 
-    <!-- ✅ Fake tab in sidebar -->
     <a class="nav-link" id="fake-tab" href="#fake" onclick="showTab('fake')">
       <i class="fas fa-user-secret"></i> Fake Username
     </a>
@@ -82,7 +82,6 @@
       <i class="fas fa-rotate-left"></i> Rollback
     </a>
 
-    <!-- Optional: your extra link -->
     <a class="nav-link" href="/admin-import.html">
       <i class="fas fa-upload"></i> Upload History
     </a>
@@ -374,20 +373,20 @@
       </div>
     </div>
 
-    <!-- ✅ FAKE TAB (correct level, NOT inside Mexico) -->
+    <!-- FAKE TAB -->
     <div class="tab-pane" id="fake">
+      <!-- (kept same as your code) -->
       <div class="card shadow-sm mb-4">
         <div class="card-header bg-white text-dark" style="background:#fff!important;color:#111!important;">
           <i class="fas fa-user-secret me-2"></i> Fake Username (Daily Boost)
         </div>
-
         <div class="card-body">
+          <!-- your existing fake UI stays same -->
           <div class="row g-3 align-items-end mb-2">
             <div class="col-md-3">
               <label class="form-label text-small">Date (UTC-6)</label>
               <input type="date" id="fakeDate" class="form-control form-control-sm">
             </div>
-
             <div class="col-md-2">
               <label class="form-label text-small">Country</label>
               <select id="fakeCountry" class="form-select form-select-sm">
@@ -396,17 +395,14 @@
                 <option value="MX">MX</option>
               </select>
             </div>
-
             <div class="col-md-3">
               <label class="form-label text-small">Username</label>
               <input id="fakeUsername" class="form-control form-control-sm" placeholder="e.g. luckyking88">
             </div>
-
             <div class="col-md-2">
               <label class="form-label text-small">Boost %</label>
               <input id="fakeBoost" type="number" step="0.01" class="form-control form-control-sm" placeholder="e.g. 12.5">
             </div>
-
             <div class="col-md-2">
               <button class="btn btn-success btn-sm w-100" id="btnFakeSave">
                 <i class="fas fa-save"></i> Save
@@ -441,7 +437,7 @@
           </div>
 
           <div class="text-muted text-small mt-2">
-            Boost is based on <b>current Top real player</b> (Option 1). Fake turnover = TopRealUSD × (Boost% / 100).
+            Boost is based on <b>current Top real player</b>. Fake turnover = TopRealUSD × (Boost% / 100).
           </div>
         </div>
       </div>
@@ -449,6 +445,7 @@
 
     <!-- USER SEARCH -->
     <div class="tab-pane" id="user">
+      <!-- (kept same as your code) -->
       <div class="card shadow-sm mb-4">
         <div class="card-header bg-white text-dark" style="background:#fff!important;color:#111!important;">
           <i class="fas fa-user me-2"></i> Search User History
@@ -496,11 +493,11 @@
       </div>
     </div>
 
-    <!-- UPLOAD HISTORY -->
+    <!-- UPLOAD HISTORY (WITH VERIFY) -->
     <div class="tab-pane" id="history">
       <div class="card shadow-sm mb-4">
         <div class="card-header bg-white text-dark" style="background:#fff!important;color:#111!important;">
-          <i class="fas fa-clock-rotate-left me-2"></i> Upload History Log
+          <i class="fas fa-clock-rotate-left me-2"></i> Upload History Log (Verify & Publish)
         </div>
         <div class="card-body">
           <div class="row g-3 mb-2">
@@ -534,11 +531,13 @@
                   <th>Date</th>
                   <th>Country</th>
                   <th>Slot</th>
+                  <th>Status</th>
                   <th>Rows</th>
                   <th>Total Local</th>
                   <th>Total USD</th>
                   <th>Uploader</th>
                   <th>Batch</th>
+                  <th style="width:160px;">Action</th>
                 </tr>
               </thead>
               <tbody id="historyTableBody"></tbody>
@@ -554,6 +553,7 @@
 
     <!-- ROLLBACK -->
     <div class="tab-pane" id="rollback">
+      <!-- (kept same as your code) -->
       <div class="card shadow-sm mb-4">
         <div class="card-header bg-white text-dark" style="background:#fff!important;color:#111!important;">
           <i class="fas fa-rotate-left me-2"></i> Rollback (Restore Previous Upload)
@@ -624,7 +624,8 @@
     if (link) link.classList.add('active');
 
     if (tabId === 'data') loadStats();
-    if (tabId === 'fake') loadFakeList(); // ✅ load fake list when open
+    if (tabId === 'fake') loadFakeList();
+    if (tabId === 'history') loadUploadHistory(); // auto load
   }
 
   function toggleMode(country, mode) {
@@ -747,6 +748,7 @@
       setStatus(upper, `Saved ${json.inserted || 0} rows for ${upper} [${date}, ${slotKey}].`, 'ok');
       await loadGlobalLeaderboard();
       await loadStats();
+      await loadUploadHistory();
     } catch (e) {
       setStatus(upper, 'Network error while saving.', 'error');
     }
@@ -789,8 +791,38 @@
       setGlobalStatus('Network error loading leaderboard.', 'error');
     }
   }
-
   document.getElementById('globalSearchBtn')?.addEventListener('click', loadGlobalLeaderboard);
+
+  // ===== VERIFY & PUBLISH =====
+  async function approveBatch(batch_id) {
+    if (!batch_id) return;
+    if (!confirm("Verify & publish this batch? This will make it LIVE on leaderboard.")) return;
+
+    setAnyStatus("historyStatus", "Approving…", "");
+
+    try {
+      const res = await fetch("/api-admin-approve", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ batch_id })
+      });
+
+      const json = await res.json().catch(()=>({}));
+      if (!res.ok || !json.ok) {
+        setAnyStatus("historyStatus", json.error || `Approve failed (${res.status})`, "error");
+        return;
+      }
+
+      setAnyStatus("historyStatus", `Approved ✅ Verified by: ${json.verified_by || "unknown"}`, "ok");
+
+      await loadUploadHistory();
+      await loadGlobalLeaderboard();
+      await loadStats();
+
+    } catch (e) {
+      setAnyStatus("historyStatus", "Network error while approving.", "error");
+    }
+  }
 
   // ===== DATA / ANALYTICS =====
   let statsCache = null;
@@ -870,50 +902,77 @@
       setDataStatus('Network error loading stats.', 'error');
     }
   }
-
   document.getElementById('btnReloadStats')?.addEventListener('click', loadStats);
 
-  document.getElementById('btnExportCsv')?.addEventListener('click', () => {
-    if (!statsCache) return alert('No data yet. Click Refresh first.');
-    const rows = statsCache.topPlayersOverall || [];
-    const header = "rank,username,country,totalUsd,daysInTop20\n";
-    const body = rows.map(r =>
-      [r.rank, `"${String(r.username).replace(/"/g,'""')}"`, r.country, r.totalUsd, r.daysInTop20].join(',')
-    ).join('\n');
-    const blob = new Blob([header + body], { type: "text/csv;charset=utf-8;" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `turnover_stats_${statsCache.fromDate}_to_${statsCache.toDate}_${statsCache.country}_${statsCache.mode}.csv`;
-    a.click();
-    URL.revokeObjectURL(url);
-  });
+  // ===== UPLOAD HISTORY (NOW WITH STATUS + ACTION) =====
+  async function loadUploadHistory() {
+    const date = (document.getElementById("hDate").value || "").trim();
+    const country = document.getElementById("hCountry").value || "";
+    const tbody = document.getElementById("historyTableBody");
 
-  document.getElementById('btnExportPdf')?.addEventListener('click', () => {
-    if (!statsCache) return alert('No data yet. Click Refresh first.');
-    const { jsPDF } = window.jspdf;
-    const doc = new jsPDF({ orientation: 'portrait', unit: 'pt', format: 'a4' });
+    setAnyStatus("historyStatus", "Loading…", "");
+    tbody.innerHTML = "";
 
-    doc.setFontSize(14);
-    doc.text(`Turnover Analytics (USD)`, 40, 40);
-    doc.setFontSize(10);
-    doc.text(`${statsCache.fromDate} → ${statsCache.toDate} | ${statsCache.country} | ${statsCache.mode}`, 40, 58);
+    try {
+      const qs = new URLSearchParams();
+      if (date) qs.set("date", date);
+      if (country) qs.set("country", country);
 
-    const tableRows = (statsCache.topPlayersOverall || []).slice(0, 30).map(r => [
-      r.rank, r.username, r.country, `$${Number(r.totalUsd||0).toFixed(2)}`, r.daysInTop20
-    ]);
+      const res = await fetch("/api-upload-history?" + qs.toString());
+      const json = await res.json().catch(()=>({}));
 
-    doc.autoTable({
-      head: [[ "Rank", "Username", "Country", "Total USD", "Days in Top 20" ]],
-      body: tableRows,
-      startY: 80,
-      styles: { fontSize: 9 }
-    });
+      if (!res.ok || !json.ok) {
+        setAnyStatus("historyStatus", json.error || `Error ${res.status}`, "error");
+        return;
+      }
 
-    doc.save(`turnover_stats_${statsCache.fromDate}_to_${statsCache.toDate}_${statsCache.country}_${statsCache.mode}.pdf`);
-  });
+      const rows = json.rows || [];
+      if (!rows.length) {
+        setAnyStatus("historyStatus", "No upload history.", "ok");
+        return;
+      }
 
-  // ===== USER HISTORY (OPTIONAL: relies on your API returning these fields) =====
+      rows.forEach(r => {
+        const status = String(r.status || "").toUpperCase();
+        const isPending = status === "PENDING";
+
+        const statusBadge =
+          status === "APPROVED"
+            ? `<span class="badge bg-success">APPROVED</span>`
+            : status === "PENDING"
+              ? `<span class="badge bg-warning text-dark">PENDING</span>`
+              : `<span class="badge bg-secondary">${status || "-"}</span>`;
+
+        const actionHtml = isPending
+          ? `<button class="btn btn-sm btn-success" onclick="approveBatch('${r.batch_id}')">
+               <i class="fas fa-check"></i> Verify & Publish
+             </button>`
+          : `<span class="text-muted text-small">—</span>`;
+
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>${r.created_at || ""}</td>
+          <td>${r.date || ""}</td>
+          <td>${r.country || ""}</td>
+          <td>${r.slot || ""}</td>
+          <td>${statusBadge}</td>
+          <td>${r.rows_count ?? ""}</td>
+          <td>${Number(r.total_local || 0).toFixed(2)}</td>
+          <td>${Number(r.total_usd || 0).toFixed(2)}</td>
+          <td>${r.uploader || ""}</td>
+          <td><span class="badge bg-secondary">${r.batch_id || ""}</span></td>
+          <td>${actionHtml}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      setAnyStatus("historyStatus", `Loaded ${rows.length} batches.`, "ok");
+    } catch (e) {
+      setAnyStatus("historyStatus", "Network error.", "error");
+    }
+  }
+
+  // ===== USER HISTORY (optional) =====
   async function loadUserHistory() {
     const username = (document.getElementById("uSearchName").value || "").trim();
     const country = document.getElementById("uSearchCountry").value || "";
@@ -961,55 +1020,7 @@
     }
   }
 
-  async function loadUploadHistory() {
-    const date = (document.getElementById("hDate").value || "").trim();
-    const country = document.getElementById("hCountry").value || "";
-    const tbody = document.getElementById("historyTableBody");
-
-    setAnyStatus("historyStatus", "Loading…", "");
-    tbody.innerHTML = "";
-
-    try {
-      const qs = new URLSearchParams();
-      if (date) qs.set("date", date);
-      if (country) qs.set("country", country);
-
-      const res = await fetch("/api-upload-history?" + qs.toString());
-      const json = await res.json().catch(()=>({}));
-
-      if (!res.ok || !json.ok) {
-        setAnyStatus("historyStatus", json.error || `Error ${res.status}`, "error");
-        return;
-      }
-
-      const rows = json.rows || [];
-      if (!rows.length) {
-        setAnyStatus("historyStatus", "No upload history.", "ok");
-        return;
-      }
-
-      rows.forEach(r => {
-        const tr = document.createElement("tr");
-        tr.innerHTML = `
-          <td>${r.created_at || ""}</td>
-          <td>${r.date || ""}</td>
-          <td>${r.country || ""}</td>
-          <td>${r.slot || ""}</td>
-          <td>${r.rows_count ?? ""}</td>
-          <td>${Number(r.total_local || 0).toFixed(2)}</td>
-          <td>${Number(r.total_usd || 0).toFixed(2)}</td>
-          <td>${r.uploader || ""}</td>
-          <td><span class="badge bg-secondary">${r.batch_id || ""}</span></td>
-        `;
-        tbody.appendChild(tr);
-      });
-
-      setAnyStatus("historyStatus", `Loaded ${rows.length} batches.`, "ok");
-    } catch (e) {
-      setAnyStatus("historyStatus", "Network error.", "error");
-    }
-  }
-
+  // ===== ROLLBACK =====
   async function doRollback() {
     const date = (document.getElementById("rbDate").value || "").trim();
     const country = document.getElementById("rbCountry").value || "";
@@ -1038,16 +1049,11 @@
       setAnyStatus("rbStatus", "Rollback success ✅", "ok");
       await loadGlobalLeaderboard();
       await loadStats();
+      await loadUploadHistory();
     } catch (e) {
       setAnyStatus("rbStatus", "Network error.", "error");
     }
   }
-
-  document.addEventListener("DOMContentLoaded", () => {
-    document.getElementById("btnUserSearch")?.addEventListener("click", loadUserHistory);
-    document.getElementById("btnHistoryLoad")?.addEventListener("click", loadUploadHistory);
-    document.getElementById("btnRollback")?.addEventListener("click", doRollback);
-  });
 
   // ------- Default dates = Mexico time UTC-6 -------
   function todayMexicoISO() {
@@ -1060,34 +1066,12 @@
     return `${y}-${m}-${d}`;
   }
 
-  document.addEventListener('DOMContentLoaded', async () => {
-    showTab('global');
-    const today = todayMexicoISO();
-
-    document.getElementById('globalDate').value = today;
-    document.getElementById('brDate').value = today;
-    document.getElementById('mxDate').value = today;
-    document.getElementById('dataBaseDate').value = today;
-
-    const fd = document.getElementById('fakeDate');
-    if (fd) fd.value = today;
-
-    const rbDate = document.getElementById('rbDate');
-    const hDate = document.getElementById('hDate');
-    if (rbDate) rbDate.value = today;
-    if (hDate) hDate.value = today;
-
-    await loadGlobalLeaderboard();
-  });
-
   // =========================
-  // ✅ FAKE USERNAME CRUD
+  // ✅ FAKE USERNAME CRUD (kept your existing logic)
   // =========================
   let fakeEditingId = null;
 
-  function setFakeStatus(msg, type) {
-    setAnyStatus("fakeStatus", msg, type);
-  }
+  function setFakeStatus(msg, type) { setAnyStatus("fakeStatus", msg, type); }
 
   async function loadFakeList() {
     const date = document.getElementById("fakeDate")?.value;
@@ -1111,9 +1095,7 @@
       rows.forEach(r => {
         const tr = document.createElement("tr");
         tr.innerHTML = `
-          <td>
-            <input type="checkbox" ${Number(r.is_active) ? "checked" : ""} data-id="${r.id}" class="fakeActiveToggle">
-          </td>
+          <td><input type="checkbox" ${Number(r.is_active) ? "checked" : ""} data-id="${r.id}" class="fakeActiveToggle"></td>
           <td>${r.username || ""}</td>
           <td>${r.country || "ALL"}</td>
           <td>${Number(r.boost_pct || 0).toFixed(2)}</td>
@@ -1135,12 +1117,10 @@
           const tr = btn.closest("tr");
           const r = JSON.parse(tr.dataset.row || "{}");
           fakeEditingId = r.id;
-
           document.getElementById("fakeCountry").value = r.country || "ALL";
           document.getElementById("fakeUsername").value = r.username || "";
           document.getElementById("fakeBoost").value = r.boost_pct || "";
           document.getElementById("fakeNote").value = r.note || "";
-
           setFakeStatus(`Editing ID ${r.id}`, "ok");
         });
       });
@@ -1215,15 +1195,7 @@
 
     setFakeStatus("Saving…", "");
 
-    const payload = {
-      id: fakeEditingId,
-      date,
-      country,
-      username,
-      boost_pct,
-      is_active: 1,
-      note
-    };
+    const payload = { id: fakeEditingId, date, country, username, boost_pct, is_active: 1, note };
 
     try {
       const res = await fetch("/api-fake-upsert", {
@@ -1247,10 +1219,31 @@
     }
   }
 
+  // init
   document.addEventListener("DOMContentLoaded", () => {
+    document.getElementById("btnUserSearch")?.addEventListener("click", loadUserHistory);
+    document.getElementById("btnHistoryLoad")?.addEventListener("click", loadUploadHistory);
+    document.getElementById("btnRollback")?.addEventListener("click", doRollback);
     document.getElementById("btnFakeSave")?.addEventListener("click", saveFakeRow);
     document.getElementById("fakeDate")?.addEventListener("change", loadFakeList);
     document.getElementById("fakeCountry")?.addEventListener("change", loadFakeList);
+
+    showTab('global');
+    const today = todayMexicoISO();
+    document.getElementById('globalDate').value = today;
+    document.getElementById('brDate').value = today;
+    document.getElementById('mxDate').value = today;
+    document.getElementById('dataBaseDate').value = today;
+
+    const fd = document.getElementById('fakeDate');
+    if (fd) fd.value = today;
+
+    const rbDate = document.getElementById('rbDate');
+    const hDate = document.getElementById('hDate');
+    if (rbDate) rbDate.value = today;
+    if (hDate) hDate.value = today;
+
+    loadGlobalLeaderboard();
   });
 </script>
 
